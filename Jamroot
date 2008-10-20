@@ -21,4 +21,12 @@ project
         build-dir build.tmp
     ;
 
+# A little "rule" (function) to clean up the syntax of declaring tests
+# of these extension modules.
+rule run-test ( test-name : sources + )
+{
+    import testing ;
+    testing.make-test run-pyd : $(sources) : : $(test-name) ;
+}
+
 build-project Cpp/fost-crypto-py/ ;

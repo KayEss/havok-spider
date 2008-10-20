@@ -10,15 +10,12 @@
 #include <boost/python/def.hpp>
 
 
-char const* greet()
-{
+char const* greet() {
    return "hello, world";
 }
 
 
-BOOST_PYTHON_MODULE(crypto)
-{
+BOOST_PYTHON_MODULE( crypto ) {
     using namespace boost::python;
     def("greet", greet);
 }
-
