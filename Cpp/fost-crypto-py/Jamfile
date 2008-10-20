@@ -7,7 +7,7 @@ use-project boost
 project
   : requirements <library>../../../Boost/src/libs/python/build//boost_python ;
 
-python-extension crypto_ext : crypto.cpp ;
+python-extension crypto : crypto.cpp ;
 
 # A little "rule" (function) to clean up the syntax of declaring tests
 # of these extension modules.
@@ -18,4 +18,4 @@ local rule run-test ( test-name : sources + )
 }
 
 # Declare test targets
-run-test crypto : crypto_ext crypto.py ;
+run-test crypto-test : crypto crypto-test.py ;

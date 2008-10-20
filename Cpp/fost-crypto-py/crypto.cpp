@@ -16,7 +16,7 @@ char const* greet()
 }
 
 
-BOOST_PYTHON_MODULE(crypto_ext)
+BOOST_PYTHON_MODULE(crypto)
 {
     using namespace boost::python;
     def("greet", greet);
