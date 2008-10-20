@@ -1,0 +1,21 @@
+
+using python ;
+
+use-project boost
+  : ../../../Boost/src ;
+
+project
+  : requirements <library>../../../Boost/src/libs/python/build//boost_python ;
+
+python-extension crypto_ext : crypto.cpp ;
+
+# A little "rule" (function) to clean up the syntax of declaring tests
+# of these extension modules.
+local rule run-test ( test-name : sources + )
+{
+    import testing ;
+    testing.make-test run-pyd : $(sources) : : $(test-name) ;
+}
+
+# Declare test targets
+run-test crypto : crypto_ext crypto.py ;
