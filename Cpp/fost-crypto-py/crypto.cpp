@@ -10,12 +10,22 @@
 #include <fost/crypto>
 
 
+namespace fostlib {
+
+    bool operator ==( const fostlib::string &l, const boost::python::str &r ) {
+        return r == l.c_str();
+    }
+
+}
+
+
 BOOST_PYTHON_MODULE( crypto ) {
     using namespace boost::python;
 
     class_< fostlib::string >( "foststring", init< fostlib::native_string >() )
             .def( "length", &fostlib::string::length )
-            .def( "u", &fostlib::string::std_str )
+            .def( "__unicode__", &fostlib::string::std_str )
+            .def( self == other< str >() )
         ;
 
     def( "sha1", fostlib::sha1 );
