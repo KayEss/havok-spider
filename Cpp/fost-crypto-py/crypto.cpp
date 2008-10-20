@@ -10,25 +10,24 @@
 #include <fost/crypto>
 
 
-namespace fostlib {
-
-    bool operator ==( const fostlib::string &l, const boost::python::str &r ) {
-        return r == fostlib::coerce< fostlib::utf8string >( l ).c_str();
-    }
-
+namespace {
+    struct to_pystr {
+        static PyObject *convert( const fostlib::string &s ) {
+            std::wstring u( fostlib::coerce< std::wstring >( s ) );
+            return PyUnicode_FromWideChar( u.c_str(), u.length() );
+        }
+        static PyTypeObject const* get_pytype() {
+            return &PyUnicode_Type;
+        }
+    };
 }
 
 
 BOOST_PYTHON_MODULE( crypto ) {
     using namespace boost::python;
 
-    class_< fostlib::string >( "foststring", init< fostlib::native_string >() )
-            .def( "length", &fostlib::string::length )
-            .def( "__unicode__", &fostlib::string::std_str )
-            .def( self == other< str >() )
-        ;
-
     def( "sha1", fostlib::sha1 );
 
     implicitly_convertible< fostlib::native_string, fostlib::string >();
+    to_python_converter< fostlib::string, to_pystr, false >();
 }
