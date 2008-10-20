@@ -4,6 +4,7 @@ project
         requirements
         <include>../Boost/install/include/boost-1_36/
         <include>../OpenSSL/install/include/
+        <include>../fost/Cpp/include/
         <threading>multi
         <runtime-link>shared
 

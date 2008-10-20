@@ -8,14 +8,16 @@
 
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
+#include <fost/crypto>
 
 
-char const* greet() {
-   return "hello, world";
+namespace {
+    std::string sha1( const std::string &str ) {
+        return fostlib::sha1( fostlib::string( str ) ).std_str();
+    }
 }
-
 
 BOOST_PYTHON_MODULE( crypto ) {
     using namespace boost::python;
-    def("greet", greet);
+    def("sha1", sha1);
 }
