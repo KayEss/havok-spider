@@ -3,6 +3,7 @@ using python ;
 
 python-extension crypto :
         ../../../Boost//boost-python-dll
+        ../../../fost/Cpp/fost-core/
         ../../../fost/Cpp/fost-crypto/
         crypto.cpp
     ;

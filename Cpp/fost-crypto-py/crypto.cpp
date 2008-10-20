@@ -13,7 +13,7 @@
 namespace fostlib {
 
     bool operator ==( const fostlib::string &l, const boost::python::str &r ) {
-        return r == l.c_str();
+        return r == fostlib::coerce< fostlib::utf8string >( l ).c_str();
     }
 
 }
