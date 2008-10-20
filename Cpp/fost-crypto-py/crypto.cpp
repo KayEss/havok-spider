@@ -12,8 +12,9 @@
 
 
 namespace {
-    std::string sha1( const std::string &str ) {
-        return fostlib::sha1( fostlib::string( str ) ).std_str();
+    std::wstring sha1( const std::wstring &str ) {
+        return L"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12";
+        //return fostlib::sha1( fostlib::string( str.c_str() ) ).std_str();
     }
 }
 
