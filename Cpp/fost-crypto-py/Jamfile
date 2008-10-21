@@ -8,11 +8,14 @@ python-extension crypto :
         crypto.cpp
     ;
 
+lib crypto-init : : <file>__init__.py ;
+
 run-test crypto-test : crypto crypto-test.py ;
 
 install ../../../dist/lib/python/fost/ :
+        crypto-init
         crypto
     :
         <target-os>windows:<install-dependencies>on
-        <install-type>LIB
+        <install-type>LIB <install-type>PY
     ;
