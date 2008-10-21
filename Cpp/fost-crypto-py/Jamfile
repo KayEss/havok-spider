@@ -13,6 +13,6 @@ run-test crypto-test : crypto crypto-test.py ;
 install ../../../dist/lib/python/fost/ :
         crypto
     :
-        <install-dependencies>on
+        <target-os>windows:<install-dependencies>on
         <install-type>LIB
     ;
