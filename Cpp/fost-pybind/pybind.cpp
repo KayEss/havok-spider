@@ -10,7 +10,7 @@
 #include "settings.hpp"
 
 
-BOOST_PYTHON_MODULE( pybind ) {
+BOOST_PYTHON_MODULE( _pybind ) {
     using namespace boost::python;
 
     class_<settings>("settings", init<>() )

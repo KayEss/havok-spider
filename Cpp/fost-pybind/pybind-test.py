@@ -1,3 +1,3 @@
-import pybind
+import _pybind
 
-s = pybind.settings()
+s = _pybind.settings()
