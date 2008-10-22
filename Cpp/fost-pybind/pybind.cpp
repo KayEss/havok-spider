@@ -13,6 +13,8 @@
 BOOST_PYTHON_MODULE( pybind ) {
     using namespace boost::python;
 
+    class_<settings>("settings", init<>() )
+    ;
 
     implicitly_convertible< fostlib::native_string, fostlib::string >();
     to_python_converter< fostlib::string, fostlib::to_pystr, false >();

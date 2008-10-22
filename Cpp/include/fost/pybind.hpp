@@ -6,6 +6,10 @@
 */
 
 
+#ifndef FOST_PYBIND_HPP
+#define FOST_PYBIND_HPP
+
+
 #include <boost/python.hpp>
 #include <fost/core>
 
@@ -26,3 +30,5 @@ namespace fostlib {
 
 }
 
+
+#endif // FOST_PYBIND_HPP
