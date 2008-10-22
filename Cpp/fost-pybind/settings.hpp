@@ -11,8 +11,13 @@
 
 
 struct settings {
+    typedef fostlib::setting< fostlib::string > setting_t;
+    typedef boost::shared_ptr< setting_t > store_t;
+    std::list< store_t > database;
+
     settings();
 
     fostlib::string get( const fostlib::string &, const fostlib::string & );
+    void set( const fostlib::string &, const fostlib::string &, const fostlib::string & );
 };
 

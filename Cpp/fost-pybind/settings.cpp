@@ -14,5 +14,10 @@ settings::settings() {
 
 
 fostlib::string settings::get( const fostlib::string &d, const fostlib::string &n ) {
-    return fostlib::setting< fostlib::string >::value( d, n );
+    return setting_t::value( d, n );
+}
+
+
+void settings::set( const fostlib::string &d, const fostlib::string &n, const fostlib::string &v ) {
+    database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, v, false ) ) );
 }

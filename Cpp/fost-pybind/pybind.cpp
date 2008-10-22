@@ -15,6 +15,7 @@ BOOST_PYTHON_MODULE( _pybind ) {
 
     class_<settings>("settings", init<>() )
         .def( "get", &settings::get )
+        .def( "set", &settings::set )
     ;
 
     implicitly_convertible< fostlib::native_string, fostlib::string >();
