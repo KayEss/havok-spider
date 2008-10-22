@@ -12,3 +12,7 @@
 settings::settings() {
 }
 
+
+fostlib::string settings::get( const fostlib::string &d, const fostlib::string &n ) {
+    return fostlib::setting< fostlib::string >::value( d, n );
+}

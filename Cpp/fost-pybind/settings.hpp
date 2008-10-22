@@ -7,9 +7,12 @@
 
 
 #include <fost/pybind.hpp>
+#include <fost/settings.hpp>
 
 
 struct settings {
     settings();
+
+    fostlib::string get( const fostlib::string &, const fostlib::string & );
 };
 
