@@ -7,13 +7,12 @@
 
 
 #include <fost/pybind.hpp>
-#include <fost/crypto>
+#include "settings.hpp"
 
 
-BOOST_PYTHON_MODULE( _crypto ) {
+BOOST_PYTHON_MODULE( pybind ) {
     using namespace boost::python;
 
-    def( "sha1", fostlib::sha1 );
 
     implicitly_convertible< fostlib::native_string, fostlib::string >();
     to_python_converter< fostlib::string, fostlib::to_pystr, false >();

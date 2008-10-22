@@ -1,0 +1,21 @@
+
+python-extension pybind :
+        ../../../Boost//boost-python-dll
+        ../../../fost/Cpp/fost-core/
+        pybind.cpp
+        settings.cpp
+    :
+        <include>../include/
+    ;
+
+lib pybind-init : : <file>__init__.py ;
+
+run-test pybind-test : pybind pybind-test.py ;
+
+install ../../../dist/lib/python/fost/pybind/ :
+        pybind-init
+        pybind
+    :
+        <target-os>windows:<install-dependencies>on
+        <install-type>LIB <install-type>PY
+    ;

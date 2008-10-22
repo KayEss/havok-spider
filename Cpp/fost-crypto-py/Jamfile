@@ -1,20 +1,20 @@
 
-using python ;
-
-python-extension crypto :
+python-extension _crypto :
         ../../../Boost//boost-python-dll
         ../../../fost/Cpp/fost-core/
         ../../../fost/Cpp/fost-crypto/
         crypto.cpp
+    :
+        <include>../include/
     ;
 
 lib crypto-init : : <file>__init__.py ;
 
-run-test crypto-test : crypto crypto-test.py ;
+run-test crypto-test : _crypto crypto-test.py ;
 
-install ../../../dist/lib/python/fost/ :
+install ../../../dist/lib/python/fost/crypto/ :
         crypto-init
-        crypto
+        _crypto
     :
         <target-os>windows:<install-dependencies>on
         <install-type>LIB <install-type>PY
