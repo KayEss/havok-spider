@@ -8,12 +8,9 @@ python-extension _crypto :
         <include>../include/
     ;
 
-lib crypto-init : : <file>__init__.py ;
-
 run-test crypto-test : _crypto crypto-test.py ;
 
 install ../../../dist/lib/python/fost/crypto/ :
-        crypto-init
         _crypto
     :
         <target-os>windows:<install-dependencies>on

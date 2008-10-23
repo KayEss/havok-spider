@@ -34,3 +34,4 @@ rule run-test ( test-name : sources + )
 
 build-project Cpp/fost-pybind/ ;
 build-project Cpp/fost-crypto-py/ ;
+build-project Python/ ;

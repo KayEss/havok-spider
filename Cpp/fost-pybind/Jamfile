@@ -8,12 +8,9 @@ python-extension _pybind :
         <include>../include/
     ;
 
-lib pybind-init : : <file>__init__.py ;
-
 run-test pybind-test : _pybind pybind-test.py ;
 
 install ../../../dist/lib/python/fost/pybind/ :
-        pybind-init
         _pybind
     :
         <target-os>windows:<install-dependencies>on

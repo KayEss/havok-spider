@@ -1,0 +1,14 @@
+
+lib fost-pybind-py
+    :
+
+    ;
+
+install ../../dist/lib/python/fost
+    :
+        [ glob fost/*.py ]
+        [ glob fost/crypto/*.py ]
+        [ glob fost/pybind/*.py ]
+    :
+        <install-source-root>fost
+    ;
