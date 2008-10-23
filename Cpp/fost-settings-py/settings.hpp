@@ -8,15 +8,21 @@
 
 #include <fost/pybind.hpp>
 #include <fost/settings.hpp>
+#include <fost/cli>
+#include <fost/inifile.hpp>
 
 
 struct settings {
-    typedef fostlib::setting< fostlib::string > setting_t;
+    typedef fostlib::ini_file ini_settings_t;
+    typedef boost::shared_ptr< ini_settings_t > ini_store_t;
+    std::list< ini_store_t > ini_database;
+    typedef fostlib::setting< fostlib::json > setting_t;
     typedef boost::shared_ptr< setting_t > store_t;
     std::list< store_t > database;
 
     settings();
 
+    void file( const fostlib::string & );
     fostlib::string get( const fostlib::string &, const fostlib::string & );
     void set( const fostlib::string &, const fostlib::string &, const fostlib::string & );
 };

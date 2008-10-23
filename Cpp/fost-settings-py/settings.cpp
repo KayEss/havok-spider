@@ -9,15 +9,40 @@
 #include "settings.hpp"
 
 
+using namespace fostlib;
+
+
+namespace {
+
+
+#ifdef WIN32
+    const setting< string > s_machine_config( L"fost-settings-py", L"settings-py", L"Machine configuration", L"%WINDIR%\\fost.ini", true );
+#else
+    const setting< string > s_machine_config( L"fost-settings-py", L"settings-py", L"Machine configuration", L"/etc/fost.conf", true );
+#endif
+    const setting< bool > s_reload( L"fost-settings-py", L"settings-py", L"Reload machine configuration", true, true );
+
+}
+
+
 settings::settings() {
+    if ( s_reload.value() ) {
+        ini_database.push_back( ini_store_t( new ini_settings_t( s_machine_config.value() ) ) );
+        database.push_back( store_t( new setting_t( s_reload.domain(), s_reload.section(), s_reload.name(), true, false ) ) );
+    }
 }
 
 
-fostlib::string settings::get( const fostlib::string &d, const fostlib::string &n ) {
-    return setting_t::value( d, n );
+void settings::file( const string &location ) {
+    ini_database.push_back( ini_store_t( new ini_settings_t( location ) ) );
 }
 
 
-void settings::set( const fostlib::string &d, const fostlib::string &n, const fostlib::string &v ) {
+string settings::get( const string &d, const string &n ) {
+    return setting< string >::value( d, n );
+}
+
+
+void settings::set( const string &d, const string &n, const string &v ) {
     database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, v, false ) ) );
 }
