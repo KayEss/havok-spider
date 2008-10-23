@@ -1,1 +1,4 @@
-from _pybind import *
+import _settings
+
+def settings(_settings.settings):
+    pass

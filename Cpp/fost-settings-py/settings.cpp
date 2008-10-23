@@ -27,8 +27,8 @@ namespace {
 
 settings::settings() {
     if ( s_reload.value() ) {
-        ini_database.push_back( ini_store_t( new ini_settings_t( s_machine_config.value() ) ) );
         database.push_back( store_t( new setting_t( s_reload.domain(), s_reload.section(), s_reload.name(), true, false ) ) );
+        ini_database.push_back( ini_store_t( new ini_settings_t( s_machine_config.value() ) ) );
     }
 }
 
@@ -39,10 +39,10 @@ void settings::file( const string &location ) {
 
 
 string settings::get( const string &d, const string &n ) {
-    return setting< string >::value( d, n );
+    return json::unparse( setting< json >::value( d, n ) );
 }
 
 
 void settings::set( const string &d, const string &n, const string &v ) {
-    database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, v, false ) ) );
+    database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, json::parse( v, json( v ) ), false ) ) );
 }
