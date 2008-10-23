@@ -8,7 +8,7 @@ install ../../dist/lib/python/fost
     :
         [ glob fost/*.py ]
         [ glob fost/crypto/*.py ]
-        [ glob fost/pybind/*.py ]
+        [ glob fost/settings/*.py ]
     :
         <install-source-root>fost
     ;

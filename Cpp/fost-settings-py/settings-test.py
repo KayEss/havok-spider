@@ -1,7 +1,7 @@
-import _pybind
+import _settings
 
 def test():
-    s = _pybind.settings()
+    s = _settings.settings()
     print s.get("Exception", "Format")
     assert s.get("Exception", "Format") == "None"
 
@@ -9,5 +9,5 @@ def test():
     assert s.get("Exception", "Format") == "HTML"
 
 test()
-n = _pybind.settings()
+n = _settings.settings()
 assert n.get("Exception", "Format") == "None"

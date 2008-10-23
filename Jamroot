@@ -32,6 +32,6 @@ rule run-test ( test-name : sources + )
     testing.make-test run-pyd : $(sources) : : $(test-name) ;
 }
 
-build-project Cpp/fost-pybind/ ;
 build-project Cpp/fost-crypto-py/ ;
+build-project Cpp/fost-settings-py/ ;
 build-project Python/ ;
