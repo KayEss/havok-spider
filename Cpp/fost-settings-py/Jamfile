@@ -11,7 +11,7 @@ python-extension _settings :
 
 run-test pybind-test : _settings settings-test.py ;
 
-install ../../../dist/lib/python/Fost/settings/ :
+install ../../../lib/python2.5/site-packages/Fost/settings/ :
         _settings
     :
         <target-os>windows:<install-dependencies>on

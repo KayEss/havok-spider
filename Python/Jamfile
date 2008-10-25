@@ -1,5 +1,5 @@
 
-install ../../dist/lib/python/Fost
+install ../../dist/lib/python2.5/site-packages/Fost
     :
         [ glob Fost/*.py ]
         [ glob Fost/crypto/*.py ]
@@ -8,7 +8,7 @@ install ../../dist/lib/python/Fost
         <install-source-root>Fost
     ;
 
-install ../../dist/bin
+install ../../dist/lib
     :
         ../../Boost//boost-python-dll
     ;
