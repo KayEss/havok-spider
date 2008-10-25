@@ -1,0 +1,3 @@
+.
+Provides the Fost Python bindings. This includes:
+    * A JSON based settings database.
