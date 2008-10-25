@@ -5,13 +5,13 @@ then {
     rm -rf ../../dist
 }
 fi
-cd ../..
-if ./build release
+cd ..
+if bjam -j`grep ^processor /proc/cpuinfo | wc -l` --toolset=gcc --preserve-test-targets release
 then {
-    cd fost-py/debian
+    cd debian
     echo Starting package build
 } else {
-    cd fost-py/debian
+    cd debian
     exit 1
 }
 fi
@@ -42,7 +42,7 @@ echo Version: $FOST_PY_VERSION-1>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Section: python>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Priority: optional>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Architecture: $FOST_PY_ARCH>>$FOST_PY_PACKAGE/DEBIAN/control
-echo Depends: libc6, python \(=2.5\) >>$FOST_PY_PACKAGE/DEBIAN/control
+echo Depends: libc6, python \(\>=2.5.2-0ubuntu1\) >>$FOST_PY_PACKAGE/DEBIAN/control
 echo Maintainer: Kirit Saelensminde \<kirit@felspar.com\> >>$FOST_PY_PACKAGE/DEBIAN/control
 echo Description: Fost Python bindings>>$FOST_PY_PACKAGE/DEBIAN/control
 #cat description.txt >>$FOST_PY_PACKAGE/DEBIAN/control

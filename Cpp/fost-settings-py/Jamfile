@@ -11,6 +11,13 @@ python-extension _settings :
 
 run-test pybind-test : _settings settings-test.py ;
 
+install ../../../dist/lib :
+        _settings
+    :
+        <install-type>LIB
+        <install-dependencies>on
+    ;
+
 install ../../../dist/lib/python2.5/site-packages/Fost/settings/ :
         _settings
     :
