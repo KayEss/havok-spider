@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if test -e django
+then {
+    svn up django
+} else {
+    svn co http://code.djangoproject.com/svn/django/trunk/django django
+}
+fi
