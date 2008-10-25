@@ -7,3 +7,8 @@ install ../../dist/lib/python/Fost
     :
         <install-source-root>Fost
     ;
+
+install ../../dist/bin
+    :
+        ../../Boost//boost-python-dll
+    ;
