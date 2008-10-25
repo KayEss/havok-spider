@@ -49,10 +49,9 @@ echo Version: $FOST_PY_VERSION-1>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Section: python>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Priority: optional>>$FOST_PY_PACKAGE/DEBIAN/control
 echo Architecture: $FOST_PY_ARCH>>$FOST_PY_PACKAGE/DEBIAN/control
-echo Depends: libc6, python \(\>=2.5.2-0ubuntu1\) >>$FOST_PY_PACKAGE/DEBIAN/control
+echo Depends: libc6, python \(\>=2.5.2-0ubuntu1\), openssl \(\>=0.9.8g\) >>$FOST_PY_PACKAGE/DEBIAN/control
 echo Maintainer: Kirit Saelensminde \<kirit@felspar.com\> >>$FOST_PY_PACKAGE/DEBIAN/control
-echo Description: Fost Python bindings>>$FOST_PY_PACKAGE/DEBIAN/control
-#cat description.txt >>$FOST_PY_PACKAGE/DEBIAN/control
+cat description.txt >>$FOST_PY_PACKAGE/DEBIAN/control
 
 #echo ldconfig>$FOST_PY_PACKAGE/DEBIAN/postinst
 #chmod +x $FOST_PY_PACKAGE/DEBIAN/postinst
