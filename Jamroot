@@ -37,11 +37,9 @@ build-project Cpp/fost-settings-py/ ;
 build-project Python/ ;
 
 import path ;
-ECHO [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ] ;
-
-install ../../dist/lib/python2.5/site-packages/Fost
+install ../dist/lib/python2.5/site-packages/Fost
     :
         [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
     :
-        <install-source-root>Fost
+        <install-source-root>Python/Fost
     ;
