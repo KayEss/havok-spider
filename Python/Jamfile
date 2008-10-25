@@ -1,13 +1,4 @@
 
-install ../../dist/lib/python2.5/site-packages/Fost
-    :
-        [ glob Fost/*.py ]
-        [ glob Fost/crypto/*.py ]
-        [ glob Fost/settings/*.py ]
-    :
-        <install-source-root>Fost
-    ;
-
 install ../../dist/lib
     :
         ../../Boost//boost-python-dll

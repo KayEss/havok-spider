@@ -35,3 +35,13 @@ rule run-test ( test-name : sources + )
 build-project Cpp/fost-crypto-py/ ;
 build-project Cpp/fost-settings-py/ ;
 build-project Python/ ;
+
+import path ;
+ECHO [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ] ;
+
+install ../../dist/lib/python2.5/site-packages/Fost
+    :
+        [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
+    :
+        <install-source-root>Fost
+    ;
