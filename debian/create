@@ -17,10 +17,11 @@ then {
 fi
 
 export FOST_PY_VERSION=0.`svn log .. --limit 1 | grep -o 'r[0-9]*' | grep -o '[0-9]*'`
-export FOST_PY_ARCH=`uname -m`
-if test x86_64 = $FOST_PY_ARCH
+if test x86_64 = `uname -m`
 then {
     export FOST_PY_ARCH=amd64
+} else {
+    export FOST_PY_ARCH=i386
 }
 fi
 export FOST_PY_PACKAGE=fost-py_$FOST_PY_VERSION-1_$FOST_PY_ARCH
