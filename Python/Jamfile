@@ -1,9 +1,9 @@
 
-install ../../dist/lib/python/fost
+install ../../dist/lib/python/Fost
     :
-        [ glob fost/*.py ]
-        [ glob fost/crypto/*.py ]
-        [ glob fost/settings/*.py ]
+        [ glob Fost/*.py ]
+        [ glob Fost/crypto/*.py ]
+        [ glob Fost/settings/*.py ]
     :
-        <install-source-root>fost
+        <install-source-root>Fost
     ;

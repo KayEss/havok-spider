@@ -10,7 +10,7 @@ python-extension _crypto :
 
 run-test crypto-test : _crypto crypto-test.py ;
 
-install ../../../dist/lib/python/fost/crypto/ :
+install ../../../dist/lib/python/Fost/crypto/ :
         _crypto
     :
         <target-os>windows:<install-dependencies>on
