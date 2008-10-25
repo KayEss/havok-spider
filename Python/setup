@@ -1,0 +1,26 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../dist/lib
+
+cd ..
+if bjam -j`grep -c ^processor /proc/cpuinfo` --toolset=gcc --preserve-test-targets debug
+then {
+    cd Python
+} else {
+    cd Python
+    exit 1
+}
+fi
+
+rm -f Fost/crypto/_crypto.so
+ln -s ../../../../dist/lib/python2.5/site-packages/Fost/crypto/_crypto.so Fost/crypto/_crypto.so
+rm -f Fost/settings/_settings.so
+ln -s ../../../../dist/lib/python2.5/site-packages/Fost/settings/_settings.so Fost/settings/_settings.so
+
+if test -e django
+then {
+    svn up django
+} else {
+    svn co http://code.djangoproject.com/svn/django/trunk/django django
+}
+fi
