@@ -12,6 +12,7 @@
 
 #include <boost/python.hpp>
 #include <fost/core>
+#include <fost/exception/out_of_range.hpp>
 
 
 namespace fostlib {
@@ -24,6 +25,27 @@ namespace fostlib {
         }
         static PyTypeObject const* get_pytype() {
             return &PyUnicode_Type;
+        }
+    };
+
+    struct from_pystr {
+        static void *convertible( PyObject *unicode ) {
+            return unicode;
+        }
+
+        static void construct( PyObject *unicode, boost::python::converter::rvalue_from_python_stage1_data *data ) {
+            std::size_t len( PyUnicode_GetSize( unicode ) );
+            boost::scoped_array< wchar_t > ustr( new wchar_t[ len + 1 ] );
+            if ( int c = PyUnicode_AsWideChar( reinterpret_cast< PyUnicodeObject* >( unicode ), ustr.get(), len ) != len )
+                throw fostlib::exceptions::out_of_range< int >( L"Could not get all of the Python string", 0, len, c );
+            ustr[ len ] = 0;
+            void *storage = reinterpret_cast<
+                boost::python::converter::rvalue_from_python_storage<
+                    fostlib::string
+                >*
+            >( data )->storage.bytes;
+            new (storage) fostlib::string( ustr.get() );
+            data->convertible = storage;
         }
     };
 
