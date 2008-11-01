@@ -34,15 +34,16 @@ fi
 
 mkdir $FOST_PY_PACKAGE
 mkdir $FOST_PY_PACKAGE/DEBIAN
-cp -r ../../dist/ $FOST_PY_PACKAGE/usr
-chmod -R a-x $FOST_PY_PACKAGE/usr/lib/*.so
-chmod a-x $FOST_PY_PACKAGE/usr/lib/*.0
-rm $FOST_PY_PACKAGE/usr/lib/_*.so
-mkdir $FOST_PY_PACKAGE/usr/share
-mkdir $FOST_PY_PACKAGE/usr/share/doc
-mkdir $FOST_PY_PACKAGE/usr/share/doc/fost-py
-echo Copyright 1995-2008 Felspar Co Ltd>$FOST_PY_PACKAGE/usr/share/doc/fost-py/copyright
-cat ../LICENSE_1_0.txt >> $FOST_PY_PACKAGE/usr/share/doc/fost-py/copyright
+mkdir $FOST_PY_PACKAGE/usr
+cp -r ../../dist/ $FOST_PY_PACKAGE/usr/local
+chmod -R a-x $FOST_PY_PACKAGE/usr/local/lib/*.so
+chmod a-x $FOST_PY_PACKAGE/usr/local/lib/*.0
+rm $FOST_PY_PACKAGE/usr/local/lib/_*.so
+mkdir $FOST_PY_PACKAGE/usr/local/share
+mkdir $FOST_PY_PACKAGE/usr/local/share/doc
+mkdir $FOST_PY_PACKAGE/usr/local/share/doc/fost-py
+echo Copyright 1995-2008 Felspar Co Ltd>$FOST_PY_PACKAGE/usr/local/share/doc/fost-py/copyright
+cat ../LICENSE_1_0.txt >> $FOST_PY_PACKAGE/usr/local/share/doc/fost-py/copyright
 
 echo Package: fost-py>$FOST_PY_PACKAGE/DEBIAN/control
 echo Version: $FOST_PY_VERSION-1>>$FOST_PY_PACKAGE/DEBIAN/control
@@ -57,7 +58,7 @@ cat description.txt >>$FOST_PY_PACKAGE/DEBIAN/control
 #chmod +x $FOST_PY_PACKAGE/DEBIAN/postinst
 
 fakeroot dpkg-deb --build $FOST_PY_PACKAGE
-lintian $FOST_PY_PACKAGE.deb
+#lintian $FOST_PY_PACKAGE.deb
 mv -f $FOST_PY_PACKAGE.deb ../../dist
 
-rm -rf $FOST_PY_PACKAGE
+#rm -rf $FOST_PY_PACKAGE
