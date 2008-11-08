@@ -1,8 +1,8 @@
 
 python-extension _settings :
         ../../../Boost//boost-python-dll
-        ../../../fost/Cpp/fost-core/
-        ../../../fost/Cpp/fost-cli/
+        ../../../fost-base/Cpp/fost-core/
+        ../../../fost-base/Cpp/fost-cli/
         settings.cpp
         python.cpp
     :
