@@ -4,7 +4,7 @@ using python ;
 project
     :
         requirements
-        <include>../Boost/install/include/boost-1_36/
+        <include>$(BOOST_HEADERS)
         <include>../OpenSSL/install/include/
         <include>../fost-base/Cpp/include/
         <threading>multi

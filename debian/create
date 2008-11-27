@@ -6,7 +6,7 @@ then {
 }
 fi
 cd ..
-if bjam -j`grep ^processor /proc/cpuinfo | wc -l` --toolset=gcc --preserve-test-targets release
+if ../bjam -j`grep ^processor /proc/cpuinfo | wc -l` --toolset=gcc --preserve-test-targets release
 then {
     cd debian
     echo Starting package build
