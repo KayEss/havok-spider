@@ -1,3 +1,5 @@
+path-constant TOP : . ;
+include $(TOP)/../boost-version.jam ;
 
 using python ;
 
