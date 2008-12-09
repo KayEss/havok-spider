@@ -34,15 +34,16 @@ namespace fostlib {
         }
 
         static void construct( PyObject *unicode, boost::python::converter::rvalue_from_python_stage1_data *data ) {
-            std::size_t len( PyUnicode_GetSize( unicode ) );
+            int len( PyUnicode_GetSize( unicode ) ); // The Python API returns an int here :(
+            if ( len < 0 )
+                throw fostlib::exceptions::out_of_range< int >( L"Unicode length is not valid", 0, std::numeric_limits< int >::max(), len );
             boost::scoped_array< wchar_t > ustr( new wchar_t[ len + 1 ] );
             if ( int c = PyUnicode_AsWideChar( reinterpret_cast< PyUnicodeObject* >( unicode ), ustr.get(), len ) != len )
-                throw fostlib::exceptions::out_of_range< int >( L"Could not get all of the Python string", 0, len, c );
+                throw fostlib::exceptions::out_of_range< int >( L"Could not get all of the Python string", len, len, c );
             ustr[ len ] = 0;
+            // These lines look bad, but is apparently the way to do it
             void *storage = reinterpret_cast<
-                boost::python::converter::rvalue_from_python_storage<
-                    fostlib::string
-                >*
+                boost::python::converter::rvalue_from_python_storage< fostlib::string >*
             >( data )->storage.bytes;
             new (storage) fostlib::string( ustr.get() );
             data->convertible = storage;
