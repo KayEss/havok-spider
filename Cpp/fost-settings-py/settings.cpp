@@ -39,7 +39,7 @@ void settings::file( const string &location ) {
 
 
 string settings::get( const string &d, const string &n ) {
-    return json::unparse( setting< json >::value( d, n ) );
+    return json::unparse( setting< json >::value( d, n ), false );
 }
 
 
