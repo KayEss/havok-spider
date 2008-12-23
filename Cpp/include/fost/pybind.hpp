@@ -51,6 +51,21 @@ namespace fostlib {
     };
 
 
+    /*
+        Call this inside the BOOST_PYTHON_MODULE function to enable fostlib::string handling
+    */
+    inline void string_registration() {
+        using namespace boost::python;
+
+        implicitly_convertible< fostlib::native_string, fostlib::string >();
+        boost::python::converter::registry::push_back(
+            fostlib::from_pystr::convertible, fostlib::from_pystr::construct,
+            boost::python::type_id< fostlib::string >()
+        );
+        to_python_converter< fostlib::string, fostlib::to_pystr, false >();
+    }
+
+
 }
 
 
