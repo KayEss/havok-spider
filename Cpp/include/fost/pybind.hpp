@@ -57,12 +57,12 @@ namespace fostlib {
     inline void string_registration() {
         using namespace boost::python;
 
-        implicitly_convertible< fostlib::native_string, fostlib::string >();
-        boost::python::converter::registry::push_back(
-            fostlib::from_pystr::convertible, fostlib::from_pystr::construct,
-            boost::python::type_id< fostlib::string >()
+        implicitly_convertible< native_string, string >();
+        converter::registry::push_back(
+            from_pystr::convertible, from_pystr::construct,
+            type_id< string >()
         );
-        to_python_converter< fostlib::string, fostlib::to_pystr, false >();
+        to_python_converter< string, to_pystr, false >();
     }
 
 
