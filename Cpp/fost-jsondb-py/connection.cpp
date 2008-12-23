@@ -8,3 +8,11 @@
 
 #include "connection.hpp"
 
+
+using namespace fostlib;
+
+
+dataconnection::dataconnection( const string &config )
+: connection( json::parse( config ) ) {
+}
+

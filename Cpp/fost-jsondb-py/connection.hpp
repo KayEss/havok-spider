@@ -6,4 +6,12 @@
 */
 
 
+#include <fost/db>
 
+
+class dataconnection : boost::noncopyable {
+    fostlib::dbconnection connection;
+    boost::scoped_ptr< fostlib::dbtransaction > transation;
+public:
+    dataconnection( const fostlib::string &config );
+};
