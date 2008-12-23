@@ -35,6 +35,7 @@ rule run-test ( test-name : sources + )
 }
 
 build-project Cpp/fost-crypto-py/ ;
+build-project Cpp/fost-jsondb-py/ ;
 build-project Cpp/fost-settings-py/ ;
 build-project Python/ ;
 

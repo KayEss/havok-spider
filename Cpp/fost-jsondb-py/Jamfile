@@ -1,0 +1,23 @@
+
+python-extension _jsondb :
+        ../../../Boost//boost-python-dll
+        ../../../fost-base/Cpp/fost-core/
+        jsondb.cpp
+    :
+        <include>../include/
+    ;
+
+# run-test crypto-test : _jsondb crypto-test.py ;
+
+install ../../../dist/lib :
+        _jsondb
+    :
+        <install-type>LIB
+        <install-dependencies>on
+    ;
+
+install ../../../dist/lib/python2.5/site-packages/Fost/jsondb/ :
+        _jsondb
+    :
+        <install-type>LIB
+    ;
