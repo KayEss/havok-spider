@@ -2,6 +2,7 @@
 python-extension _jsondb :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
+        connection.cpp
         jsondb.cpp
     :
         <include>../include/
