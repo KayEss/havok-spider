@@ -1,1 +1,1 @@
-../bjam toolset=gcc --preserve-test-targets
+../bjam toolset=gcc --preserve-test-targets $*

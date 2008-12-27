@@ -41,7 +41,7 @@ void from_python::construct( PyObject *object, bp::converter::rvalue_from_python
     void *storage = reinterpret_cast<
         boost::python::converter::rvalue_from_python_storage< json >*
     >( data )->storage.bytes;
-    new (storage) json( to_json( bp::object( bp::handle<>( object ) ) ) );
+    new (storage) json( to_json( bp::object( bp::handle<>( bp::borrowed( object ) ) ) ) );
     data->convertible = storage;
 }
 json from_python::to_json( bp::object o ) {
