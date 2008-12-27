@@ -8,6 +8,12 @@
 
 #include <fost/jsondb>
 
+using namespace fostlib;
 
-class jsonblob : boost::noncopyable {
+
+struct jsonblob {
+    jsonblob(
+        const fostlib::nullable< fostlib::string > &filename = fostlib::null,
+        const fostlib::nullable< fostlib::string > &initial = fostlib::null
+    );
 };

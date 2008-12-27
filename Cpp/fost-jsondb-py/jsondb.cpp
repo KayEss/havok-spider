@@ -11,8 +11,16 @@
 #include "jsonblob.hpp"
 
 
+using namespace fostlib;
+
+
 BOOST_PYTHON_MODULE( _jsondb ) {
     using namespace boost::python;
+
+    class_< jsonblob >( "jsonblob", init<>() )
+        .def( init< nullable< string > >() )
+        .def( init< nullable< string >, nullable< string > >() )
+    ;
 
     fostlib::string_registration();
 }
