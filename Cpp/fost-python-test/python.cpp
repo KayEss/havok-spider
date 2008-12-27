@@ -15,11 +15,18 @@ using namespace fostlib;
 string annotate( const string &s ) {
     return L"Passed in '" + s + L"'";
 }
-
+nullable< string > getnull() {
+    return null;
+}
+bool isnone( const nullable< string > &s ) {
+    return s.isnull();
+}
 
 BOOST_PYTHON_MODULE( _test ) {
     using namespace boost::python;
     fostlib::string_registration();
 
     def( "annotate", annotate );
+    def( "getnull", getnull );
+    def( "isnone", isnone );
 }
