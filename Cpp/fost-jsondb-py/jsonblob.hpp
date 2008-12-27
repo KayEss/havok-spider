@@ -6,13 +6,8 @@
 */
 
 
-#include <fost/pybind.hpp>
-#include "connection.hpp"
-#include "jsonblob.hpp"
+#include <fost/jsondb>
 
 
-BOOST_PYTHON_MODULE( _jsondb ) {
-    using namespace boost::python;
-
-    fostlib::string_registration();
-}
+class jsonblob : boost::noncopyable {
+};
