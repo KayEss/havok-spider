@@ -12,8 +12,7 @@
 
 BOOST_PYTHON_MODULE( _crypto ) {
     using namespace boost::python;
+    fostlib::python_string_registration();
 
     def( "sha1", fostlib::sha1 );
-
-    fostlib::string_registration();
 }

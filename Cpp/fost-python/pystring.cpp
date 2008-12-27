@@ -34,7 +34,7 @@ namespace fostlib {
 using namespace fostlib;
 
 
-void fostlib::string_registration() {
+void fostlib::python_string_registration() {
     using namespace boost::python;
 
     converter::registry::push_back(

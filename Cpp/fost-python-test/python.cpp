@@ -24,7 +24,7 @@ bool isnone( const nullable< string > &s ) {
 
 BOOST_PYTHON_MODULE( _test ) {
     using namespace boost::python;
-    fostlib::string_registration();
+    fostlib::python_string_registration();
 
     def( "annotate", annotate );
     def( "getnull", getnull );

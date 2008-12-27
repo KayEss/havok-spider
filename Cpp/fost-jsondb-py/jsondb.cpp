@@ -16,7 +16,7 @@ using namespace fostlib;
 
 BOOST_PYTHON_MODULE( _jsondb ) {
     using namespace boost::python;
-    fostlib::string_registration();
+    fostlib::python_string_registration();
 
     class_< jsondb, std::auto_ptr< jsondb >, boost::noncopyable >( "jsonblob", init<>() )
         .def( init< string >() )

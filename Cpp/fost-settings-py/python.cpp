@@ -12,12 +12,11 @@
 
 BOOST_PYTHON_MODULE( _settings ) {
     using namespace boost::python;
+    fostlib::python_string_registration();
 
     class_<settings>("settings", init<>() )
         .def( "file", &settings::file )
         .def( "get", &settings::get )
         .def( "set", &settings::set )
     ;
-
-    fostlib::string_registration();
 }
