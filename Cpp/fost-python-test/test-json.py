@@ -1,12 +1,16 @@
-import _test
+import _test, sys
 
-def do_test(value, expected):
+def to_json(value, expected):
+    print value, expected
+    sys.stdout.flush()
     assert _test.tojson(value) == "%s\n" % expected, _test.tojson(value)
 
-do_test(None, "null")
-do_test(True, "true")
-do_test(False, "false")
-do_test(0, "0")
-do_test(123, "123")
-do_test(123.45, "123.45")
-do_test('some string', '"some string"')
+to_json(None, "null")
+to_json(True, "true")
+to_json(False, "false")
+to_json(0, "0")
+to_json(123, "123")
+to_json(123.45, "123.45")
+to_json('some string', '"some string"')
+to_json("""some string\twith a tab""", '"some string\\twith a tab"')
+

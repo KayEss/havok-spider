@@ -55,9 +55,8 @@ json from_python::to_json( bp::object o ) {
         return json( bp::extract< int64_t >( o ) );
     else if ( bp::extract< double >( o ).check() )
         return json( bp::extract< double >( o ) );
-    /*else if ( bp::extract< string >( o ).check() ) {
-        string s = bp::extract< string >( o );
-        return json( L"some string" );
-    }*/ else
+    else if ( bp::extract< string >( o ).check() )
+        return json( bp::extract< string >( o )() );
+    else
         throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
 }
