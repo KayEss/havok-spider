@@ -18,10 +18,10 @@ BOOST_PYTHON_MODULE( _jsondb ) {
     using namespace boost::python;
     fostlib::string_registration();
 
-    class_< jsonblob >( "jsonblob", init<>() )
+    class_< jsondb, std::auto_ptr< jsondb >, boost::noncopyable >( "jsonblob", init<>() )
         .def( init< string >() )
-        .def( init< string, string >() )
+        //.def( init< string, string >() )
 
-        .add_property("filename", &jsonblob::filename_)
+        .add_property("filename", filename)
     ;
 }

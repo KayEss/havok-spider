@@ -8,14 +8,7 @@
 
 #include <fost/jsondb>
 
-using namespace fostlib;
 
+std::auto_ptr< fostlib::jsondb > make_jsondb();
 
-struct jsonblob {
-    jsonblob();
-    jsonblob( const fostlib::string &filename );
-    jsonblob( const fostlib::string &filename, const fostlib::string &initial );
-
-    nullable< string > filename;
-    nullable< string > filename_() const { return filename; }
-};
+fostlib::nullable< fostlib::string > filename( const fostlib::jsondb &db );
