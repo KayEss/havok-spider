@@ -2,7 +2,7 @@
 lib fost-python :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
-        pybind.cpp
+        pystring.cpp
     :
         <include>../include/
         <use>/python//python_for_extensions

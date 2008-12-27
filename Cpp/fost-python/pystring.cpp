@@ -7,7 +7,7 @@
 
 
 #include "fost-python.hpp"
-#include <fost/pybind.hpp>
+#include <fost/pystring.hpp>
 
 
 namespace fostlib {
