@@ -1,6 +1,8 @@
 
 python-extension _jsondb :
+        ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-python-dll
+        ../../../Boost//boost-thread-dll
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-base/Cpp/fost-jsondb/
         ../../../fost-base/Cpp/fost-schema/
