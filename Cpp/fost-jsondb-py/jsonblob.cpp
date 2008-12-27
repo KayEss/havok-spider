@@ -12,10 +12,6 @@
 using namespace fostlib;
 
 
-std::auto_ptr< jsondb > make_jsondb() {
-    return std::auto_ptr< jsondb >( new jsondb );
-}
-
 nullable< string > filename( const jsondb &db ) {
     return db.filename();
 }

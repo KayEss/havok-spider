@@ -9,6 +9,4 @@
 #include <fost/jsondb>
 
 
-std::auto_ptr< fostlib::jsondb > make_jsondb();
-
 fostlib::nullable< fostlib::string > filename( const fostlib::jsondb &db );
