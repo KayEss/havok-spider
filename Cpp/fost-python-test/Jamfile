@@ -1,0 +1,10 @@
+
+python-extension _test :
+        ../../../Boost//boost-python-dll
+        ../../../fost-base/Cpp/fost-core/
+        python.cpp
+    :
+        <include>../include/
+    ;
+
+run-test python-test : _test python-test.py ;

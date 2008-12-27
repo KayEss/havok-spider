@@ -34,6 +34,7 @@ rule run-test ( test-name : sources + )
     testing.make-test run-pyd : $(sources) : : $(test-name) ;
 }
 
+build-project Cpp/fost-python-test/ ;
 build-project Cpp/fost-crypto-py/ ;
 build-project Cpp/fost-jsondb-py/ ;
 build-project Cpp/fost-settings-py/ ;
