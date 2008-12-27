@@ -13,4 +13,4 @@ to_json(123, "123")
 to_json(123.45, "123.45")
 to_json('some string', '"some string"')
 to_json("""some string\twith a tab""", '"some string\\twith a tab"')
-
+to_json([], "[\n]")
