@@ -2,6 +2,7 @@
 lib fost-python :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
+        pyjson.cpp
         pystring.cpp
     :
         <include>../include/

@@ -25,7 +25,7 @@ namespace fostlib {
     /*
         Call this inside the BOOST_PYTHON_MODULE function to enable fostlib::json handling
     */
-    //FOST_PYTHON_DECLSPEC void python_json_registration();
+    FOST_PYTHON_DECLSPEC void python_json_registration();
 
 
 }
