@@ -1,5 +1,12 @@
 import _test
 
-assert _test.tojson(None) == "null\n", _test.tojson(None)
-assert _test.tojson(True) == "true\n", _test.tojson(True)
-assert _test.tojson(False) == "false\n", _test.tojson(False)
+def do_test(value, expected):
+    assert _test.tojson(value) == "%s\n" % expected, _test.tojson(value)
+
+do_test(None, "null")
+do_test(True, "true")
+do_test(False, "false")
+do_test(0, "0")
+do_test(123, "123")
+do_test(123.45, "123.45")
+do_test('some string', '"some string"')

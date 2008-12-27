@@ -41,17 +41,23 @@ void from_python::construct( PyObject *object, bp::converter::rvalue_from_python
     void *storage = reinterpret_cast<
         boost::python::converter::rvalue_from_python_storage< json >*
     >( data )->storage.bytes;
-    if ( object == Py_None )
-        new (storage) json();
-    else {
-        bp::handle<> h(object);
-        new (storage) json( to_json( bp::object( h ) ) );
-    }
+    new (storage) json( to_json( bp::object( bp::handle<>( object ) ) ) );
     data->convertible = storage;
 }
 json from_python::to_json( bp::object o ) {
-    if ( bp::extract< bool >( o ).check() )
-        return json( bp::extract< bool >( o )() );
-    else
+    if ( o.ptr() == Py_None )
+        return json();
+    else if ( o.ptr() == Py_False )
+        return json( false );
+    else if ( o.ptr() == Py_True )
+        return json( true );
+    else if ( bp::extract< int64_t >( o ).check() )
+        return json( bp::extract< int64_t >( o ) );
+    else if ( bp::extract< double >( o ).check() )
+        return json( bp::extract< double >( o ) );
+    /*else if ( bp::extract< string >( o ).check() ) {
+        string s = bp::extract< string >( o );
+        return json( L"some string" );
+    }*/ else
         throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
 }
