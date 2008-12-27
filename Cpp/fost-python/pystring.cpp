@@ -10,28 +10,28 @@
 #include <fost/pybind.hpp>
 
 
-namespace fostlib {
-    struct FOST_PYTHON_DECLSPEC to_pystr {
+using namespace fostlib;
+
+
+namespace {
+    struct to_pystr {
         static PyObject *convert( const string &s );
         static PyTypeObject const* get_pytype();
     };
-    struct FOST_PYTHON_DECLSPEC to_nullable_pystr {
+    struct to_nullable_pystr {
         static PyObject *convert( const nullable< string > &s );
         static PyTypeObject const* get_pytype();
     };
 
-    struct FOST_PYTHON_DECLSPEC from_pystr {
+    struct from_pystr {
         static void *convertible( PyObject *object );
         static void construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data );
     };
-    struct FOST_PYTHON_DECLSPEC from_nullable_pystr {
+    struct from_nullable_pystr {
         static void *convertible( PyObject *object );
         static void construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data );
     };
 }
-
-
-using namespace fostlib;
 
 
 void fostlib::python_string_registration() {
@@ -54,22 +54,22 @@ void fostlib::python_string_registration() {
     fostlib::string
 */
 
-PyObject *fostlib::to_pystr::convert( const string &s ) {
+PyObject *to_pystr::convert( const string &s ) {
     std::wstring u( coerce< std::wstring >( s ) );
     return PyUnicode_FromWideChar( u.c_str(), u.length() );
 }
-PyTypeObject const *fostlib::to_pystr::get_pytype() {
+PyTypeObject const *to_pystr::get_pytype() {
     return &PyUnicode_Type;
 }
 
-void *fostlib::from_pystr::convertible( PyObject *object ) {
+void *from_pystr::convertible( PyObject *object ) {
     boost::python::handle<> unicode( PyUnicode_FromObject( object ) );
     if ( unicode )
         return object;
     else
         return NULL;
 }
-void fostlib::from_pystr::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data ) {
+void from_pystr::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data ) {
     boost::python::handle<> unicode( PyUnicode_FromObject( object ) );
     int len( PyUnicode_GetSize( unicode.get() ) );
     if ( len < 0 )
@@ -92,7 +92,7 @@ void fostlib::from_pystr::construct( PyObject *object, boost::python::converter:
 */
 
 
-PyObject *fostlib::to_nullable_pystr::convert( const nullable< string > &s ) {
+PyObject *to_nullable_pystr::convert( const nullable< string > &s ) {
     if ( s.isnull() )
         Py_RETURN_NONE;
     else {
@@ -100,11 +100,11 @@ PyObject *fostlib::to_nullable_pystr::convert( const nullable< string > &s ) {
         return PyUnicode_FromWideChar( u.c_str(), u.length() );
     }
 }
-PyTypeObject const *fostlib::to_nullable_pystr::get_pytype() {
+PyTypeObject const *to_nullable_pystr::get_pytype() {
     return &PyUnicode_Type;
 }
 
-void *fostlib::from_nullable_pystr::convertible( PyObject *object ) {
+void *from_nullable_pystr::convertible( PyObject *object ) {
     if ( object == Py_None )
         return object;
     else {
@@ -115,7 +115,7 @@ void *fostlib::from_nullable_pystr::convertible( PyObject *object ) {
             return NULL;
     }
 }
-void fostlib::from_nullable_pystr::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data ) {
+void from_nullable_pystr::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data ) {
     void *storage = reinterpret_cast<
         boost::python::converter::rvalue_from_python_storage< nullable< string > >*
     >( data )->storage.bytes;
