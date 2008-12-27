@@ -12,8 +12,11 @@
 using namespace fostlib;
 
 
-jsonblob::jsonblob(
-    const nullable< string > &filename,
-    const nullable< string > &initial
-) : filename( filename.value( string() ) ) {
+jsonblob::jsonblob() {
+}
+jsonblob::jsonblob( const string &filename )
+: filename( filename ) {
+}
+jsonblob::jsonblob( const string &filename, const string &json )
+: filename( filename ) {
 }

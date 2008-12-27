@@ -19,8 +19,8 @@ BOOST_PYTHON_MODULE( _jsondb ) {
     fostlib::string_registration();
 
     class_< jsonblob >( "jsonblob", init<>() )
-        .def( init< nullable< string > >() )
-        .def( init< nullable< string >, nullable< string > >() )
+        .def( init< string >() )
+        .def( init< string, string >() )
 
         .add_property("filename", &jsonblob::filename_)
     ;

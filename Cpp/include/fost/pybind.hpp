@@ -29,8 +29,12 @@ namespace fostlib {
     };
     struct to_nullable_pystr {
         static PyObject *convert( const nullable< string > &s ) {
-            std::wstring u( coerce< std::wstring >( s.value() ) );
-            return PyUnicode_FromWideChar( u.c_str(), u.length() );
+            if ( s.isnull() )
+                Py_RETURN_NONE;
+            else {
+                std::wstring u( coerce< std::wstring >( s.value() ) );
+                return PyUnicode_FromWideChar( u.c_str(), u.length() );
+            }
         }
         static PyTypeObject const* get_pytype() {
             return &PyUnicode_Type;

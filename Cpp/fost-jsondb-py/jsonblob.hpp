@@ -12,10 +12,9 @@ using namespace fostlib;
 
 
 struct jsonblob {
-    jsonblob(
-        const fostlib::nullable< fostlib::string > &filename = fostlib::null,
-        const fostlib::nullable< fostlib::string > &initial = fostlib::null
-    );
+    jsonblob();
+    jsonblob( const fostlib::string &filename );
+    jsonblob( const fostlib::string &filename, const fostlib::string &initial );
 
     nullable< string > filename;
     nullable< string > filename_() const { return filename; }
