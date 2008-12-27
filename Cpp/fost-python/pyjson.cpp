@@ -13,22 +13,23 @@
 
 
 using namespace fostlib;
+namespace bp = boost::python;
 
 
 namespace {
     struct from_python {
         static void *convertible( PyObject *object );
-        static void construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data );
+        static void construct( PyObject *object, bp::converter::rvalue_from_python_stage1_data *data );
+    private:
+        static json to_json( bp::object o );
     };
 }
 
 
 void fostlib::python_json_registration() {
-    using namespace boost::python;
-
-    converter::registry::push_back(
+    bp::converter::registry::push_back(
         from_python::convertible, from_python::construct,
-        type_id< json >()
+        bp::type_id< json >()
     );
 }
 
@@ -36,14 +37,21 @@ void fostlib::python_json_registration() {
 void *from_python::convertible( PyObject *object ) {
     return object;
 }
-void from_python::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data ) {
+void from_python::construct( PyObject *object, bp::converter::rvalue_from_python_stage1_data *data ) {
     void *storage = reinterpret_cast<
         boost::python::converter::rvalue_from_python_storage< json >*
     >( data )->storage.bytes;
     if ( object == Py_None )
         new (storage) json();
     else {
-        throw exceptions::not_implemented( L"from_python::construct( PyObject *object, boost::python::converter::rvalue_from_python_stage1_data *data )" );
+        bp::handle<> h(object);
+        new (storage) json( to_json( bp::object( h ) ) );
     }
     data->convertible = storage;
+}
+json from_python::to_json( bp::object o ) {
+    if ( bp::extract< bool >( o ).check() )
+        return json( bp::extract< bool >( o )() );
+    else
+        throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
 }
