@@ -22,7 +22,7 @@ BOOST_PYTHON_MODULE( _jsondb ) {
     class_<
         jsondb, std::auto_ptr< jsondb >, boost::noncopyable
     >(
-        "jsonblob", init< optional< string > >()
+        "jsonblob", init< optional< string, json > >()
     )
         .add_property("filename", filename)
     ;
