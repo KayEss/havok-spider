@@ -52,9 +52,9 @@ json from_python::to_json( bp::object o ) {
     else if ( o.ptr() == Py_True )
         return json( true );
     else if ( bp::extract< int64_t >( o ).check() )
-        return json( bp::extract< int64_t >( o ) );
+        return json( bp::extract< int64_t >( o )() );
     else if ( bp::extract< double >( o ).check() )
-        return json( bp::extract< double >( o ) );
+        return json( bp::extract< double >( o )() );
     else if ( bp::extract< bp::list >( o ).check() )
         return json();
     else if ( bp::extract< string >( o ).check() )
