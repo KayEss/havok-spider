@@ -8,4 +8,5 @@ python-extension _test :
         <include>../include/
     ;
 
-run-test python-test : _test python-test.py ;
+run-test python-string-test : _test test-string.py ;
+run-test python-json-test : _test test-json.py ;

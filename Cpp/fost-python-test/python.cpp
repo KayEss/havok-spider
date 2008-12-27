@@ -22,11 +22,20 @@ bool isnone( const nullable< string > &s ) {
     return s.isnull();
 }
 
+
+string tojson( const json &j ) {
+    return json::unparse( j, true );
+}
+
+
 BOOST_PYTHON_MODULE( _test ) {
     using namespace boost::python;
-    fostlib::python_string_registration();
+    python_string_registration();
+    python_json_registration();
 
     def( "annotate", annotate );
     def( "getnull", getnull );
     def( "isnone", isnone );
+
+    def( "tojson", tojson );
 }
