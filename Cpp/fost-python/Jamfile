@@ -1,11 +1,9 @@
 
-python-extension _test :
+lib fost-python :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
-        ../fost-python/
-        python.cpp
+        pybind.cpp
     :
         <include>../include/
+        <use>/python//python_for_extensions
     ;
-
-run-test python-test : _test python-test.py ;

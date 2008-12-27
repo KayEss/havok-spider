@@ -6,7 +6,7 @@
 */
 
 
-#include <fost/pybind.hpp>
+#include <fost/python>
 #include "connection.hpp"
 #include "jsonblob.hpp"
 

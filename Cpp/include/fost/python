@@ -6,14 +6,11 @@
 */
 
 
-#include <fost/python>
-#include <fost/crypto>
+#ifdef WIN32
+    #define FOST_PYTHON_DECLSPEC __declspec( dllimport )
+#else
+    #define FOST_PYTHON_DECLSPEC
+#endif
 
 
-BOOST_PYTHON_MODULE( _crypto ) {
-    using namespace boost::python;
-
-    def( "sha1", fostlib::sha1 );
-
-    fostlib::string_registration();
-}
+#include <fost/pybind.hpp>

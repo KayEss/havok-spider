@@ -6,7 +6,7 @@
 */
 
 
-#include <fost/pybind.hpp>
+#include <fost/python>
 #include <fost/settings.hpp>
 #include <fost/cli>
 #include <fost/inifile.hpp>

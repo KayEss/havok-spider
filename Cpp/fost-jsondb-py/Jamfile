@@ -4,6 +4,7 @@ python-extension _jsondb :
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-base/Cpp/fost-jsondb/
         ../../../fost-base/Cpp/fost-schema/
+        ../fost-python/
         connection.cpp
         jsonblob.cpp
         jsondb.cpp

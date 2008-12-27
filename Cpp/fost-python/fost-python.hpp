@@ -6,14 +6,8 @@
 */
 
 
-#include <fost/python>
-#include <fost/crypto>
-
-
-BOOST_PYTHON_MODULE( _crypto ) {
-    using namespace boost::python;
-
-    def( "sha1", fostlib::sha1 );
-
-    fostlib::string_registration();
-}
+#ifdef WIN32
+    #define FOST_PYTHON_DECLSPEC __declspec( dllexport )
+#else
+    #define FOST_PYTHON_DECLSPEC
+#endif
