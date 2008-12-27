@@ -16,4 +16,7 @@ struct jsonblob {
         const fostlib::nullable< fostlib::string > &filename = fostlib::null,
         const fostlib::nullable< fostlib::string > &initial = fostlib::null
     );
+
+    nullable< string > filename;
+    nullable< string > filename_() const { return filename; }
 };

@@ -15,5 +15,5 @@ using namespace fostlib;
 jsonblob::jsonblob(
     const nullable< string > &filename,
     const nullable< string > &initial
-) {
+) : filename( filename.value( string() ) ) {
 }

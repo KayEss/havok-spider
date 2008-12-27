@@ -1,4 +1,3 @@
-
 import _crypto
 
 assert _crypto.sha1("The quick brown fox jumps over the lazy dog") \
