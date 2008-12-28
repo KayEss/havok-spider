@@ -56,7 +56,7 @@ json from_python::to_json( bp::object o ) {
     else if ( bp::extract< double >( o ).check() )
         return json( bp::extract< double >( o )() );
     else if ( bp::extract< bp::list >( o ).check() )
-        return json();
+        return json::array_t();
     else if ( bp::extract< string >( o ).check() )
         return json( bp::extract< string >( o )() );
     else
