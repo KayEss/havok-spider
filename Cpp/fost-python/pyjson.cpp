@@ -100,6 +100,14 @@ PyObject *to_python::convert( const json &j ) {
 bp::object to_python::from_json( const json &j ) {
     if ( j.isnull() )
         return bp::object();
+    else if ( !j.get< bool >().isnull() )
+        return bp::object( j.get< bool >().value() );
+    else if ( !j.get< int64_t >().isnull() )
+        return bp::object( j.get< int64_t >().value() );
+    else if ( !j.get< double >().isnull() )
+        return bp::object( j.get< double >().value() );
+    else if ( !j.get< string >().isnull() )
+        return bp::object( j.get< string >().value() );
     else
         throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
 }
