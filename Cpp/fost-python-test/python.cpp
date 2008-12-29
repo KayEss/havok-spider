@@ -23,8 +23,8 @@ bool isnone( const nullable< string > &s ) {
 }
 
 
-string tojson( const json &j ) {
-    return json::unparse( j, true );
+string tojson( const json &j, bool pretty ) {
+    return json::unparse( j, pretty );
 }
 
 

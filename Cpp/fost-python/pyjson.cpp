@@ -55,9 +55,14 @@ json from_python::to_json( bp::object o ) {
         return json( bp::extract< int64_t >( o )() );
     else if ( bp::extract< double >( o ).check() )
         return json( bp::extract< double >( o )() );
-    else if ( bp::extract< bp::list >( o ).check() )
-        return json::array_t();
-    else if ( bp::extract< string >( o ).check() )
+    else if ( bp::extract< bp::list >( o ).check() ) {
+        bp::list list = bp::extract< bp::list >( o )();
+        std::size_t len = bp::extract< std::size_t >( o.attr( "__len__" )() )();
+        json::array_t array;
+        for ( std::size_t p = 0; p != len; ++p )
+            array.push_back( boost::shared_ptr< json >( new json( to_json( list[ p ] ) ) ) );
+        return array;
+    } else if ( bp::extract< string >( o ).check() )
         return json( bp::extract< string >( o )() );
     else
         throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
