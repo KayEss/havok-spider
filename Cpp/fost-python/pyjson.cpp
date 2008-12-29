@@ -108,7 +108,12 @@ bp::object to_python::from_json( const json &j ) {
         return bp::object( j.get< double >().value() );
     else if ( !j.get< string >().isnull() )
         return bp::object( j.get< string >().value() );
-    else
+    else if ( j.isarray() ) {
+        bp::list list;
+        for ( json::const_iterator it( j.begin() ); it != j.end(); ++it )
+            list.attr( "append" )( from_json( *it ) );
+        return list;
+    } else
         throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
 }
 PyTypeObject const* to_python::get_pytype() {
