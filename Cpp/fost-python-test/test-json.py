@@ -4,6 +4,7 @@ def to_json(value, expected):
     print value, expected
     sys.stdout.flush()
     assert _test.tojson(value, False) == "%s" % expected, _test.tojson(value, True)
+    assert _test.fromjson(_test.tojson(value, False)) == value, _test.fromjson(_test.tojson(value, False))
 
 to_json(None, "null")
 to_json(True, "true")

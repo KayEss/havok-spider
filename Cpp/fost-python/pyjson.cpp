@@ -23,6 +23,12 @@ namespace {
     private:
         static json to_json( bp::object o );
     };
+    struct to_python {
+        static PyObject *convert( const json &j );
+        static PyTypeObject const* get_pytype();
+    private:
+        static bp::object from_json( const json &j );
+    };
 }
 
 
@@ -31,8 +37,13 @@ void fostlib::python_json_registration() {
         from_python::convertible, from_python::construct,
         bp::type_id< json >()
     );
+    bp::to_python_converter< json, to_python, false >();
 }
 
+
+/*
+    From Python to fostlib::json
+*/
 
 void *from_python::convertible( PyObject *object ) {
     return object;
@@ -76,4 +87,22 @@ json from_python::to_json( bp::object o ) {
         return json( bp::extract< string >( o )() );
     else
         throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
+}
+
+
+/*
+    From fostlib::json to Python
+*/
+
+PyObject *to_python::convert( const json &j ) {
+    return bp::incref( from_json( j ).ptr() );
+}
+bp::object to_python::from_json( const json &j ) {
+    if ( j.isnull() )
+        return bp::object();
+    else
+        throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
+}
+PyTypeObject const* to_python::get_pytype() {
+    throw exceptions::not_implemented( L"to_python::get_pytype()" );
 }

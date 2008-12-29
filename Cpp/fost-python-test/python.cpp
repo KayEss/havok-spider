@@ -23,11 +23,6 @@ bool isnone( const nullable< string > &s ) {
 }
 
 
-string tojson( const json &j, bool pretty ) {
-    return json::unparse( j, pretty );
-}
-
-
 BOOST_PYTHON_MODULE( _test ) {
     using namespace boost::python;
     python_string_registration();
@@ -37,5 +32,6 @@ BOOST_PYTHON_MODULE( _test ) {
     def( "getnull", getnull );
     def( "isnone", isnone );
 
-    def( "tojson", tojson );
+    def( "tojson", json::unparse );
+    def( "fromjson", (json (*)( const string & ))json::parse );
 }
