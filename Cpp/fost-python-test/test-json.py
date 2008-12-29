@@ -18,3 +18,10 @@ to_json([1,2], "[1,2]")
 to_json([1,2,[3,"hello"]], "[1,2,[3,\"hello\"]]")
 to_json((1,2), "[1,2]")
 to_json((1,2,[3,"hello"]), "[1,2,[3,\"hello\"]]")
+to_json(dict(hello="country", goodbye="nightclub"), '{"goodbye":"nightclub","hello":"country"}')
+
+to_json(dict(
+    hello="country",
+    goodbye="nightclub",
+    tracks=[],
+), '{"goodbye":"nightclub","hello":"country","tracks":[]}')

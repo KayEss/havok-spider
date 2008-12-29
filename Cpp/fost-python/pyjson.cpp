@@ -56,11 +56,22 @@ json from_python::to_json( bp::object o ) {
     else if ( bp::extract< double >( o ).check() )
         return json( bp::extract< double >( o )() );
     else if ( bp::extract< bp::list >( o ).check() || bp::extract< bp::tuple >( o ).check() ) {
-        std::size_t len = bp::extract< std::size_t >( o.attr( "__len__" )() )();
+        std::size_t len = bp::len( o );
         json::array_t array;
         for ( std::size_t p = 0; p != len; ++p )
             array.push_back( boost::shared_ptr< json >( new json( to_json( o[ p ] ) ) ) );
         return array;
+    } else if ( bp::extract< bp::dict >( o ).check() ) {
+        json::object_t object;
+        bp::object keys = o.attr("keys")();
+        for ( std::size_t len = bp::len( keys ); len > 0; --len ) {
+            bp::object key = keys[ len - 1 ];
+            object.insert( std::make_pair(
+                bp::extract< string >( key )(),
+                boost::shared_ptr< json >( new json( bp::extract< json >( o[ key ] )() ) )
+            ) );
+        }
+        return object;
     } else if ( bp::extract< string >( o ).check() )
         return json( bp::extract< string >( o )() );
     else
