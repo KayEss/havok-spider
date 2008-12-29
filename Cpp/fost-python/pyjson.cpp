@@ -113,6 +113,12 @@ bp::object to_python::from_json( const json &j ) {
         for ( json::const_iterator it( j.begin() ); it != j.end(); ++it )
             list.attr( "append" )( from_json( *it ) );
         return list;
+    } else if ( j.isobject() ) {
+        bp::dict object;
+        json::object_t inside( j.get< json::object_t >().value() );
+        for ( json::object_t::const_iterator it( inside.begin() ); it != inside.end(); ++it )
+            object[ it->first ] = from_json( *it->second );
+        return object;
     } else
         throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
 }
