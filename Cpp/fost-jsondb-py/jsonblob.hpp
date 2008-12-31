@@ -9,4 +9,22 @@
 #include <fost/jsondb>
 
 
+/*
+    fostlib::jsondb
+*/
+
+
 fostlib::nullable< fostlib::string > filename( const fostlib::jsondb &db );
+std::auto_ptr< fostlib::jsondb::local > get_local( fostlib::jsondb &db );
+
+
+/*
+    fostlib::jsondb::local
+*/
+
+
+fostlib::json get_json( const fostlib::jsondb::local &db );
+
+namespace fostlib {
+    bool operator ==( const fostlib::jsondb::local &db, const fostlib::json &j );
+}

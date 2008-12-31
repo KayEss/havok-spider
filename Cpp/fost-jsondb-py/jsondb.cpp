@@ -20,10 +20,20 @@ BOOST_PYTHON_MODULE( _jsondb ) {
     python_json_registration();
 
     class_<
+        jsondb::local, std::auto_ptr< jsondb::local >, boost::noncopyable
+    >(
+        "jsonblob_local", no_init
+    )
+        .add_property("json", get_json)
+        .def(self == json())
+    ;
+
+    class_<
         jsondb, std::auto_ptr< jsondb >, boost::noncopyable
     >(
         "jsonblob", init< optional< string, json > >()
     )
         .add_property("filename", filename)
+        .add_property("local", get_local)
     ;
 }
