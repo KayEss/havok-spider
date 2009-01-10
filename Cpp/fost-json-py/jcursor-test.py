@@ -10,3 +10,9 @@ j1 = _json.jcursor()
 
 # Add to the path of the jcursor
 j1 /= "path"
+j2 = _json.jcursor() / "path"
+assert j1 == j2
+assert j1 == _json.jcursor() / "path"
+assert j2 == j1
+assert j1 != _json.jcursor()
+assert j2 != _json.jcursor() / "no path"
