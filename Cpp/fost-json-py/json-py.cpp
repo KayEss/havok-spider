@@ -14,7 +14,7 @@
 using namespace fostlib;
 
 
-BOOST_PYTHON_MODULE( _jsondb ) {
+BOOST_PYTHON_MODULE( _json ) {
     using namespace boost::python;
     python_string_registration();
     python_json_registration();
