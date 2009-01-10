@@ -4,8 +4,8 @@ python-extension _settings :
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-base/Cpp/fost-cli/
         ../fost-python/
+        fost-settings-py.cpp
         settings.cpp
-        python.cpp
     :
         <include>../include/
     ;

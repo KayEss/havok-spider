@@ -13,6 +13,7 @@
 BOOST_PYTHON_MODULE( _settings ) {
     using namespace boost::python;
     fostlib::python_string_registration();
+    fostlib::python_json_registration();
 
     class_<settings>("settings", init<>() )
         .def( "file", &settings::file )

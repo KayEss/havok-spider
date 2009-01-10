@@ -22,6 +22,7 @@ namespace {
 #endif
     const setting< bool > s_reload( L"fost-settings-py", L"settings-py", L"Reload machine configuration", true, true );
 
+
 }
 
 
@@ -38,11 +39,11 @@ void settings::file( const string &location ) {
 }
 
 
-string settings::get( const string &d, const string &n ) {
-    return json::unparse( setting< json >::value( d, n ), false );
+json settings::get( const string &d, const string &n ) {
+    return setting< json >::value( d, n );
 }
 
 
-void settings::set( const string &d, const string &n, const string &v ) {
-    database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, json::parse( v, json( v ) ), false ) ) );
+void settings::set( const string &d, const string &n, const json &v ) {
+    database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, v, false ) ) );
 }

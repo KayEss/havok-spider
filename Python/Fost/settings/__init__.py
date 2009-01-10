@@ -7,7 +7,7 @@ from Fost.utils.simplejson.decoder import JSONDecoder
 
 class database(_settings.settings):
     def __getitem__(self, key):
-        return JSONDecoder().decode(self.get(key[0], key[1]))
+        return self.get(key[0], key[1])
     def __setitem__(self, key, item):
         print key
 
