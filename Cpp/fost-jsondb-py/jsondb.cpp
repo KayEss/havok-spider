@@ -20,6 +20,13 @@ BOOST_PYTHON_MODULE( _jsondb ) {
     python_json_registration();
 
     class_<
+        jcursor
+    >(
+        "jcursor", init<>()
+    )
+    ;
+
+    class_<
         jsondb::local, std::auto_ptr< jsondb::local >, boost::noncopyable
     >(
         "jsonblob_local", no_init
