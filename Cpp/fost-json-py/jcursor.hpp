@@ -6,8 +6,8 @@
 */
 
 
-#include <fost/core>
+#include <fost/python>
 
 
-namespace fostlib {
-}
+boost::python::object get_jcursor_item( const fostlib::jcursor &c, fostlib::jcursor::size_type i );
+

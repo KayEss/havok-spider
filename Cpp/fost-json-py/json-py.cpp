@@ -29,6 +29,8 @@ BOOST_PYTHON_MODULE( _json ) {
         .def(self != jcursor())
         .def(self / json())
         .def(self /= json())
+        .def("__len__", &jcursor::size)
+        .def("__getitem__", get_jcursor_item)
     ;
 
     class_<

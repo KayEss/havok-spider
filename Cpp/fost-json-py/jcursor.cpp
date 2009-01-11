@@ -10,3 +10,12 @@
 
 
 using namespace fostlib;
+
+
+boost::python::object get_jcursor_item( const fostlib::jcursor &c, fostlib::jcursor::size_type i ) {
+    jcursor::value_type v( c[ i ] );
+    if ( boost::get< json::array_t::size_type >( &v ) )
+        return boost::python::object( boost::get< json::array_t::size_type >( v ) );
+    else
+        return boost::python::object( boost::get< string >( v ) );
+}
