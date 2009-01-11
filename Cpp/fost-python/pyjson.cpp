@@ -33,11 +33,15 @@ namespace {
 
 
 void fostlib::python_json_registration() {
-    bp::converter::registry::push_back(
-        from_python::convertible, from_python::construct,
-        bp::type_id< json >()
-    );
-    bp::to_python_converter< json, to_python, false >();
+    static bool executed = false;
+    if ( !executed ) {
+        executed = true;
+        bp::converter::registry::push_back(
+            from_python::convertible, from_python::construct,
+            bp::type_id< json >()
+        );
+        bp::to_python_converter< json, to_python, false >();
+    }
 }
 
 

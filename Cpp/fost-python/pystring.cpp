@@ -35,18 +35,22 @@ namespace {
 
 
 void fostlib::python_string_registration() {
-    using namespace boost::python;
+    static bool executed = false;
+    if ( !executed ) {
+        executed = true;
+        using namespace boost::python;
 
-    converter::registry::push_back(
-        from_pystr::convertible, from_pystr::construct,
-        type_id< string >()
-    );
-    converter::registry::push_back(
-        from_nullable_pystr::convertible, from_nullable_pystr::construct,
-        type_id< nullable< string > >()
-    );
-    to_python_converter< string, to_pystr, false >();
-    to_python_converter< nullable< string >, to_nullable_pystr, false >();
+        converter::registry::push_back(
+            from_pystr::convertible, from_pystr::construct,
+            type_id< string >()
+        );
+        converter::registry::push_back(
+            from_nullable_pystr::convertible, from_nullable_pystr::construct,
+            type_id< nullable< string > >()
+        );
+        to_python_converter< string, to_pystr, false >();
+        to_python_converter< nullable< string >, to_nullable_pystr, false >();
+    }
 }
 
 
