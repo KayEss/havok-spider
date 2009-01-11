@@ -10,6 +10,4 @@
 
 
 namespace fostlib {
-    jcursor operator /( const jcursor &j, const json &p );
-    jcursor &operator /=( jcursor &j, const json &p );
 }

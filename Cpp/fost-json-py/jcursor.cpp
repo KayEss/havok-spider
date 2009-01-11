@@ -10,12 +10,3 @@
 
 
 using namespace fostlib;
-
-
-jcursor fostlib::operator /( const jcursor &j, const json &p ) {
-    return j[ p ];
-}
-jcursor &fostlib::operator /=( jcursor &j, const json &p ) {
-    j = j[ p ];
-    return j;
-}
