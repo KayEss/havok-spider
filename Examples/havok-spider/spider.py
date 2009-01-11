@@ -1,4 +1,4 @@
-import sys, getopt
+import sys, getopt, unittest
 from Fost.json import jsonblob
 from Fost.Test import spider
 
@@ -10,10 +10,13 @@ fostsettings[("Spider", "host")] = "http://localhost/"
 fostsettings[("Spider", "Count")] = 25
 
 def main(configuration, options):
-    pass
+    suite = unittest.TestSuite()
+    spider.spider_test(suite, "%s/" % fostsettings[("Spider", "host")])
+    unittest.TextTestRunner().run(suite)
 
 if __name__ == "__main__":
     print "havok-spider\nCopyright (C) 2008-2009 Felspar Co. Ltd."
     opts, args = getopt.getopt(sys.argv[1:], '', [])
-    configuration = jsonblob(args[0])
-    main(configuration.local, **dict(options=opts))
+    if len(args) > 1:
+        fostsettings[("Spider", "host")] = args[1]
+    main(jsonblob(args[0]), **dict(options=opts))
