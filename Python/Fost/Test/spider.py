@@ -33,26 +33,7 @@ class Spider(object):
                         response = urllib2.urlopen(fetch, data)
                         if response.url != url:
                             spider.visited[response.url] = True
-                        soup = BeautifulSoup(response.read())
-                        # Check links in a random order
-                        links = soup.findAll('a')
-                        random.shuffle(links)
-                        for link in links:
-                            if link.has_key('href') and not link['href'].startswith('http'):
-                                spider.spider_test(dict(
-                                    url=urlparse.urljoin(url, link['href'])
-                                ))
-                        # Look for forms to submit
-                        for form in soup.findAll('form'):
-                            submit, query = build_form_query(self, form, url)
-                            if urldata.has_key('data'):
-                                for k, v in urldata['data'].items():
-                                    query[k] = v
-                            if submit:
-                                if form.get('method', 'get') == 'get':
-                                    self.fetch(urlparse.urljoin(url, u'%s?%s' % (form['action'], urllib.urlencode(query))))
-                                else:
-                                    self.fetch(urlparse.urljoin(url, form['action']), urllib.urlencode(query))
+                        return response.read()
                     except urllib2.HTTPError, e:
                         if data:
                             self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
@@ -61,7 +42,26 @@ class Spider(object):
                         else:
                             self.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s" % (fetch, e, url))
                 def runTest(self):
-                    self.fetch(url)
+                    soup = BeautifulSoup(self.fetch(url))
+                    # Check links in a random order
+                    links = soup.findAll('a')
+                    random.shuffle(links)
+                    for link in links:
+                        if link.has_key('href') and not link['href'].startswith('http'):
+                            spider.spider_test(dict(
+                                url=urlparse.urljoin(url, link['href'])
+                            ))
+                    # Look for forms to submit
+                    for form in soup.findAll('form'):
+                        submit, query = build_form_query(self, form, url)
+                        if urldata.has_key('data'):
+                            for k, v in urldata['data'].items():
+                                query[k] = v
+                        if submit:
+                            if form.get('method', 'get') == 'get':
+                                self.fetch(urlparse.urljoin(url, u'%s?%s' % (form['action'], urllib.urlencode(query))))
+                            else:
+                                self.fetch(urlparse.urljoin(url, form['action']), urllib.urlencode(query))
             spider.suite.addTest(Test())
 
 
