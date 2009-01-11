@@ -19,9 +19,9 @@ std::auto_ptr< jsondb::local > get_local( jsondb &db ) {
     return std::auto_ptr< jsondb::local >( new jsondb::local( db, jcursor() ) );
 }
 
-json get_json( const jsondb::local &db ) {
-    return db[ jcursor() ];
+json get_json( const jsondb::local &db, const jcursor &jc ) {
+    return db[ jc ];
 }
 bool fostlib::operator ==( const jsondb::local &db, const json &j ) {
-    return get_json( db ) == j;
+    return get_json( db, jcursor() ) == j;
 }

@@ -38,7 +38,7 @@ BOOST_PYTHON_MODULE( _json ) {
     >(
         "jsonblob_local", no_init
     )
-        .add_property("json", get_json)
+        .def("__getitem__", get_json)
         .def(self == json())
     ;
 
