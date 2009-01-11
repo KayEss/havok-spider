@@ -7,7 +7,7 @@ fostsettings = Fost.settings.database()
 
 def main(configuration, options):
     local = configuration.local
-    spider = Spider(local[ jroot / "urls" ], local[ jroot / "visited" ])
+    spider = Spider(local[ jroot / "urls" ], local[ jroot / "pages" ])
     spider.run_suite()
 
 if __name__ == "__main__":
