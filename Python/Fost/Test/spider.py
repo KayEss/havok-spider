@@ -1,44 +1,68 @@
-import unittest, urllib, urllib2, urlparse, random
+import unittest, urllib, urllib2, urlparse, random, cookielib
 from BeautifulSoup import BeautifulSoup
 
-spidered_urls = {}
+import Fost.settings
+fostsettings = Fost.settings.database()
 
-def spider_test(suite, url):
-    import Fost.settings as settings
-    global spidered_urls
-    if len(spidered_urls) < int(settings.database()[("Spider", "Count")]) - 1 and not spidered_urls.has_key(url):
-        spidered_urls[url] = True
-        class Test(unittest.TestCase):
-            def fetch(self, fetch, data = None):
-                try:
-                    response = urllib2.urlopen(fetch, data)
-                    if response.url != url:
-                        spidered_urls[response.url] = True
-                    return response.read()
-                except urllib2.HTTPError, e:
-                    if data:
-                        self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s\n\n%s" % (fetch, e, url, data, e.read()))
-                    elif data == "":
-                        self.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s\n\n%s" % (fetch, e, url, e.read()))
-                    else:
-                        self.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s\n\n%s" % (fetch, e, url, e.read()))
-            def runTest(self):
-                soup = BeautifulSoup(self.fetch(url))
-                # Check links in a random order
-                links = soup.findAll('a')
-                random.shuffle(links)
-                for link in links:
-                    if link.has_key('href') and not link['href'].startswith('http') and not link['href'].startswith('/extranet/logout/'):
-                        spider_test(suite, urlparse.urljoin(url, link['href']))
-                # Look for forms to submit
-                for form in soup.findAll('form'):
-                    submit, query = build_form_query(self, form, url)
-                    if submit:
-                        if form.get('method', 'get') == 'get':
-                            self.fetch(urlparse.urljoin(url, u'%s?%s' % (form['action'], urllib.urlencode(query))))
+# Base settings
+fostsettings[("Spider", "host")] = "http://localhost/"
+fostsettings[("Spider", "Count")] = 25
+
+# Install a cookie jar so we can have cookies
+cj = cookielib.LWPCookieJar()
+urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(cj)))
+
+class Spider(object):
+    def __init__(self, urls, visited):
+        self.suite = unittest.TestSuite()
+        self.visited = dict([("%s%s" % (fostsettings[("Spider", "host")], url), v) for url, v in visited.items()])
+        for url in urls:
+            url['url'] = "%s%s" % (fostsettings[("Spider", "host")], url['url'])
+            self.spider_test(url)
+
+    def run_suite(self):
+        unittest.TextTestRunner().run(self.suite)
+
+    def spider_test(spider, urldata):
+        url = urldata['url']
+        if spider.suite.countTestCases() < fostsettings[("Spider", "Count")] and not spider.visited.has_key(url):
+            spider.visited[url] = True
+            class Test(unittest.TestCase):
+                def fetch(self, fetch, data = None):
+                    try:
+                        response = urllib2.urlopen(fetch, data)
+                        if response.url != url:
+                            spider.visited[response.url] = True
+                        soup = BeautifulSoup(response.read())
+                        # Check links in a random order
+                        links = soup.findAll('a')
+                        random.shuffle(links)
+                        for link in links:
+                            if link.has_key('href') and not link['href'].startswith('http'):
+                                spider.spider_test(dict(
+                                    url=urlparse.urljoin(url, link['href'])
+                                ))
+                        # Look for forms to submit
+                        for form in soup.findAll('form'):
+                            submit, query = build_form_query(self, form, url)
+                            if urldata.has_key('data'):
+                                for k, v in urldata['data'].items():
+                                    query[k] = v
+                            if submit:
+                                if form.get('method', 'get') == 'get':
+                                    self.fetch(urlparse.urljoin(url, u'%s?%s' % (form['action'], urllib.urlencode(query))))
+                                else:
+                                    self.fetch(urlparse.urljoin(url, form['action']), urllib.urlencode(query))
+                    except urllib2.HTTPError, e:
+                        if data:
+                            self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
+                        elif data == "":
+                            self.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s" % (fetch, e, url))
                         else:
-                            self.fetch(urlparse.urljoin(url, form['action']), urllib.urlencode(query))
-        suite.addTest(Test())
+                            self.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s" % (fetch, e, url))
+                def runTest(self):
+                    self.fetch(url)
+            spider.suite.addTest(Test())
 
 
 def test_response(test, response):
