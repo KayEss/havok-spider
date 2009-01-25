@@ -13,7 +13,9 @@
 BOOST_PYTHON_MODULE( _crypto ) {
     using namespace boost::python;
 
+    def( "md5", fostlib::md5 );
     def( "sha1", fostlib::sha1 );
+    def( "sha1_hmac", fostlib::sha1_hmac );
 
     implicitly_convertible< fostlib::native_string, fostlib::string >();
     boost::python::converter::registry::push_back(
