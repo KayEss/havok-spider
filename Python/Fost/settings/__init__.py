@@ -3,13 +3,12 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
 import _settings
-from Fost.utils.simplejson.decoder import JSONDecoder
 
 class database(_settings.settings):
     def __getitem__(self, key):
-        return JSONDecoder().decode(self.get(key[0], key[1]))
+        return self.get(key[0], key[1])
     def __setitem__(self, key, item):
-        print key
+        self.set(key[0], key[1], item)
 
 
 middleware_database = None

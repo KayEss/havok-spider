@@ -1,4 +1,3 @@
-
 import _crypto
 
 assert _crypto.md5("") \

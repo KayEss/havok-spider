@@ -3,6 +3,7 @@ python-extension _crypto :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-base/Cpp/fost-crypto/
+        ../fost-python/
         crypto.cpp
     :
         <include>../include/
