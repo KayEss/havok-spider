@@ -6,7 +6,7 @@
 */
 
 
-#include <fost/pybind.hpp>
+#include <fost/python>
 #include <fost/settings.hpp>
 #include <fost/cli>
 #include <fost/inifile.hpp>
@@ -23,7 +23,7 @@ struct settings {
     settings();
 
     void file( const fostlib::string & );
-    fostlib::string get( const fostlib::string &, const fostlib::string & );
-    void set( const fostlib::string &, const fostlib::string &, const fostlib::string & );
+    fostlib::json get( const fostlib::string &, const fostlib::string & );
+    void set( const fostlib::string &, const fostlib::string &, const fostlib::json & );
 };
 

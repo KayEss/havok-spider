@@ -6,23 +6,18 @@
 */
 
 
-#include <fost/pybind.hpp>
+#include <fost/python>
 #include "settings.hpp"
 
 
 BOOST_PYTHON_MODULE( _settings ) {
     using namespace boost::python;
+    fostlib::python_string_registration();
+    fostlib::python_json_registration();
 
     class_<settings>("settings", init<>() )
         .def( "file", &settings::file )
         .def( "get", &settings::get )
         .def( "set", &settings::set )
     ;
-
-    implicitly_convertible< fostlib::native_string, fostlib::string >();
-    boost::python::converter::registry::push_back(
-        fostlib::from_pystr::convertible, fostlib::from_pystr::construct,
-        boost::python::type_id< fostlib::string >()
-    );
-    to_python_converter< fostlib::string, fostlib::to_pystr, false >();
 }
