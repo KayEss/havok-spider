@@ -23,7 +23,7 @@ project
     :
         default-build debug
     :
-        build-dir build.tmp
+        build-dir $(BUILD_DIRECTORY)
     ;
 
 # A little "rule" (function) to clean up the syntax of declaring tests
