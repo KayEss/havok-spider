@@ -87,8 +87,9 @@ def test_response(test, response):
             qstring = qstring.split('&')
             query = {}
             for qpart in qstring:
-                key,value = qpart.split('=')
-                query[key] = value
+                if qpart:
+                    key, value = qpart.split('=')
+                    query[key] = value
             print '->', location, query
             test_response(test, test.client.get(location, query))
         else:
@@ -96,8 +97,8 @@ def test_response(test, response):
             test_response(test, test.client.get(response_location))
             print '-> POST', response_location
             test_response(test, test.client.post(response_location))
-    elif not response.status_code in [200, 403]:
-        test.assertIn(response.status_code, [200, 403])
+    else:
+        test.assert_(response.status_code in [200], "Incorrect response status of %s" % response.status_code)
     return response
 
 
@@ -113,7 +114,7 @@ def build_form_query(test, form, base_url):
         if inp['type'] == "submit":
             submits.append(inp)
         elif inp['type'] == "checkbox":
-            if inp.has_key('checked'):
+            if inp.has_key('checked') and not inp.get('disabled', 'false').lower() = 'true':
                 query[inp['name']] = inp.get('value', "")
         elif not inp['type'] == "reset":
             test.assert_(inp.has_key('name'), u'%s in %s' % (inp, base_url))
