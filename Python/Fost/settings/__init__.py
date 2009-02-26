@@ -19,7 +19,7 @@ class middleware():
     def process_request(self, request):
         global middleware_database
         if not middleware_database:
-            middleware_database = _settings.settings()
+            middleware_database = database()
             middleware_database["Fost.settings.middleware", "Load files"] = True
         if middleware_database["Fost.settings.middleware", "Load files"]:
             middleware_database["Fost.settings.middleware", "Load files"] = False
