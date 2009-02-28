@@ -42,7 +42,13 @@ class Spider(object):
                         response.soup = BeautifulSoup(response.read())
                         return response
                     except urllib2.HTTPError, e:
-                        if data:
+                        if int(str(e).split()[2][0:3]) == spider.pages[fetch].get('status', 200):
+                            # This is OK -- the status matches what we're expecting
+                            class response(object):
+                                soup = BeautifulSoup('')
+                                url = fetch
+                            return response()
+                        elif data:
                             self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
                         elif data == "":
                             self.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s" % (fetch, e, url))
