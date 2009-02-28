@@ -15,8 +15,8 @@ urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(cj)))
 class Spider(object):
     def __init__(self, urls, visited):
         self.suite = unittest.TestSuite()
-        self.pages = dict([("%s%s" % (fostsettings["Spider", "host"], url), v) for url, v in visited.items()])
-        [self.spider_test("%s%s" % (fostsettings["Spider", "host"], url)) for url in urls]
+        self.pages = dict([(urlparse.urljoin(fostsettings["Spider", "host"], url), v) for url, v in visited.items()])
+        [self.spider_test(urlparse.urljoin(fostsettings["Spider", "host"], url)) for url in urls]
 
     def url_data(self, url):
         if url.find('?') > 0:
