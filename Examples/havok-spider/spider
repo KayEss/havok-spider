@@ -1,4 +1,4 @@
 #!/bin/bash
-export PYTHONPATH=`dirname $0`/../../../dist/lib/python2.5/site-packages/
+export PYTHONPATH=`dirname $0`/../../Python/
 export LD_LIBRARY_PATH=`dirname $0`/../../../dist/lib/
 python `dirname $0`/spider.py $*

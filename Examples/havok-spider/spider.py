@@ -13,9 +13,12 @@ def main(configuration):
 if __name__ == "__main__":
     print "havok-spider\nCopyright (C) 2008-2009 Felspar Co. Ltd."
     opts, args = getopt.getopt(sys.argv[1:], '', ['tests='])
-    if len(args) > 1:
-        fostsettings[("Spider", "host")] = args[1]
+    if not len(args):
+        print "You must supply a JSON configuration file"
+        sys.exit(1)
+    elif len(args) > 1:
+        fostsettings["Spider", "host"] = args[1]
     for opt, value in opts:
         if opt == '--tests':
-            fostsettings[("Spider", "Count")] = int(value)
+            fostsettings["Spider", "Count"] = int(value)
     main(jsonblob(args[0]))
