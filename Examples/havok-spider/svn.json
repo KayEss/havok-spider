@@ -1,0 +1,13 @@
+{
+    "pages": {
+        "/private/" : {
+            "status": 401
+        },
+        "/partners/": {
+            "status": 401
+        }
+    },
+    "urls": [
+        "/"
+    ]
+}
