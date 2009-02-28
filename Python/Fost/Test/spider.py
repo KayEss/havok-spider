@@ -15,8 +15,8 @@ urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(cj)))
 class Spider(object):
     def __init__(self, urls, visited):
         self.suite = unittest.TestSuite()
-        self.pages = dict([("%s%s" % (fostsettings[("Spider", "host")], url), v) for url, v in visited.items()])
-        [self.spider_test("%s%s" % (fostsettings[("Spider", "host")], url)) for url in urls]
+        self.pages = dict([("%s%s" % (fostsettings["Spider", "host"], url), v) for url, v in visited.items()])
+        [self.spider_test("%s%s" % (fostsettings["Spider", "host"], url)) for url in urls]
 
     def url_data(self, url):
         if url.find('?') > 0:
@@ -114,7 +114,7 @@ def build_form_query(test, form, base_url):
         if inp['type'] == "submit":
             submits.append(inp)
         elif inp['type'] == "checkbox":
-            if inp.has_key('checked') and not inp.get('disabled', 'false').lower() = 'true':
+            if inp.has_key('checked') and not inp.get('disabled', 'false').lower() == 'true':
                 query[inp['name']] = inp.get('value', "")
         elif not inp['type'] == "reset":
             test.assert_(inp.has_key('name'), u'%s in %s' % (inp, base_url))

@@ -3,7 +3,7 @@
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../dist/lib
 
 cd ..
-if bjam -j`grep -c ^processor /proc/cpuinfo` --toolset=gcc --preserve-test-targets debug
+if ./compile $*
 then {
     cd Python
 } else {
@@ -14,6 +14,8 @@ fi
 
 rm -f Fost/crypto/_crypto.so
 ln -s ../../../../dist/lib/python2.5/site-packages/Fost/crypto/_crypto.so Fost/crypto/_crypto.so
+rm -f Fost/json/_json.so
+ln -s ../../../../dist/lib/python2.5/site-packages/Fost/json/_json.so Fost/json/_json.so
 rm -f Fost/settings/_settings.so
 ln -s ../../../../dist/lib/python2.5/site-packages/Fost/settings/_settings.so Fost/settings/_settings.so
 
