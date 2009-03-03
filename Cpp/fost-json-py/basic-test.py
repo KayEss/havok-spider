@@ -5,5 +5,13 @@
 
 import _json
 
-assert _json.parse("{}") == dict()
-assert _json.unparse(_json.parse("{}"), False) == "{}"
+assert _json.parse("{}") == dict(), _json.parse("{}")
+assert _json.unparse(_json.parse("{}"), False) == "{}", _json.unparse(_json.parse("{}"), False)
+assert _json.unparse(_json.parse("{}"), True) == "{\n}\n", _json.unparse(_json.parse("{}"), True)
+
+assert _json.unparse(None, False) == "null", _json.unparse(None, False)
+assert _json.unparse(12, False) == "12", _json.unparse(12, False)
+assert _json.unparse({}, False) == "{}", _json.unparse({}, False)
+assert _json.unparse(dict(), False) == "{}", _json.unparse({}, False)
+assert _json.unparse([12], False) == "[12]", _json.unparse([12], False)
+
