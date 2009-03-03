@@ -20,6 +20,9 @@ BOOST_PYTHON_MODULE( _json ) {
     python_string_registration();
     python_json_registration();
 
+    def("parse", (json (*)( const string & ))json::parse),
+    def("unparse", json::unparse),
+
     class_<
         jcursor
     >(
