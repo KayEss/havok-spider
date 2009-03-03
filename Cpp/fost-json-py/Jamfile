@@ -15,6 +15,7 @@ python-extension _json :
         <include>../include/
     ;
 
+run-test basic-test : _json basic-test.py ;
 run-test jcursor-test : _json jcursor-test.py ;
 run-test jsondb-test : _json jsondb-test.py ;
 
