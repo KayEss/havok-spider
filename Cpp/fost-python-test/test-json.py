@@ -28,3 +28,6 @@ to_json(dict(
     goodbye="nightclub",
     tracks=[],
 ), '{"goodbye":"nightclub","hello":"country","tracks":[]}')
+
+for v in range(1, 10):
+    to_json(dict(a=1, b=None, c=dict(start=None, end=None)), '{"a":1,"b":null,"c":{"end":null,"start":null}}')
