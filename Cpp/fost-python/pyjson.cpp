@@ -60,37 +60,45 @@ void from_python::construct( PyObject *object, bp::converter::rvalue_from_python
     data->convertible = storage;
 }
 json from_python::to_json( bp::object o ) {
-    if ( o.ptr() == Py_None )
-        return json();
-    else if ( o.ptr() == Py_False )
-        return json( false );
-    else if ( o.ptr() == Py_True )
-        return json( true );
-    else if ( bp::extract< int64_t >( o ).check() )
-        return json( bp::extract< int64_t >( o )() );
-    else if ( bp::extract< double >( o ).check() )
-        return json( bp::extract< double >( o )() );
-    else if ( bp::extract< bp::list >( o ).check() || bp::extract< bp::tuple >( o ).check() ) {
-        std::size_t len = bp::len( o );
-        json::array_t array;
-        for ( std::size_t p = 0; p != len; ++p )
-            array.push_back( boost::shared_ptr< json >( new json( to_json( o[ p ] ) ) ) );
-        return array;
-    } else if ( bp::extract< bp::dict >( o ).check() ) {
-        json::object_t object;
-        bp::object keys = o.attr("keys")();
-        for ( std::size_t len = bp::len( keys ); len > 0; --len ) {
-            bp::object key = keys[ len - 1 ];
-            object.insert( std::make_pair(
-                bp::extract< string >( key )(),
-                boost::shared_ptr< json >( new json( bp::extract< json >( o[ key ] )() ) )
-            ) );
-        }
-        return object;
-    } else if ( bp::extract< string >( o ).check() )
-        return json( bp::extract< string >( o )() );
-    else
-        throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
+    try {
+        if ( o.ptr() == Py_None )
+            return json();
+        else if ( o.ptr() == Py_False )
+            return json( false );
+        else if ( o.ptr() == Py_True )
+            return json( true );
+        else if ( bp::extract< int64_t >( o ).check() )
+            return json( bp::extract< int64_t >( o )() );
+        else if ( bp::extract< double >( o ).check() )
+            return json( bp::extract< double >( o )() );
+        else if ( bp::extract< bp::list >( o ).check() || bp::extract< bp::tuple >( o ).check() ) {
+            std::size_t len = bp::len( o );
+            json::array_t array;
+            for ( std::size_t p = 0; p != len; ++p )
+                array.push_back( boost::shared_ptr< json >( new json( to_json( o[ p ] ) ) ) );
+            return array;
+        } else if ( bp::extract< bp::dict >( o ).check() ) {
+            json::object_t object;
+            bp::object keys = o.attr("keys")();
+            for ( std::size_t len = bp::len( keys ); len > 0; --len ) {
+                bp::object key = keys[ len - 1 ];
+                object.insert( std::make_pair(
+                    bp::extract< string >( key )(),
+                    boost::shared_ptr< json >( new json( bp::extract< json >( o[ key ] )() ) )
+                ) );
+            }
+            return object;
+        } else if ( bp::extract< string >( o ).check() )
+            return json( bp::extract< string >( o )() );
+        else
+            throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
+    } catch ( fostlib::exceptions::exception &e ) {
+        e.info()
+            << L"Whilst converting a Python object to a fostlib::json\n"
+            << bp::extract< string >( o.attr( "__unicode__" )() )()
+            << std::endl;
+        throw;
+    }
 }
 
 
@@ -102,29 +110,36 @@ PyObject *to_python::convert( const json &j ) {
     return bp::incref( from_json( j ).ptr() );
 }
 bp::object to_python::from_json( const json &j ) {
-    if ( j.isnull() )
-        return bp::object();
-    else if ( !j.get< bool >().isnull() )
-        return bp::object( j.get< bool >().value() );
-    else if ( !j.get< int64_t >().isnull() )
-        return bp::object( j.get< int64_t >().value() );
-    else if ( !j.get< double >().isnull() )
-        return bp::object( j.get< double >().value() );
-    else if ( !j.get< string >().isnull() )
-        return bp::object( j.get< string >().value() );
-    else if ( j.isarray() ) {
-        bp::list list;
-        for ( json::const_iterator it( j.begin() ); it != j.end(); ++it )
-            list.attr( "append" )( from_json( *it ) );
-        return list;
-    } else if ( j.isobject() ) {
-        bp::dict object;
-        json::object_t inside( j.get< json::object_t >().value() );
-        for ( json::object_t::const_iterator it( inside.begin() ); it != inside.end(); ++it )
-            object[ it->first ] = from_json( *it->second );
-        return object;
-    } else
-        throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
+    try {
+        if ( j.isnull() )
+            return bp::object();
+        else if ( !j.get< bool >().isnull() )
+            return bp::object( j.get< bool >().value() );
+        else if ( !j.get< int64_t >().isnull() )
+            return bp::object( j.get< int64_t >().value() );
+        else if ( !j.get< double >().isnull() )
+            return bp::object( j.get< double >().value() );
+        else if ( !j.get< string >().isnull() )
+            return bp::object( j.get< string >().value() );
+        else if ( j.isarray() ) {
+            bp::list list;
+            for ( json::const_iterator it( j.begin() ); it != j.end(); ++it )
+                list.attr( "append" )( from_json( *it ) );
+            return list;
+        } else if ( j.isobject() ) {
+            bp::dict object;
+            json::object_t inside( j.get< json::object_t >().value() );
+            for ( json::object_t::const_iterator it( inside.begin() ); it != inside.end(); ++it )
+                object[ it->first ] = from_json( *it->second );
+            return object;
+        } else
+            throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
+    } catch ( fostlib::exceptions::exception &e ) {
+        e.info()
+            << L"Whilst converting a fostlib::json to its equivalent Python type\n"
+            << json::unparse( j, true );
+        throw;
+    }
 }
 PyTypeObject const* to_python::get_pytype() {
     throw exceptions::not_implemented( L"to_python::get_pytype()" );
