@@ -30,4 +30,5 @@ install ../../../dist/lib/python2.5/site-packages/Fost/json/ :
         _json
     :
         <install-type>LIB
+        <target-os>windows:<install-dependencies>on
     ;
