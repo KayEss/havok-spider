@@ -31,7 +31,7 @@ class Spider(object):
         unittest.TextTestRunner().run(self.suite)
 
     def spider_test(spider, url, data=None):
-        if spider.suite.countTestCases() < fostsettings[("Spider", "Count")] and spider.url_data(url)['remaining']:
+        if spider.suite.countTestCases() < fostsettings["Spider", "Count"] and spider.url_data(url)['remaining']:
             if spider.url_data(url)['remaining']: spider.url_data(url)['remaining'] -= 1
             class Test(unittest.TestCase):
                 def fetch(self, fetch, data = None):
