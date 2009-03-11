@@ -93,10 +93,7 @@ json from_python::to_json( bp::object o ) {
         else
             throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info()
-            << L"Whilst converting a Python object to a fostlib::json\n"
-            << bp::extract< string >( o.attr( "__unicode__" )() )()
-            << std::endl;
+        e.info() << L"Whilst converting a Python object to a fostlib::json" << std::endl;
         throw;
     }
 }
