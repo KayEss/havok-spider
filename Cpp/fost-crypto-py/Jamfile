@@ -11,16 +11,4 @@ python-extension _crypto :
 
 run-test crypto-test : _crypto crypto-test.py ;
 
-install ../../../dist/lib :
-        _crypto
-    :
-        <install-type>LIB
-        <install-dependencies>on
-    ;
-
-install ../../../dist/lib/python2.5/site-packages/Fost/crypto/ :
-        _crypto
-    :
-        <install-type>LIB
-        <target-os>windows:<install-dependencies>on
-    ;
+py-install _crypto : Fost/crypto/ ;
