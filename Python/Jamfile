@@ -1,5 +1,0 @@
-
-install ../../dist/lib
-    :
-        ../../Boost//boost-python-dll
-    ;

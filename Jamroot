@@ -7,7 +7,7 @@ project
     :
         requirements
         <include>$(BOOST_HEADERS)
-        <include>../OpenSSL/install/include/
+        <target-os>windows:<include>../OpenSSL/install/include/
         <include>../fost-base/Cpp/include/
         <threading>multi
         <runtime-link>shared
@@ -36,7 +36,28 @@ rule run-test ( test-name : sources + )
     testing.make-test run-pyd : $(sources) : : $(test-name) ;
 }
 
-build-project ../fost-base/Cpp/fost-ftest/ ;
+# An install rule for the Python libs
+rule py-install ( pyd : location )
+{
+    install ../../../dist/lib :
+            $(pyd)
+        :
+            <target-os>linux:<install-type>LIB
+            <target-os>linux:<install-dependencies>on
+            <target-os>windows:<install-type>XXX
+        ;
+
+    install ../../../dist/bin :
+            $(pyd)
+        :
+            <target-os>windows:<install-type>LIB
+            <target-os>windows:<install-dependencies>on
+        ;
+
+    local loc = "../../../dist/lib/python2.5/site-packages/" $(location) ;
+    install $(loc:J) : $(pyd) ;
+}
+
 build-project Cpp/fost-python-test/ ;
 build-project Cpp/fost-crypto-py/ ;
 build-project Cpp/fost-json-py/ ;

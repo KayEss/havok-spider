@@ -19,16 +19,4 @@ run-test basic-test : _json basic-test.py ;
 run-test jcursor-test : _json jcursor-test.py ;
 run-test jsondb-test : _json jsondb-test.py ;
 
-install ../../../dist/lib :
-        _json
-    :
-        <install-type>LIB
-        <install-dependencies>on
-    ;
-
-install ../../../dist/lib/python2.5/site-packages/Fost/json/ :
-        _json
-    :
-        <install-type>LIB
-        <target-os>windows:<install-dependencies>on
-    ;
+py-install _json : Fost/json/ ;
