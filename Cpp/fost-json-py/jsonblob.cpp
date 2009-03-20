@@ -29,6 +29,13 @@ void set_json( jsondb::local &db, const jcursor &j, const json &v ) {
         db.insert( j, v );
 }
 
+json get_with_default( const jsondb::local &db, const jcursor &j, const json &d ) {
+    if ( db.has_key( j ) )
+        return db[ j ];
+    else
+        return d;
+}
+
 bool fostlib::operator ==( const jsondb::local &db, const json &j ) {
     return get_json( db, jcursor() ) == j;
 }
