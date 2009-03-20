@@ -22,6 +22,13 @@ std::auto_ptr< jsondb::local > get_local( jsondb &db ) {
 json get_json( const jsondb::local &db, const jcursor &jc ) {
     return db[ jc ];
 }
+void set_json( jsondb::local &db, const jcursor &j, const json &v ) {
+    if ( db.has_key( j ) )
+        db.update( j, v );
+    else
+        db.insert( j, v );
+}
+
 bool fostlib::operator ==( const jsondb::local &db, const json &j ) {
     return get_json( db, jcursor() ) == j;
 }

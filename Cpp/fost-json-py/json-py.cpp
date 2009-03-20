@@ -41,8 +41,11 @@ BOOST_PYTHON_MODULE( _json ) {
     >(
         "jsonblob_local", no_init
     )
-        .def("__getitem__", get_json)
         .def(self == json())
+        .def("__getitem__", get_json)
+        .def("__setitem__", set_json)
+        .def("has_key", &jsondb::local ::has_key< jcursor >)
+        .def("commit", &jsondb::local ::commit)
     ;
 
     class_<
