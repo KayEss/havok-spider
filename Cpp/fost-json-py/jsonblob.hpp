@@ -24,6 +24,7 @@ std::auto_ptr< fostlib::jsondb::local > get_local( fostlib::jsondb &db );
 
 
 fostlib::json get_json( const fostlib::jsondb::local &db, const fostlib::jcursor &jc );
+void set_json( fostlib::jsondb::local &db, const fostlib::jcursor &j, const fostlib::json &v );
 
 namespace fostlib {
     bool operator ==( const fostlib::jsondb::local &db, const fostlib::json &j );
