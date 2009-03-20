@@ -44,6 +44,8 @@ BOOST_PYTHON_MODULE( _json ) {
         .def(self == json())
         .def("__getitem__", get_json)
         .def("__setitem__", set_json)
+        .def("get", get_json)
+        .def("get", get_with_default)
         .def("has_key", &jsondb::local ::has_key< jcursor >)
         .def("commit", &jsondb::local ::commit)
     ;
