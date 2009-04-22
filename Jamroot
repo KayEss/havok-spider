@@ -1,7 +1,7 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 
-using python ;
+using python : 2.5 ;
 
 project
     :
