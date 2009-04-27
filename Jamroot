@@ -1,7 +1,7 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 
-using python : 2.5 ;
+using python : 2.6 ;
 
 project
     :
@@ -65,7 +65,7 @@ build-project Cpp/fost-settings-py/ ;
 build-project Python/ ;
 
 import path ;
-install ../dist/lib/python2.5/site-packages/Fost
+install ../dist/lib/python2.6/site-packages/Fost
     :
         [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
     :
