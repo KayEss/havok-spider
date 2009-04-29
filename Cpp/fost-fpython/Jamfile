@@ -1,0 +1,26 @@
+
+exe fpython
+    :
+        ../../../Boost//boost-python-dll
+        /python//python
+        ../../../fost-base/Cpp/fost-core/
+        ../../../fost-base/Cpp/fost-cli/
+        ../../Cpp/fost-python/
+        fpython.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
+install ../../../dist/bin
+    :
+        fpython
+    :
+        <install-type>EXE
+    ;
+
+install ../../../dist/lib
+    :
+        fpython
+    :
+        <install-type>LIB
+    ;
