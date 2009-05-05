@@ -13,11 +13,13 @@ then {
 fi
 
 rm -f Fost/crypto/_crypto.so
-ln -s ../../../../dist/lib/python2.5/site-packages/Fost/crypto/_crypto.so Fost/crypto/_crypto.so
+ln -s ../../../../dist/lib/python2.6/site-packages/Fost/crypto/_crypto.so Fost/crypto/_crypto.so
 rm -f Fost/json/_json.so
-ln -s ../../../../dist/lib/python2.5/site-packages/Fost/json/_json.so Fost/json/_json.so
+ln -s ../../../../dist/lib/python2.6/site-packages/Fost/json/_json.so Fost/json/_json.so
+rm -f Fost/internet/_internet.so
+ln -s ../../../../dist/lib/python2.6/site-packages/Fost/internet/_internet.so Fost/internet/_internet.so
 rm -f Fost/settings/_settings.so
-ln -s ../../../../dist/lib/python2.5/site-packages/Fost/settings/_settings.so Fost/settings/_settings.so
+ln -s ../../../../dist/lib/python2.6/site-packages/Fost/settings/_settings.so Fost/settings/_settings.so
 
 if test -e django
 then {
