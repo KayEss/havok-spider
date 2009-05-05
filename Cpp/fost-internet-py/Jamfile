@@ -1,0 +1,17 @@
+
+python-extension _internet :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-python-dll
+        ../../../Boost//boost-thread-dll
+        ../../../fost-base/Cpp/fost-core/
+        ../../../fost-base/Cpp/fost-inet/
+        ../fost-python/
+        internet-py.cpp
+        url.cpp
+    :
+        <include>../include/
+    ;
+
+run-test basic-test : _internet basic-test.py ;
+
+py-install _internet : Fost/internet/ ;
