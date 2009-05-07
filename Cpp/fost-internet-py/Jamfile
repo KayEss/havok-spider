@@ -2,6 +2,8 @@
 python-extension _internet :
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-python-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-base/Cpp/fost-inet/
