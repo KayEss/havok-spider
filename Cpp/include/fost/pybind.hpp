@@ -22,6 +22,13 @@ namespace fostlib {
     */
     FOST_PYTHON_DECLSPEC void python_string_registration();
 
+    template<>
+    struct coercer< boost::python::str, string > {
+        boost::python::str coerce( const string &s ) {
+            return fostlib::coerce< utf8string >( s ).c_str();
+        }
+    };
+
     /*
         Call this inside the BOOST_PYTHON_MODULE function to enable fostlib::json handling
     */
