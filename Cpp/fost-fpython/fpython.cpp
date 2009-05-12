@@ -19,6 +19,17 @@ FSL_MAIN(
     fostlib::python_string_registration();
     fostlib::python_json_registration();
 
+    /*
+        We want to load the INI file for the script before the INI file on the command line
+        This means we have to load the script one and then re-load the ini one so its
+        settings get layered ontop.
+    */
+    fostlib::ini_file script = args[ 1 ].value().substr( 0, args[ 1 ].value().find_last_of( L'.' ) ) + L".ini";
+    fostlib::ini_file ifile = fostlib::setting< fostlib::string >::value( L"fpython", L"IniFile" );
+
+    /*
+        Now we should set up the environment for the script and execute it
+    */
     try {
         // We need these two to provide context for the scripts
         boost::python::object main_module( boost::python::import( "__main__" ) );
