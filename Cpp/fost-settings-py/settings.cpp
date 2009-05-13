@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -39,7 +39,7 @@ void settings::file( const string &location ) {
 }
 
 
-json settings::get( const string &d, const string &n ) {
+json settings::get( const string &d, const string &n ) const {
     return setting< json >::value( d, n );
 }
 
@@ -47,3 +47,9 @@ json settings::get( const string &d, const string &n ) {
 void settings::set( const string &d, const string &n, const json &v ) {
     database.push_back( store_t( new setting_t( L"fost.pybind.settings", d, n, v, false ) ) );
 }
+
+
+bool settings::has_key( const string &d, const string &n ) const {
+    return setting< json >::exists( d, n );
+}
+
