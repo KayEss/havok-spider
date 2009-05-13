@@ -4,10 +4,11 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
 
-import datetime, urllib2, urlparse
+import cookielib, datetime, urllib2, urlparse
 from Fost.crypto import sha1_hmac
 from Fost.settings import database
 from _internet import url_filespec_encode
+
 
 def fetch(*args, **kwargs):
     return agent().fetch(*args, **kwargs)
@@ -15,7 +16,11 @@ def fetch(*args, **kwargs):
 
 class agent(object):
     def __init__(self):
+        # Fost settings for authentication
         self.fost = {}
+        # Enable cookie jar
+        self.cj = cookielib.LWPCookieJar()
+        urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj)))
 
     def fetch(self, url, data = None, headers = {}):
         if len(self.fost):
