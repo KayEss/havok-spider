@@ -6,26 +6,29 @@
 */
 
 
-#include <fost/cli>
-#include <fost/main.hpp>
+#include <fost/main>
 #include <fost/python>
 
 
-FSL_MAIN(
+FSL_MAIN_INTERPRETER(
     L"fpython",
     L"fpython\nCopyright (c) 2009 Felspar Co. Ltd."
-)( fostlib::ostream &out, fostlib::arguments &args ) {
+)( const fostlib::ini_settings &settings, fostlib::ostream &out, fostlib::arguments &args ) {
     Py_Initialize();
     fostlib::python_string_registration();
     fostlib::python_json_registration();
 
     /*
         We want to load the INI file for the script before the INI file on the command line
-        This means we have to load the script one and then re-load the ini one so its
+        This means we have to load the script one and then load the ini one so its
         settings get layered ontop.
+        This has the side effect of allowing the script's INI file to override the interpreter's INI
+        file if no -i switch is provided.
     */
-    fostlib::ini_file script = args[ 1 ].value().substr( 0, args[ 1 ].value().find_last_of( L'.' ) ) + L".ini";
-    fostlib::ini_file ifile = fostlib::setting< fostlib::string >::value( L"fpython", L"IniFile" );
+    fostlib::ini_file script( args[ 1 ].value().substr( 0, args[ 1 ].value().find_last_of( L'.' ) ) + L".ini" );
+    args.commandSwitch( L"i", settings.name, L"IniFile" );
+    fostlib::ini_file ifile( settings.c_iniFile.value() );
+    fostlib::standard_arguments( settings, out, args );
 
     /*
         Now we should set up the environment for the script and execute it
