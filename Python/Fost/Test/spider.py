@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 import unittest, urllib, urllib2, urlparse, random, cookielib
 from BeautifulSoup import BeautifulSoup
+from Fost.internet.useragent import agent
 
 import Fost.settings
 fostsettings = Fost.settings.database()
 
-# Install a cookie jar so we can have cookies
-cj = cookielib.LWPCookieJar()
-urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(cj)))
-
 class Spider(object):
     def __init__(self, urls, visited):
+        self.agent = agent()
         self.suite = unittest.TestSuite()
         self.pages = dict([(urlparse.urljoin(fostsettings["Spider", "host"], url), v) for url, v in visited.items()])
         [self.spider_test(urlparse.urljoin(fostsettings["Spider", "host"], url)) for url in urls]
@@ -33,7 +31,7 @@ class Spider(object):
             class Test(unittest.TestCase):
                 def fetch(self, fetch, data = None):
                     try:
-                        response = urllib2.urlopen(fetch, data)
+                        response = spider.agent.fetch(fetch, data)
                         if response.url != url and spider.url_data(url)['remaining']:
                             self.url_data(url)['remaining'] -= 1
                         if response.headers['Content-Type'].split(';')[0] == 'text/html':
@@ -60,7 +58,7 @@ class Spider(object):
                     links = soup.findAll('a')
                     random.shuffle(links)
                     for link in links:
-                        if link.has_key('href') and not link['href'].startswith('http'):
+                        if link.has_key('href') and not link['href'].startswith('http') and not link['href'].startswith('/__'):
                             spider.spider_test(urlparse.urljoin(response.url, link['href']))
                     return soup
                 def process(self, response):
@@ -167,4 +165,9 @@ def main(config_file=None, host=None, **kwargs):
         local[ jroot / "urls" ] if local.has_key(jroot/"urls") else ['/'],
         local[ jroot / "pages" ] if local.has_key(jroot/"pages") else {}
     )
+    if local.has_key(jroot/'fost_authentication'):
+        spider.agent.fost_authenticate(
+            local[jroot/'fost_authentication'/'key'], local[jroot/'fost_authentication'/'secret'],
+            local[jroot/'fost_authentication'/'headers']
+        )
     spider.run_suite()
