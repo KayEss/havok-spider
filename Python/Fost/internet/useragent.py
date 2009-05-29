@@ -25,6 +25,11 @@ class agent(object):
                 return None
         self.opener = urllib2.build_opener(RedirectStop(), urllib2.HTTPCookieProcessor(self.cj))
 
+    def fost_authenticate(self, key, secret, headers = {}):
+        self.fost['key'] = key
+        self.fost['secret'] = secret
+        self.fost['headers'] = headers
+
     def fetch(self, url, data = None, headers = {}):
         if len(self.fost):
             signed, signed_headers = 'X-FOST-Headers', []
@@ -44,8 +49,3 @@ class agent(object):
             headers['Authorization'] = "FOST %s:%s" % (self.fost['key'], sha1_hmac(self.fost['secret'], document))
             #print document
         return self.opener.open(urllib2.Request(url, data, headers))
-
-    def fost_authenticate(self, key, secret, headers = {}):
-        self.fost['key'] = key
-        self.fost['secret'] = secret
-        self.fost['headers'] = headers
