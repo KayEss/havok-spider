@@ -12,7 +12,7 @@
 
 FSL_MAIN_INTERPRETER(
     L"fpython",
-    L"fpython\nCopyright (c) 2009 Felspar Co. Ltd."
+    L"fpython\nCopyright (c) 1995-2009 Felspar Co. Ltd."
 )( const fostlib::ini_settings &settings, fostlib::ostream &out, fostlib::arguments &args ) {
     Py_Initialize();
     fostlib::python_string_registration();
@@ -36,7 +36,7 @@ FSL_MAIN_INTERPRETER(
     try {
         // We need these two to provide context for the scripts
         boost::python::object main_module( boost::python::import( "__main__" ) );
-        boost::python::object main_namespace( main_module.attr( "__dict__" ) );
+        boost::python::dict main_namespace( main_module.attr( "__dict__" ) );
 
         // Run the file so that we get a main to execute
         boost::python::exec_file( fostlib::coerce< std::string >( args[ 1 ].value() ).c_str(), main_namespace, main_namespace );
@@ -52,6 +52,8 @@ FSL_MAIN_INTERPRETER(
             switches[ fostlib::coerce< boost::python::str >( p->first ) ] = fostlib::coerce< boost::python::str >( p->second );
 
         // Find main and call it through a lambda to handle the arguments for us
+        if ( !main_namespace.has_key( "main" ) )
+            throw fostlib::exceptions::null( L"No main() in the loaded Python file" );
         boost::python::object main_func = main_namespace[ "main" ];
         boost::python::eval( "lambda f, a, k: f(*a, **k)" )( main_func, main_args, switches );
     } catch ( boost::python::error_already_set const & ) {
