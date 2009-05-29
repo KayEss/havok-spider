@@ -1,4 +1,6 @@
 {
+    "url": "http://svn.felspar.com/",
+    "count": 10,
     "pages": {
         "/private/" : {
             "status": 401

@@ -1,12 +1,9 @@
+# -*- coding: utf-8 -*-
 import unittest, urllib, urllib2, urlparse, random, cookielib
 from BeautifulSoup import BeautifulSoup
 
 import Fost.settings
 fostsettings = Fost.settings.database()
-
-# Base settings
-fostsettings[("Spider", "host")] = "http://localhost/"
-fostsettings[("Spider", "Count")] = 25
 
 # Install a cookie jar so we can have cookies
 cj = cookielib.LWPCookieJar()
@@ -39,7 +36,10 @@ class Spider(object):
                         response = urllib2.urlopen(fetch, data)
                         if response.url != url and spider.url_data(url)['remaining']:
                             self.url_data(url)['remaining'] -= 1
-                        response.soup = BeautifulSoup(response.read())
+                        if response.headers['Content-Type'].split(';')[0] == 'text/html':
+                            response.soup = BeautifulSoup(response.read())
+                        else:
+                            response.soup = BeautifulSoup('')
                         return response
                     except urllib2.HTTPError, e:
                         if int(str(e).split()[2][0:3]) == spider.pages[fetch].get('status', 200):
@@ -139,3 +139,32 @@ def build_form_query(test, form, base_url):
         return True, query
     return False, query
 
+
+def main(config_file=None, host=None, **kwargs):
+    """
+        This spider will start off running queries that it finds in a JSON configuration file.
+    """
+    print "Havok spider - Copyright (C) 2008-2009 Felspar Co Ltd."
+    # Load configuration
+    from Fost.json import root as jroot, jsonblob
+    if config_file:
+        configuration = jsonblob(config_file)
+    else:
+        configuration = jsonblob()
+    local = configuration.local
+    # Base URL configuration
+    if local.has_key(jroot/"url"):
+        fostsettings["Spider", "host"] = local[jroot/"url"]
+    if host:
+        fostsettings["Spider", "host"] = host
+    # Number of tests configuration
+    if local.has_key(jroot/"count"):
+        fostsettings["Spider", "Count"] = local[jroot/"count"]
+    if kwargs.has_key('t'):
+        fostsettings["Spider", "Count"] = int(kwargs['t'])
+    # Make spider and run
+    spider = Spider(
+        local[ jroot / "urls" ] if local.has_key(jroot/"urls") else ['/'],
+        local[ jroot / "pages" ] if local.has_key(jroot/"pages") else {}
+    )
+    spider.run_suite()
