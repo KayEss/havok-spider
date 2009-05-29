@@ -20,7 +20,10 @@ class agent(object):
         self.fost = {}
         # Enable cookie jar
         self.cj = cookielib.LWPCookieJar()
-        urllib2.install_opener(urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj)))
+        class RedirectStop(urllib2.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+                return None
+        self.opener = urllib2.build_opener(RedirectStop(), urllib2.HTTPCookieProcessor(self.cj))
 
     def fetch(self, url, data = None, headers = {}):
         if len(self.fost):
@@ -34,13 +37,13 @@ class agent(object):
                 "POST" if data else "GET", url_filespec_encode(urlparse.urlsplit(url).path),
                 utcnow,
                 '\n'.join([signed] + signed_headers),
-                urlparse.urlsplit(url).query
+                data or urlparse.urlsplit(url).query
             )
             headers['X-FOST-Timestamp'] = utcnow
             headers['X-FOST-Headers'] = signed
             headers['Authorization'] = "FOST %s:%s" % (self.fost['key'], sha1_hmac(self.fost['secret'], document))
             #print document
-        return urllib2.urlopen(urllib2.Request(url, data, headers))
+        return self.opener.open(urllib2.Request(url, data, headers))
 
     def fost_authenticate(self, key, secret, headers = {}):
         self.fost['key'] = key
