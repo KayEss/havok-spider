@@ -4,8 +4,8 @@ python-extension _json :
         ../../../Boost//boost-python-dll
         ../../../Boost//boost-thread-dll
         ../../../fost-base/Cpp/fost-core/
-        ../../../fost-base/Cpp/fost-jsondb/
-        ../../../fost-base/Cpp/fost-schema/
+        ../../../fost-orm/Cpp/fost-jsondb/
+        ../../../fost-orm/Cpp/fost-schema/
         ../fost-python/
         connection.cpp
         jcursor.cpp
