@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import unittest, urllib, urllib2, urlparse, random, cookielib
-from BeautifulSoup import BeautifulSoup
+import cookielib, glob, os, random, unittest, urllib, urllib2, urlparse
+from BeautifulSoup import BeautifulSoup, HTMLParseError
 from Fost.internet.useragent import agent
 
 import Fost.settings
@@ -31,27 +31,25 @@ class Spider(object):
             class Test(unittest.TestCase):
                 def fetch(self, fetch, data = None):
                     try:
-                        response = spider.agent.fetch(fetch, data)
-                        if response.url != url and spider.url_data(url)['remaining']:
-                            self.url_data(url)['remaining'] -= 1
-                        if response.headers['Content-Type'].split(';')[0] == 'text/html':
-                            response.soup = BeautifulSoup(response.read())
-                        else:
-                            response.soup = BeautifulSoup('')
-                        return response
+                        def error_display(m, e):
+                            if data:
+                                self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
+                            elif data == "":
+                                self.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s" % (fetch, e, url))
+                            else:
+                                self.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s" % (fetch, e, url))
+                        return spider.agent.process(fetch, spider.url_data(fetch), data)
                     except urllib2.HTTPError, e:
-                        if int(str(e).split()[2][0:3]) == spider.pages[fetch].get('status', 200):
+                        if int(str(e).split()[2][0:3]) == spider.url_data(fetch).get('status', 200):
                             # This is OK -- the status matches what we're expecting
                             class response(object):
                                 soup = BeautifulSoup('')
                                 url = fetch
                             return response()
-                        elif data:
-                            self.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
-                        elif data == "":
-                            self.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s" % (fetch, e, url))
                         else:
-                            self.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s" % (fetch, e, url))
+                            error_display("HTTP error", unicode(e))
+                    except HTMLParseError, e:
+                        error_display("HTML parse error", unicode(e))
                 def queue_links(self, response):
                     soup = response.soup
                     # Check links in a random order
@@ -66,9 +64,15 @@ class Spider(object):
                     # Look for forms to submit
                     if spider.url_data(response.url).get('use_forms', True):
                         for form in soup.findAll('form'):
+                            spider_url_data = spider.url_data(response.url)
+                            form_id = form.get('id', form.get('name', None))
+                            if form_id and spider_url_data.has_key('forms') and spider_url_data['forms'].has_key(form_id):
+                                form_data = spider_url_data['forms'][form_id]
+                            else:
+                                form_data = spider_url_data
                             submit, query = build_form_query(self, form, response.url)
-                            if spider.url_data(response.url).has_key('data'):
-                                for k, v in spider.url_data(response.url)['data'].items():
+                            if form_data.has_key('data'):
+                                for k, v in form_data['data'].items():
                                     query[k] = v
                             if submit:
                                 if form.get('method', 'get').lower() == 'get':
@@ -106,7 +110,7 @@ def test_response(test, response):
     return response
 
 
-def build_form_query(test, form, base_url):
+def build_form_query(test, form, base_url, form_data = {}, submit_button = None):
     query, submits, radios = {}, [], {}
     test.assert_(form.has_key('action') and form['action'], u'Empty action in %s' % form)
     for ta in form.findAll('textarea'):
@@ -115,12 +119,13 @@ def build_form_query(test, form, base_url):
         if len(ta.contents) == 1:
             [query[ta['name']]] = ta.contents
     for inp in form.findAll('input'):
-        if inp['type'] == "submit":
+        input_type = inp.get('type', 'text')
+        if input_type == "submit":
             submits.append(inp)
-        elif inp['type'] == "checkbox":
+        elif input_type == "checkbox":
             if inp.has_key('checked') and not inp.get('disabled', 'false').lower() == 'true':
                 query[inp['name']] = inp.get('value', "")
-        elif not inp['type'] == "reset":
+        elif not input_type == "reset":
             test.assert_(inp.has_key('name'), u'%s in %s' % (inp, base_url))
             query[inp['name']] = inp.get('value', "")
     for select in form.findAll('select'):
@@ -138,36 +143,43 @@ def build_form_query(test, form, base_url):
     return False, query
 
 
-def main(config_file=None, host=None, **kwargs):
+def main(path=None, host=None, **kwargs):
     """
         This spider will start off running queries that it finds in a JSON configuration file.
     """
     print "Havok spider - Copyright (C) 2008-2009 Felspar Co Ltd."
-    # Load configuration
-    from Fost.json import root as jroot, jsonblob
-    if config_file:
-        configuration = jsonblob(config_file)
-    else:
-        configuration = jsonblob()
-    local = configuration.local
-    # Base URL configuration
-    if local.has_key(jroot/"url"):
-        fostsettings["Spider", "host"] = local[jroot/"url"]
-    if host:
-        fostsettings["Spider", "host"] = host
-    # Number of tests configuration
-    if local.has_key(jroot/"count"):
-        fostsettings["Spider", "Count"] = local[jroot/"count"]
-    if kwargs.has_key('t'):
-        fostsettings["Spider", "Count"] = int(kwargs['t'])
-    # Make spider and run
-    spider = Spider(
-        local[ jroot / "urls" ] if local.has_key(jroot/"urls") else ['/'],
-        local[ jroot / "pages" ] if local.has_key(jroot/"pages") else {}
-    )
-    if local.has_key(jroot/'fost_authentication'):
-        spider.agent.fost_authenticate(
-            local[jroot/'fost_authentication'/'key'], local[jroot/'fost_authentication'/'secret'],
-            local[jroot/'fost_authentication'/'headers']
+    def run_blob(config_file):
+        local_settings = Fost.settings.database()
+        # Load configuration
+        from Fost.json import root as jroot, jsonblob
+        if config_file:
+            configuration = jsonblob(config_file)
+        else:
+            configuration = jsonblob()
+        local = configuration.local
+        # Base URL configuration
+        if local.has_key(jroot/"url"):
+            local_settings["Spider", "host"] = local[jroot/"url"]
+        if host:
+            local_settings["Spider", "host"] = host
+        # Number of tests configuration
+        if local.has_key(jroot/"count"):
+            local_settings["Spider", "Count"] = local[jroot/"count"]
+        if kwargs.has_key('t'):
+            local_settings["Spider", "Count"] = int(kwargs['t'])
+        # Make spider and run
+        spider = Spider(
+            local[jroot / "urls"] if local.has_key(jroot/"urls") else ['/'],
+            local[jroot / "pages"] if local.has_key(jroot/"pages") else {}
         )
-    spider.run_suite()
+        if local.has_key(jroot/'fost_authentication'):
+            spider.agent.fost_authenticate(
+                local[jroot/'fost_authentication'/'key'], local[jroot/'fost_authentication'/'secret'],
+                local[jroot/'fost_authentication'/'headers']
+            )
+        spider.run_suite()
+    if os.path.isdir(path):
+        for infile in glob.glob(os.path.join(path, '*.json')):
+            run_blob(infile)
+    else:
+        run_blob(path)
