@@ -7,7 +7,7 @@
 import cookielib, datetime, urllib2, urlparse
 from Fost.crypto import sha1_hmac
 from Fost.settings import database
-from _internet import url_filespec_encode
+from _internet import url_filespec_encode, url_filespec_asssert_valid
 
 
 def fetch(*args, **kwargs):
@@ -31,6 +31,9 @@ class agent(object):
         self.fost['headers'] = headers
 
     def fetch(self, url, data = None, headers = {}):
+        """
+            Fetches a single URL using either GET or POST depending on whether a body (data) is present
+        """
         if len(self.fost):
             signed, signed_headers = 'X-FOST-Headers', []
             for header, value in self.fost['headers'].items():
@@ -38,8 +41,10 @@ class agent(object):
                 signed_headers.append(value)
                 headers[ header ] = value
             utcnow = unicode(datetime.datetime.utcnow())
+            path = urlparse.urlsplit(url).path
+            url_filespec_assert_valid(path)
             document = '%s %s\n%s\n%s\n%s' % (
-                "POST" if data else "GET", url_filespec_encode(urlparse.urlsplit(url).path),
+                "POST" if data else "GET", path,
                 utcnow,
                 '\n'.join([signed] + signed_headers),
                 data or urlparse.urlsplit(url).query
@@ -49,3 +54,15 @@ class agent(object):
             headers['Authorization'] = "FOST %s:%s" % (self.fost['key'], sha1_hmac(self.fost['secret'], document))
             #print document
         return self.opener.open(urllib2.Request(url, data, headers))
+
+    def process(self, url, configuration, data):
+        """
+            Processes a JSON request configuration starting at the specified URL with the specified body
+        """
+        from BeautifulSoup import BeautifulSoup
+        response = self.fetch(url, data, configuration.get("headers", {}))
+        if configuration.get("parse_result", True) and response.headers['Content-Type'].split(';')[0] == 'text/html':
+            response.soup = BeautifulSoup(response.read())
+        else:
+            response.soup = BeautifulSoup('')
+        return response
