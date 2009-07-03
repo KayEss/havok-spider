@@ -21,3 +21,6 @@ _internet.url_filespec_asssert_valid("abc")
 _internet.url_filespec_asssert_valid("abc/def")
 check_throw(_internet.url_filespec_asssert_valid, "abc def")
 
+assert _internet.x_www_form_urlencoded({}) == "", _internet.x_www_form_urlencoded({})
+assert _internet.x_www_form_urlencoded({'a':12}) == "a=12", _internet.x_www_form_urlencoded({})
+assert _internet.x_www_form_urlencoded({'a':'b'}) == "a=b", _internet.x_www_form_urlencoded({})
