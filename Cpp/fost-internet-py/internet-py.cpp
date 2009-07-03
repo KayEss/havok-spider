@@ -13,13 +13,6 @@
 using namespace fostlib;
 
 
-namespace {
-    void url_filespec_asssert_valid( const std::string &s ) {
-        url::filepath_string_tag::check_encoded( ascii_string( s ) );
-    }
-}
-
-
 BOOST_PYTHON_MODULE( _internet ) {
     using namespace boost::python;
     python_string_registration();
@@ -27,4 +20,6 @@ BOOST_PYTHON_MODULE( _internet ) {
 
     def( "url_filespec_encode", url_filespec_encode );
     def( "url_filespec_asssert_valid", url_filespec_asssert_valid );
+
+    def( "x_www_form_urlencoded", x_www_form_urlencoded );
 }
