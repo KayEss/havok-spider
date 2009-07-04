@@ -1,0 +1,12 @@
+
+python-extension _schema :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-python-dll
+        ../../../Boost//boost-thread-dll
+        ../../../fost-base/Cpp/fost-core/
+        ../../../fost-orm/Cpp/fost-schema/
+        ../fost-python/
+        schema-py.cpp
+    ;
+
+py-install _schema : Fost/schema/ ;
