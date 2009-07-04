@@ -9,4 +9,6 @@ python-extension _schema :
         schema-py.cpp
     ;
 
+run-test metainstance-test : _schema metainstance-test.py ;
+
 py-install _schema : Fost/schema/ ;
