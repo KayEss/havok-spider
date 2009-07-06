@@ -7,7 +7,7 @@
 import cookielib, datetime, urllib2, urlparse
 from Fost.crypto import sha1_hmac
 from Fost.settings import database
-from _internet import url_filespec_encode, url_filespec_asssert_valid
+from _internet import url_filespec_encode, url_filespec_assert_valid
 
 
 def fetch(*args, **kwargs):
