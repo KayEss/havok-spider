@@ -17,9 +17,9 @@ def check_throw(f, *args, **kwargs):
 assert _internet.url_filespec_encode("abc") == "abc"
 assert _internet.url_filespec_encode("abc ") == "abc%20"
 
-_internet.url_filespec_asssert_valid("abc")
-_internet.url_filespec_asssert_valid("abc/def")
-check_throw(_internet.url_filespec_asssert_valid, "abc def")
+_internet.url_filespec_assert_valid("abc")
+_internet.url_filespec_assert_valid("abc/def")
+check_throw(_internet.url_filespec_assert_valid, "abc def")
 
 assert _internet.x_www_form_urlencoded({}) == "", _internet.x_www_form_urlencoded({})
 assert _internet.x_www_form_urlencoded({'a':12}) == "a=12", _internet.x_www_form_urlencoded({})
