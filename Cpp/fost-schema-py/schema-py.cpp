@@ -24,7 +24,8 @@ BOOST_PYTHON_MODULE( _schema ) {
     >(
         "enclosure", init< string >()
     )
-        .def("fq_name", &meta_instance::fq_name )
+        .def(init<const enclosure &, string >())
+        .def("fq_name", &meta_instance::fq_name)
     ;
 
     class_<

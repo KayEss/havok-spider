@@ -6,6 +6,7 @@ import _schema
 """
 hello = _schema.enclosure("hello")
 assert hello.fq_name('.') == "hello", hello.fq_name('.')
+assert _schema.enclosure(hello, "there").fq_name('.') == "hello.there", _schema.enclosure(hello, "there").fq_name('.')
 
 world = _schema.meta_instance(hello, "world")
 assert world.fq_name('.') == "hello.world", world.fq_name('.')
