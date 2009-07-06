@@ -10,6 +10,6 @@
 
 
 std::string url_filespec_encode( const fostlib::string &s );
-void url_filespec_assert_valid( const std::string &s );
+void url_filespec_assert_valid( const fostlib::string &s );
 
 std::string x_www_form_urlencoded( const fostlib::json &j );
