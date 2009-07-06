@@ -70,7 +70,7 @@ build-project Python/ ;
 import path ;
 install ../dist/lib/python/site-packages/Fost
     :
-        [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
+        [ path.glob-tree Python/Fost : *.* : .svn *.py~ *.pyc *.so ]
     :
         <install-source-root>Python/Fost
     ;
