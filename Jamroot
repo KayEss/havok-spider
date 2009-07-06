@@ -55,7 +55,7 @@ rule py-install ( pyd : location )
             <target-os>windows:<install-dependencies>on
         ;
 
-    local loc = "../../../dist/lib/python2.6/site-packages/" $(location) ;
+    local loc = "../../../dist/lib/python/site-packages/" $(location) ;
     install $(loc:J) : $(pyd) ;
 }
 
@@ -68,7 +68,7 @@ build-project Cpp/fost-fpython/ ;
 build-project Python/ ;
 
 import path ;
-install ../dist/lib/python2.6/site-packages/Fost
+install ../dist/lib/python/site-packages/Fost
     :
         [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
     :
