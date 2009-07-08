@@ -6,7 +6,7 @@
 */
 
 
-#include <fost/inet>
+#include <fost/internet>
 
 
 std::string url_filespec_encode( const fostlib::string &s );

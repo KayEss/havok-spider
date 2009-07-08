@@ -6,7 +6,7 @@ python-extension _internet :
         ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../fost-base/Cpp/fost-core/
-        ../../../fost-base/Cpp/fost-inet/
+        ../../../fost-internet/Cpp/fost-inet/
         ../fost-python/
         internet-py.cpp
         url.cpp

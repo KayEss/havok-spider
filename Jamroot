@@ -9,6 +9,7 @@ project
         <include>$(BOOST_HEADERS)
         <target-os>windows:<include>../OpenSSL/install/include/
         <include>../fost-base/Cpp/include/
+        <include>../fost-internet/Cpp/include/
         <include>../fost-orm/Cpp/include/
         <threading>multi
         <runtime-link>shared
