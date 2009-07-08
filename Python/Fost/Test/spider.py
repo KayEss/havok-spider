@@ -48,7 +48,8 @@ class Spider(object):
     def run_suite(self):
         unittest.TextTestRunner().run(self.suite)
 
-    def addTest(spider, url, data=None):
+    def addTest(spider, url, data=None, ql = queue_links, url_data = None):
+        if not url_data: url_data = spider.url_data
         if url[0]=='/':
             url = urlparse.urljoin(fostsettings["Spider", "host"], url)
             if not spider.pages.has_key(url):
@@ -58,12 +59,12 @@ class Spider(object):
         class Test(unittest.TestCase):
             def __init__(self, *args, **kwargs):
                 super(Test, self).__init__(*args, **kwargs)
-                self.links = queue_links
+                self.links = ql
             def fetch(self, fetch, data = None):
                 try:
                     response = spider.agent.fetch(fetch, data)
-                    if response.url != url and spider.url_data(url)['remaining']:
-                        spider.url_data(url)['remaining'] -= 1
+                    if response.url != url and url_data(url)['remaining']:
+                        url_data(url)['remaining'] -= 1
                     if response.headers['Content-Type'].split(';')[0] == 'text/html':
                         response.soup = BeautifulSoup(response.read())
                     else:
@@ -81,11 +82,11 @@ class Spider(object):
                 except Exception, e:
                     print_error(self, fetch, e, url, data)
             def process(self, response):
-                soup = spider.links(spider, response)
+                soup = self.links(spider, response)
                 # Look for forms to submit
-                if spider.url_data(response.url).get('use_forms', True):
+                if url_data(response.url).get('use_forms', True):
                     for form in soup.findAll('form'):
-                        spider_url_data = spider.url_data(response.url)
+                        spider_url_data = url_data(response.url)
                         form_id = form.get('id', form.get('name', None))
                         if form_id and spider_url_data.has_key('forms') and spider_url_data['forms'].has_key(form_id):
                             form_data = spider_url_data['forms'][form_id]
@@ -109,6 +110,19 @@ class Spider(object):
             if spider.url_data(url)['remaining']:
                 spider.url_data(url)['remaining'] -= 1
                 spider.addTest(url, data)
+
+    def test_form(spider, url, form_id, data = {}, check_fn = lambda r: (True, 'No error')):
+        url_data = {
+            'use_forms': True,
+            form_id: {
+                'data': data
+            },
+        }
+        def post_get(spider, response):
+            ok, error = check_fn(response)
+            assert ok, error or "Check function returned False"
+            return response.soup
+        spider.addTest(url, None, post_get, lambda u: url_data)
 
 spider_instance = Spider()
 
