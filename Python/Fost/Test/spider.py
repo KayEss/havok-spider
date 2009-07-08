@@ -37,8 +37,9 @@ class SpiderStep(object):
                 # This is OK -- the status matches what we're expecting
                 class response(object):
                     soup = BeautifulSoup('')
-                    url = url
-                return response()
+                    def __init__(self, u):
+                        self.url = u
+                return response(url)
             raise
 
 
@@ -93,7 +94,7 @@ class Spider(object):
                             if form.get('method', 'get').lower() == 'get':
                                 spider.spider_test(urlparse.urljoin(response.url, u'%s?%s' % (form['action'], x_www_form_urlencoded(query))))
                             else:
-                                self.links(spider, self.fetch(urlparse.urljoin(response.url, form['action']), x_www_form_urlencoded(query)))
+                                self.links(spider, SpiderStep().fetch(spider, urlparse.urljoin(response.url, form['action']), x_www_form_urlencoded(query)))
             def runTest(self):
                 self.process(SpiderStep().fetch(spider, url, data))
         spider.suite.addTest(Test())
