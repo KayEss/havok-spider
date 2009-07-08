@@ -39,7 +39,7 @@ class SpiderStep(object):
                     soup = BeautifulSoup('')
                     url = url
                 return response()
-            raise e
+            raise
 
 
 class Spider(object):
