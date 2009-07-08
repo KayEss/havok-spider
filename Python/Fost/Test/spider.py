@@ -19,13 +19,27 @@ def queue_links(spider, response):
 def ignore_links(spider, response):
     return response.soup
 
-def print_error(test, fetch, e, url, data):
-    if data:
-        test.assert_(False, u"HTTP error with POST against %s with data\n%s\nBase URL %s\n%s" % (fetch, e, url, data))
-    elif data == "":
-        test.assert_(False, u"HTTP error with POST against %s with empty data\n%s\nBase URL %s" % (fetch, e, url))
-    else:
-        test.assert_(False, u"HTTP error with GET against %s\n%s\nBase URL %s" % (fetch, e, url))
+
+class SpiderStep(object):
+    def fetch(self, spider, url, data = None):
+        try:
+            response = spider.agent.fetch(url, data)
+            if response.url != url and url_data(url)['remaining']:
+                url_data(url)['remaining'] -= 1
+            if response.headers['Content-Type'].split(';')[0] == 'text/html':
+                response.soup = BeautifulSoup(response.read())
+            else:
+                response.soup = BeautifulSoup('')
+            return response
+        except urllib2.HTTPError, e:
+            status = int(str(e).split()[2][0:3])
+            if status in spider.pages[url].get('status', [200, 301, 302, 303]):
+                # This is OK -- the status matches what we're expecting
+                class response(object):
+                    soup = BeautifulSoup('')
+                    url = url
+                return response()
+            raise e
 
 
 class Spider(object):
@@ -60,27 +74,6 @@ class Spider(object):
             def __init__(self, *args, **kwargs):
                 super(Test, self).__init__(*args, **kwargs)
                 self.links = ql
-            def fetch(self, fetch, data = None):
-                try:
-                    response = spider.agent.fetch(fetch, data)
-                    if response.url != url and url_data(url)['remaining']:
-                        url_data(url)['remaining'] -= 1
-                    if response.headers['Content-Type'].split(';')[0] == 'text/html':
-                        response.soup = BeautifulSoup(response.read())
-                    else:
-                        response.soup = BeautifulSoup('')
-                    return response
-                except urllib2.HTTPError, e:
-                    if int(str(e).split()[2][0:3]) in spider.pages[fetch].get('status', [200, 301, 302, 303]):
-                        # This is OK -- the status matches what we're expecting
-                        class response(object):
-                            soup = BeautifulSoup('')
-                            url = fetch
-                        return response()
-                    else:
-                        print_error(self, fetch, e, url, data)
-                except Exception, e:
-                    print_error(self, fetch, e, url, data)
             def process(self, response):
                 soup = self.links(spider, response)
                 # Look for forms to submit
@@ -102,7 +95,7 @@ class Spider(object):
                             else:
                                 self.links(spider, self.fetch(urlparse.urljoin(response.url, form['action']), x_www_form_urlencoded(query)))
             def runTest(self):
-                self.process(self.fetch(url, data))
+                self.process(SpiderStep().fetch(spider, url, data))
         spider.suite.addTest(Test())
 
     def spider_test(spider, url, data=None):
