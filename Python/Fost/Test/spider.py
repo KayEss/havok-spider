@@ -26,7 +26,8 @@ class SpiderStep(object):
             response = spider.agent.fetch(url, data)
             if response.url != url and url_data(url)['remaining']:
                 url_data(url)['remaining'] -= 1
-            if response.headers['Content-Type'].split(';')[0] == 'text/html':
+            mime_type = response.headers['Content-Type'].split(';')[0]
+            if mime_type == 'text/html' or mime_type == 'text/xml':
                 response.soup = BeautifulSoup(response.read())
             else:
                 response.soup = BeautifulSoup('')
