@@ -20,30 +20,6 @@ def ignore_links(spider, response):
     return response.soup
 
 
-class SpiderStep(object):
-    def fetch(self, spider, url, data = None):
-        try:
-            response = spider.agent.fetch(url, data)
-            if response.url != url and url_data(url)['remaining']:
-                url_data(url)['remaining'] -= 1
-            mime_type = response.headers['Content-Type'].split(';')[0]
-            if mime_type == 'text/html' or mime_type == 'text/xml':
-                response.soup = BeautifulSoup(response.read())
-            else:
-                response.soup = BeautifulSoup('')
-            return response
-        except urllib2.HTTPError, e:
-            status = int(str(e).split()[2][0:3])
-            if status in spider.pages[url].get('status', [200, 301, 302, 303]):
-                # This is OK -- the status matches what we're expecting
-                class response(object):
-                    soup = BeautifulSoup('')
-                    def __init__(self, u):
-                        self.url = u
-                return response(url)
-            raise
-
-
 class Spider(object):
     def __init__(self, urls = [], visited = {}, links = queue_links):
         self.agent = agent()
@@ -95,9 +71,13 @@ class Spider(object):
                             if form.get('method', 'get').lower() == 'get':
                                 spider.spider_test(urlparse.urljoin(response.url, u'%s?%s' % (form['action'], x_www_form_urlencoded(query))))
                             else:
-                                self.links(spider, SpiderStep().fetch(spider, urlparse.urljoin(response.url, form['action']), x_www_form_urlencoded(query)))
+                                self.links(spider, spider.agent.process(
+                                    urlparse.urljoin(response.url, form['action']),
+                                    spider_url_data,
+                                    x_www_form_urlencoded(query)
+                                ))
             def runTest(self):
-                self.process(SpiderStep().fetch(spider, url, data))
+                self.process(spider.agent.process(url, spider.url_data(url), data))
         spider.suite.addTest(Test())
 
     def spider_test(spider, url, data=None):
