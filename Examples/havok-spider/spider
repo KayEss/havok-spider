@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR=`dirname $0`
 
-export PYTHONPATH=$DIR/../../Python/
+export PYTHONPATH=$DIR/../../../dist/lib/python/site-packages/
 export LD_LIBRARY_PATH=$DIR/../../../dist/lib/
 $DIR/../../../dist/bin/fpython $DIR/../../Python/Fost/Test/spider.py $*

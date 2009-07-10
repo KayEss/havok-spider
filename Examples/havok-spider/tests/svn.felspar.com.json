@@ -3,10 +3,10 @@
     "count": 10,
     "pages": {
         "/private/" : {
-            "status": 401
+            "status": [401]
         },
         "/partners/": {
-            "status": 401
+            "status": [401]
         }
     },
     "urls": [
