@@ -65,8 +65,10 @@ class agent(object):
             url = urlparse.urljoin(self.url, url)
             from BeautifulSoup import BeautifulSoup
             response = self.fetch(url, data, configuration.get("headers", {}))
-            mime_type = response.headers['Content-Type'].split(';')[0]
-            if configuration.get("parse_result", True) and mime_type  == 'text/html':
+            response.mime_type = response.headers['Content-Type'].split(';')[0]
+            if configuration.get("parse_result", True) and (
+                response.mime_type  == 'text/html' or response.mime_type == 'text/xml'
+            ):
                 response.soup = BeautifulSoup(response.read())
             else:
                 response.soup = BeautifulSoup('')
