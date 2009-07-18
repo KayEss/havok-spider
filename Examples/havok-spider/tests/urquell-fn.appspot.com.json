@@ -1,0 +1,15 @@
+{
+    "url": "http://urquell-fn.appspot.com/",
+    "count": 100,
+    "pages": {
+	"/lib/throw/": {
+            "status": [500]
+        },
+        "/lib/combinator/S/": {
+            "status": [500]
+        }
+    },
+    "urls": [
+        "/"
+    ]
+}
