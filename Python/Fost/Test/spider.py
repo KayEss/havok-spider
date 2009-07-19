@@ -48,37 +48,44 @@ class Spider(object):
                 spider.pages[url] = dict()
             if not spider.pages[url].has_key('remaining'):
                 spider.pages[url]['remaining'] = 1
-        class Test(unittest.TestCase):
-            def __init__(self, *args, **kwargs):
-                super(Test, self).__init__(*args, **kwargs)
-                self.links = ql
-            def process(self, response):
-                soup = self.links(spider, response)
-                # Look for forms to submit
-                if url_data(response.url).get('use_forms', True):
-                    for form in soup.findAll('form'):
-                        spider_url_data = url_data(response.url)
-                        form_id = form.get('id', form.get('name', None))
-                        if form_id and spider_url_data.has_key('forms') and spider_url_data['forms'].has_key(form_id):
-                            form_data = spider_url_data['forms'][form_id]
+        
+        def test_process(self, response):
+            soup = self.links(spider, response)
+            # Look for forms to submit
+            if url_data(response.url).get('use_forms', True):
+                for form in soup.findAll('form'):
+                    spider_url_data = url_data(response.url)
+                    form_id = form.get('id', form.get('name', None))
+                    if form_id and spider_url_data.has_key('forms') and spider_url_data['forms'].has_key(form_id):
+                        form_data = spider_url_data['forms'][form_id]
+                    else:
+                        form_data = spider_url_data
+                    submit, query = build_form_query(self, form, response.url)
+                    if form_data.has_key('data'):
+                        for k, v in form_data['data'].items():
+                            query[k] = v
+                    if submit:
+                        if form.get('method', 'get').lower() == 'get':
+                            spider.spider_test(urlparse.urljoin(response.url, u'%s?%s' % (form['action'], x_www_form_urlencoded(query))))
                         else:
-                            form_data = spider_url_data
-                        submit, query = build_form_query(self, form, response.url)
-                        if form_data.has_key('data'):
-                            for k, v in form_data['data'].items():
-                                query[k] = v
-                        if submit:
-                            if form.get('method', 'get').lower() == 'get':
-                                spider.spider_test(urlparse.urljoin(response.url, u'%s?%s' % (form['action'], x_www_form_urlencoded(query))))
-                            else:
-                                self.links(spider, spider.agent.process(
-                                    urlparse.urljoin(response.url, form['action']),
-                                    spider_url_data,
-                                    x_www_form_urlencoded(query)
-                                ))
-            def runTest(self):
-                self.process(spider.agent.process(url, spider.url_data(url), data))
-        spider.suite.addTest(Test())
+                            self.links(spider, spider.agent.process(
+                                urlparse.urljoin(response.url, form['action']),
+                                spider_url_data,
+                                x_www_form_urlencoded(query)
+                            ))
+        def test_runTest(self):
+            self.process(spider.agent.process(url, spider.url_data(url), data))
+
+        testtype = type(str(url), (unittest.TestCase,), dict(
+            process = test_process,
+            runTest = test_runTest,
+        ))
+        def test_constructor(self, *args, **kwargs):
+            super(testtype, self).__init__(*args, **kwargs)
+            self.links = ql
+        testtype.__init__ = test_constructor
+
+        spider.suite.addTest(testtype())
 
     def spider_test(spider, url, data=None):
         if spider.suite.countTestCases() < fostsettings["Spider", "Count"]:
