@@ -13,16 +13,31 @@
         "/lib/mul": {"status": [500]},
         "/lib/sub": {"status": [500]},
         "/lib/throw": {"status": [500]},
+        "/lib/unresolve": {"status": [500]},
         "/lib/combinator/I": {"status": [500]},
         "/lib/combinator/K": {"status": [500]},
         "/lib/combinator/S": {"status": [500]},
         "/lib/http/get": {"status": [500]},
         "/lib/http/headers": {"status": [500]},
-        "/lib/http/status": {"status": [500]}
+        "/lib/http/status": {"status": [500]},
+
+        "/no_url_at_this_location": {"status": [404]}
     },
     "urls": [
         "/",
-        "/lib/add/1/2",
-        "/lib/add/1/2/4/5/5/6"
+        "/lib/add/1",
+        "/lib/add/1/2/3/4/5/6",
+        "/lib/call/*LsRUxMs0/hello/world",
+        "/lib/call/*N698-V54/lib",
+        "/lib/call_trace/*LsRUxMs0/hello/world",
+        "/lib/call_trace/*N698-V54/lib/http",
+        "/lib/div/1",
+        "/lib/fn/urquell-fn.appspot.com/lib/fn",
+        "/lib/if/1/0",
+        "/lib/mul/2",
+        "/lib/sub/1",
+        "/lib/unresolve/LsRUxMs0",
+
+        "/no_url_at_this_location"
     ]
 }
