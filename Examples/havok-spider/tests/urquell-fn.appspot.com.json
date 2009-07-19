@@ -2,14 +2,27 @@
     "url": "http://urquell-fn.appspot.com/",
     "count": 100,
     "pages": {
-	"/lib/throw/": {
-            "status": [500]
-        },
-        "/lib/combinator/S/": {
-            "status": [500]
-        }
+        "/lib/add": {"status": [500]},
+        "/lib/bind": {"status": [500]},
+        "/lib/call": {"status": [500]},
+        "/lib/call_trace": {"status": [500]},
+        "/lib/div": {"status": [500]},
+        "/lib/fn": {"status": [500]},
+        "/lib/if": {"status": [500]},
+        "/lib/map": {"status": [500]},
+        "/lib/mul": {"status": [500]},
+        "/lib/sub": {"status": [500]},
+        "/lib/throw": {"status": [500]},
+        "/lib/combinator/I": {"status": [500]},
+        "/lib/combinator/K": {"status": [500]},
+        "/lib/combinator/S": {"status": [500]},
+        "/lib/http/get": {"status": [500]},
+        "/lib/http/headers": {"status": [500]},
+        "/lib/http/status": {"status": [500]}
     },
     "urls": [
-        "/"
+        "/",
+        "/lib/add/1/2",
+        "/lib/add/1/2/4/5/5/6"
     ]
 }
