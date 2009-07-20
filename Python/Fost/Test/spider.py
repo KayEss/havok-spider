@@ -48,7 +48,7 @@ class Spider(object):
                 spider.pages[url] = dict()
             if not spider.pages[url].has_key('remaining'):
                 spider.pages[url]['remaining'] = 1
-        
+
         def test_process(self, response):
             soup = self.links(spider, response)
             # Look for forms to submit
@@ -148,7 +148,7 @@ def build_form_query(test, form, base_url, form_data = {}, submit_button = None)
         if input_type == "submit":
             submits.append(inp)
         elif input_type == "checkbox":
-            if inp.has_key('checked') and not inp.get('disabled', 'false').lower() == 'true':
+            if inp.has_key('checked') and inp.get('disabled', 'false').lower() != 'true':
                 query[inp['name']] = inp.get('value', "")
         elif not input_type == "reset":
             test.assert_(inp.has_key('name'), u'%s in %s' % (inp, base_url))
