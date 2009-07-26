@@ -34,6 +34,6 @@ BOOST_PYTHON_MODULE( _schema ) {
     >(
         "meta_instance", init< string >()
     )
-    .def(init<const enclosure &, string >())
+        .def(init<const enclosure &, string >())
     ;
 }
