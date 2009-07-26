@@ -9,6 +9,7 @@ project
         <include>$(BOOST_HEADERS)
         <target-os>windows:<include>../OpenSSL/install/include/
         <include>../fost-base/Cpp/include/
+        <include>../fost-internet/Cpp/include/
         <include>../fost-orm/Cpp/include/
         <include>Cpp/include/
 
@@ -47,6 +48,8 @@ rule py-install ( pyd : location )
         :
             <target-os>linux:<install-type>LIB
             <target-os>linux:<install-dependencies>on
+            <target-os>darwin:<install-type>LIB
+            <target-os>darwin:<install-dependencies>on
             <target-os>windows:<install-type>XXX
         ;
 
@@ -57,7 +60,7 @@ rule py-install ( pyd : location )
             <target-os>windows:<install-dependencies>on
         ;
 
-    local loc = "../../../dist/lib/python2.6/site-packages/" $(location) ;
+    local loc = "../../../dist/lib/python/site-packages/" $(location) ;
     install $(loc:J) : $(pyd) ;
 }
 
@@ -71,9 +74,9 @@ build-project Cpp/fost-fpython/ ;
 build-project Python/ ;
 
 import path ;
-install ../dist/lib/python2.6/site-packages/Fost
+install ../dist/lib/python/site-packages/Fost
     :
-        [ path.glob-tree Python/Fost : *.* : .svn *.pyc *.so ]
+        [ path.glob-tree Python/Fost : *.* : .svn *.py~ *.pyc *.so ]
     :
         <install-source-root>Python/Fost
     ;

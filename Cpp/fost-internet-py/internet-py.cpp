@@ -19,7 +19,7 @@ BOOST_PYTHON_MODULE( _internet ) {
     python_json_registration();
 
     def( "url_filespec_encode", url_filespec_encode );
-    def( "url_filespec_asssert_valid", url_filespec_asssert_valid );
+    def( "url_filespec_assert_valid", url_filespec_assert_valid );
 
     def( "x_www_form_urlencoded", x_www_form_urlencoded );
 }

@@ -7,7 +7,7 @@
 import cookielib, datetime, urllib2, urlparse
 from Fost.crypto import sha1_hmac
 from Fost.settings import database
-from _internet import url_filespec_encode, url_filespec_asssert_valid
+from _internet import url_filespec_encode, url_filespec_assert_valid
 
 
 def fetch(*args, **kwargs):
@@ -15,7 +15,8 @@ def fetch(*args, **kwargs):
 
 
 class agent(object):
-    def __init__(self):
+    def __init__(self, base = "http://localhost/"):
+        self.url = base
         # Fost settings for authentication
         self.fost = {}
         # Enable cookie jar
@@ -53,16 +54,32 @@ class agent(object):
             headers['X-FOST-Headers'] = signed
             headers['Authorization'] = "FOST %s:%s" % (self.fost['key'], sha1_hmac(self.fost['secret'], document))
             #print document
+        self.url = url
         return self.opener.open(urllib2.Request(url, data, headers))
 
-    def process(self, url, configuration, data):
+    def process(self, url, configuration = {"parse_result":True}, data = None):
         """
             Processes a JSON request configuration starting at the specified URL with the specified body
         """
-        from BeautifulSoup import BeautifulSoup
-        response = self.fetch(url, data, configuration.get("headers", {}))
-        if configuration.get("parse_result", True) and response.headers['Content-Type'].split(';')[0] == 'text/html':
-            response.soup = BeautifulSoup(response.read())
-        else:
-            response.soup = BeautifulSoup('')
-        return response
+        try:
+            url = urlparse.urljoin(self.url, url)
+            from BeautifulSoup import BeautifulSoup
+            response = self.fetch(url, data, configuration.get("headers", {}))
+            response.mime_type = response.headers['Content-Type'].split(';')[0]
+            if configuration.get("parse_result", True) and (
+                response.mime_type  == 'text/html' or response.mime_type == 'text/xml'
+            ):
+                response.soup = BeautifulSoup(response.read())
+            else:
+                response.soup = BeautifulSoup('')
+            return response
+        except urllib2.HTTPError, e:
+            status = int(str(e).split()[2][0:3])
+            if status in configuration.get('status', [200, 301, 302, 303]):
+                # This is OK -- the status matches what we're expecting
+                class response(object):
+                    soup = BeautifulSoup('')
+                    def __init__(self, u):
+                        self.url = u
+                return response(url)
+            raise
