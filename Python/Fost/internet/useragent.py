@@ -35,6 +35,7 @@ class agent(object):
         """
             Fetches a single URL using either GET or POST depending on whether a body (data) is present
         """
+        self.url = urlparse.urljoin(self.url, url)
         if len(self.fost):
             signed, signed_headers = 'X-FOST-Headers', []
             for header, value in self.fost['headers'].items():
@@ -42,34 +43,33 @@ class agent(object):
                 signed_headers.append(value)
                 headers[ header ] = value
             utcnow = unicode(datetime.datetime.utcnow())
-            path = urlparse.urlsplit(url).path
+            path = urlparse.urlsplit(self.url).path
             url_filespec_assert_valid(path)
             document = '%s %s\n%s\n%s\n%s' % (
                 "POST" if data else "GET", path,
                 utcnow,
                 '\n'.join([signed] + signed_headers),
-                data or urlparse.urlsplit(url).query
+                data or urlparse.urlsplit(self.url).query
             )
             headers['X-FOST-Timestamp'] = utcnow
             headers['X-FOST-Headers'] = signed
             headers['Authorization'] = "FOST %s:%s" % (self.fost['key'], sha1_hmac(self.fost['secret'], document))
             #print document
-        self.url = url
-        return self.opener.open(urllib2.Request(url, data, headers))
+        return self.opener.open(urllib2.Request(self.url, data, headers))
 
     def process(self, url, configuration = {"parse_result":True}, data = None):
         """
             Processes a JSON request configuration starting at the specified URL with the specified body
         """
         try:
-            url = urlparse.urljoin(self.url, url)
             from BeautifulSoup import BeautifulSoup
             response = self.fetch(url, data, configuration.get("headers", {}))
             response.mime_type = response.headers.get('Content-Type', ';').split(';')[0]
+            response.body = response.read()
             if configuration.get("parse_result", True) and (
                 response.mime_type  == 'text/html' or response.mime_type == 'text/xml'
             ):
-                response.soup = BeautifulSoup(response.read())
+                response.soup = BeautifulSoup(response.body)
             else:
                 response.soup = BeautifulSoup('')
             return response
@@ -79,6 +79,7 @@ class agent(object):
                 # This is OK -- the status matches what we're expecting
                 class response(object):
                     soup = BeautifulSoup('')
+                    body = ''
                     def __init__(self, u):
                         self.url = u
                 return response(url)
