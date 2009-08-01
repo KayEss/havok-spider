@@ -54,6 +54,6 @@ cat description.txt >>$FOST_PY_PACKAGE/DEBIAN/control
 
 fakeroot dpkg-deb --build $FOST_PY_PACKAGE
 #lintian $FOST_PY_PACKAGE.deb
-mv -f $FOST_PY_PACKAGE.deb ../../../dist
+mv -f $FOST_PY_PACKAGE.deb ../../..
 
 #rm -rf $FOST_PY_PACKAGE
