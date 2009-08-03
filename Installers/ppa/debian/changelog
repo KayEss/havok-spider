@@ -1,5 +1,5 @@
-fost-py (4.09.09.36213-1) unstable; urgency=low
+fost-py (4.09.09.36207-1) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release for testing PPA builds
 
  -- Kirit Saelensminde <kirit@felspar.com>  Sat, 01 Aug 2009 15:39:02 +0700
