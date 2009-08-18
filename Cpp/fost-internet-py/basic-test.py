@@ -26,3 +26,9 @@ _internet.url_filespec_assert_valid(u"abc/def")
 assert _internet.x_www_form_urlencoded({}) == "", _internet.x_www_form_urlencoded({})
 assert _internet.x_www_form_urlencoded({'a':12}) == "a=12", _internet.x_www_form_urlencoded({})
 assert _internet.x_www_form_urlencoded({'a':'b'}) == "a=b", _internet.x_www_form_urlencoded({})
+
+assert unicode(_internet.url()) == "http://localhost/", unicode(_internet.url())
+
+request = _internet.ua_request("PUT", _internet.url())
+assert request.method == "PUT", request.method
+assert unicode(request.url) == "http://localhost/", unicode(request.url)
