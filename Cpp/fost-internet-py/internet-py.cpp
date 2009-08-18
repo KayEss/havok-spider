@@ -22,4 +22,23 @@ BOOST_PYTHON_MODULE( _internet ) {
     def( "url_filespec_assert_valid", url_filespec_assert_valid );
 
     def( "x_www_form_urlencoded", x_www_form_urlencoded );
+
+    class_< url >(
+        "url", init< optional< string > >()
+    )
+        .def("__unicode__", url_to_string)
+    ;
+
+    class_<
+        http::user_agent::request, std::auto_ptr< http::user_agent::request >, boost::noncopyable
+    >(
+        "ua_request", init< string, url >()
+    )
+        .add_property("method",
+            accessors_getter< http::user_agent::request, const string, &http::user_agent::request::method >
+        )
+        .add_property("url",
+            accessors_getter< http::user_agent::request, const url, &http::user_agent::request::address >
+        )
+    ;
 }

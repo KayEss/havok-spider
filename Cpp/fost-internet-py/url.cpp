@@ -7,7 +7,6 @@
 
 
 #include "url.hpp"
-#include <fost/exception/not_implemented.hpp>
 
 
 using namespace fostlib;
@@ -26,4 +25,9 @@ std::string x_www_form_urlencoded( const json &j ) {
     for ( json::const_iterator i = j.begin(); i != j.end(); ++i )
         qs.append( coerce< string >( i.key() ), coerce< string >( *i ) );
     return qs.as_string().value( ascii_string() ).underlying();
+}
+
+
+fostlib::string url_to_string(const url &u) {
+    return coerce< string >( u );
 }
