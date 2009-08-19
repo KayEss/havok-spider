@@ -7,6 +7,8 @@
 
 
 #include "url.hpp"
+#include <fost/http>
+#include <boost/lambda/bind.hpp>
 
 
 using namespace fostlib;
@@ -28,10 +30,19 @@ std::string x_www_form_urlencoded( const json &j ) {
 }
 
 
-fostlib::string url_to_fostlib_string(const url &u) {
+string url_to_fostlib_string(const url &u) {
     return coerce< string >( u );
 }
+url url_join(const url &u, const string &r) {
+    return url(u, coerce< url::filepath_string >(r));
+}
 
+
+void ua_fost_authenticate(http::user_agent &ua, const string &key, const string &secret) {
+    ua.authentication(boost::function< void ( fostlib::http::user_agent::request& ) >(boost::lambda::bind(
+        fostlib::http::fost_authentication, key, secret, std::set< fostlib::string >(), boost::lambda::_1
+    )));
+}
 
 string ua_response_body(const http::user_agent::response &response) {
     const mime &body = response.body();
