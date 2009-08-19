@@ -42,4 +42,7 @@ assert response.status == 302, response.status
 assert response.message == "Found", response.message
 assert not len(response.body), response.body
 
-ua = _internet.user_agent(_internet.url())
+ua = _internet.user_agent(_internet.url("http://svn.felspar.com/"))
+response = ua(_internet.ua_request("GET", ua.base("/public/")))
+assert unicode(response.url) == "http://svn.felspar.com/public/", unicode(response.url)
+assert response.status == 200, response.status

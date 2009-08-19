@@ -27,12 +27,13 @@ BOOST_PYTHON_MODULE( _internet ) {
         "url", init< optional< string > >()
     )
         .def("__unicode__", url_to_fostlib_string)
+        .def("__call__", url_join)
     ;
 
     class_<
         http::user_agent::request, std::auto_ptr< http::user_agent::request >, boost::noncopyable
     >(
-        "ua_request", init< string, url >()
+        "ua_request", init< string, url, optional< string > >()
     )
         .add_property("method",
             accessors_getter< http::user_agent::request, string, &http::user_agent::request::method >
@@ -71,6 +72,10 @@ BOOST_PYTHON_MODULE( _internet ) {
         "user_agent", init< optional< url > >()
     )
         .def("__call__", &http::user_agent::operator ())
+        .add_property("base",
+            accessors_getter< http::user_agent, url, &http::user_agent::base >
+        )
+        .def("fost_authenticate", ua_fost_authenticate)
     ;
 
 }
