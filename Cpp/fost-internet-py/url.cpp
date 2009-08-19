@@ -28,6 +28,6 @@ std::string x_www_form_urlencoded( const json &j ) {
 }
 
 
-fostlib::string url_to_string(const url &u) {
+fostlib::string url_to_fostlib_string(const url &u) {
     return coerce< string >( u );
 }
