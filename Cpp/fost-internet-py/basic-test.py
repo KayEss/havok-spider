@@ -32,3 +32,13 @@ assert unicode(_internet.url()) == "http://localhost/", unicode(_internet.url())
 request = _internet.ua_request("PUT", _internet.url())
 assert request.method == "PUT", request.method
 assert unicode(request.url) == "http://localhost/", unicode(request.url)
+
+ua = _internet.user_agent()
+response = ua(_internet.ua_request("HEAD", _internet.url("http://www.google.com/")))
+assert unicode(response.url) == "http://www.google.com/", unicode(response.url)
+assert response.method == "HEAD", response.method
+assert response.protocol == "HTTP/1.0", response.protocol
+assert response.status == 302, response.status
+assert response.message == "Found", response.message
+
+ua = _internet.user_agent(_internet.url())

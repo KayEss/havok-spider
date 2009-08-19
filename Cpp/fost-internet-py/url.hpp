@@ -14,4 +14,4 @@ void url_filespec_assert_valid( const fostlib::string &s );
 
 std::string x_www_form_urlencoded( const fostlib::json &j );
 
-fostlib::string url_to_string(const fostlib::url &u);
+fostlib::string url_to_fostlib_string(const fostlib::url &u);
