@@ -62,6 +62,7 @@ BOOST_PYTHON_MODULE( _internet ) {
         .add_property("message",
             accessors_getter< http::user_agent::response, const string, &http::user_agent::response::message >
         )
+        .add_property("body", ua_response_body)
     ;
 
     class_<

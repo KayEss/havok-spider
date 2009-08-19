@@ -31,3 +31,12 @@ std::string x_www_form_urlencoded( const json &j ) {
 fostlib::string url_to_fostlib_string(const url &u) {
     return coerce< string >( u );
 }
+
+
+string ua_response_body(const http::user_agent::response &response) {
+    const mime &body = response.body();
+    if ( dynamic_cast< const text_body * >( &body ) )
+        return dynamic_cast< const text_body & >( body ).text();
+    else
+        throw exceptions::not_implemented("ua_response_body(const http::user_agent::response &response) for non text responses");
+}

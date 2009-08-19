@@ -37,8 +37,9 @@ ua = _internet.user_agent()
 response = ua(_internet.ua_request("HEAD", _internet.url("http://www.google.com/")))
 assert unicode(response.url) == "http://www.google.com/", unicode(response.url)
 assert response.method == "HEAD", response.method
-assert response.protocol == "HTTP/1.0", response.protocol
+assert response.protocol.startswith("HTTP/"), response.protocol
 assert response.status == 302, response.status
 assert response.message == "Found", response.message
+assert not len(response.body), response.body
 
 ua = _internet.user_agent(_internet.url())
