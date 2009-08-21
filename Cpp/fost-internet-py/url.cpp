@@ -47,7 +47,7 @@ void ua_fost_authenticate(http::user_agent &ua, const string &key, const string 
 string ua_response_body(const http::user_agent::response &response) {
     const mime &body = response.body();
     if ( dynamic_cast< const text_body * >( &body ) )
-        return dynamic_cast< const text_body & >( body ).text();
+        return coerce< string >(dynamic_cast< const text_body & >( body ).text());
     else
         throw exceptions::not_implemented("ua_response_body(const http::user_agent::response &response) for non text responses");
 }
