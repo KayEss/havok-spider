@@ -52,7 +52,7 @@ class Spider(object):
         def test_process(self, response):
             soup = self.links(spider, response)
             # Look for forms to submit
-            if url_data(response.url).get('use_forms', True):
+            if soup and url_data(response.url).get('use_forms', True):
                 for form in soup.findAll('form'):
                     spider_url_data = url_data(response.url)
                     form_id = form.get('id', form.get('name', None))
