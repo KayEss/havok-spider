@@ -2,7 +2,7 @@
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../dist/lib
 
-cd ..
+cd `dirname $0`/..
 if ./compile $*
 then {
     cd Python

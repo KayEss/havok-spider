@@ -6,8 +6,8 @@
 */
 
 
-#include <fost/main>
 #include <fost/python>
+#include <fost/main>
 
 
 FSL_MAIN_INTERPRETER(

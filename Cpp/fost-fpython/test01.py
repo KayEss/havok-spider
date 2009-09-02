@@ -6,3 +6,5 @@
 
 print "Test 01"
 
+def main():
+    print "Test 01"

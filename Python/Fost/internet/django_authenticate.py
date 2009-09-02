@@ -18,8 +18,8 @@ class Authenticate:
             #print kwargs['key'], kwargs['hmac']
             request = kwargs['request']
             d, now = datetime.datetime.strptime(request.META['HTTP_X_FOST_TIMESTAMP'][:19], '%Y-%m-%d %H:%M:%S'), datetime.datetime.utcnow()
-            if max(d - now, now - d) < datetime.timedelta(0, 15) and db.has_key('Django authentication middleware', kwargs['key']):
-                import urllib
+            delta = datetime.timedelta(0, 300) # TODO: Read from settings DB
+            if max(d - now, now - d) < delta and db.has_key('Django authentication middleware', kwargs['key']):
                 document = '%s %s\n%s\n%s\n%s' % (
                     request.method, url_filespec_encode(request.path),
                     request.META['HTTP_X_FOST_TIMESTAMP'],
