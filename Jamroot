@@ -30,15 +30,26 @@ rule py-install ( pyd : location )
     install $(loc:J) : $(pyd) ;
 }
 
+
 fost-install-loc .. : ../Boost//boost-python-dll ;
 build-project Cpp/fost-crypto-py/ ;
 build-project Cpp/fost-fpython/ ;
 build-project Cpp/fost-internet-py/ ;
 build-project Cpp/fost-json-py/ ;
-build-project Cpp/fost-python ;
+build-project Cpp/fost-pyhost/ ;
+build-project Cpp/fost-pyhost-test/ ;
+build-project Cpp/fost-python/ ;
 build-project Cpp/fost-python-test/ ;
 build-project Cpp/fost-settings-py/ ;
+build-project Cpp/fost-wsgi/ ;
 build-project Python/ ;
+
+alias examples
+    :
+        Examples/wsgi/
+    ;
+explicit examples ;
+
 
 import path ;
 install ../dist/lib/python/site-packages/Fost
