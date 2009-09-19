@@ -1,26 +1,36 @@
+using testing ;
 
-exe fpython
+fost-exe fpython
     :
         ../../../Boost//boost-python-dll
         /python//python
-        ../../../fost-base/Cpp/fost-core/
-        ../../../fost-base/Cpp/fost-cli/
-        ../../Cpp/fost-python/
+        ../fost-python/
+        ../fost-pyhost/
         fpython.cpp
-    :
-        <include>../../Cpp/include
     ;
 
-install ../../../dist/bin
-    :
-        fpython
-    :
-        <install-type>EXE
-    ;
 
-install ../../../dist/lib
-    :
-        fpython
-    :
-        <install-type>LIB
-    ;
+rule run-fpython-execute ( runrule : testname ) {
+    local testfile = $(testname) ".py" ;
+    local fullname = "fpython-run-" $(testname) ;
+    $(runrule) fpython
+        :
+        :
+            $(testfile:J)
+        :
+        :
+            $(fullname:J)
+        ;
+}
+
+rule run-fpython-fail ( testname ) {
+    run-fpython-execute run-fail : $(testname) ;
+}
+
+rule run-fpython ( testname ) {
+    run-fpython-execute  run : $(testname) ;
+}
+
+run-fpython test01 ;
+run-fpython test02 ;
+run-fpython-fail test03 ;

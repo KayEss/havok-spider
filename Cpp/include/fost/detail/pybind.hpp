@@ -34,6 +34,14 @@ namespace fostlib {
     */
     FOST_PYTHON_DECLSPEC void python_json_registration();
 
+    /*
+        Allow meta accessors to be mapped to properties or methods
+    */
+    template< typename O, typename V, accessors< V > O::*a >
+    V accessors_getter(const O *o) {
+        return (o->*a)();
+    }
+
 
 }
 

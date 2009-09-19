@@ -1,6 +1,7 @@
 
 python-extension _internet :
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
         ../../../Boost//boost-python-dll
         ../../../Boost//boost-regex-dll
         ../../../Boost//boost-system-dll
@@ -12,6 +13,9 @@ python-extension _internet :
         url.cpp
     :
         <include>../include/
+        <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+        <target-os>linux:<source>../../../fost-base/External//openssl
+        <target-os>darwin:<source>../../../fost-base/External//openssl
     ;
 
 run-test basic-test : _internet basic-test.py ;

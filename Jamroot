@@ -1,36 +1,19 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
+include ../fost-base/fost.jam ;
 
 using python ;
+use-project Boost : ../Boost ;
+use-project fost-base : ../fost-base ;
+use-project fost-internet : ../fost-internet ;
+use-project fost-orm : ../fost-orm ;
 
-project
+fost-project fost-py
     :
-        requirements
-        <include>$(BOOST_HEADERS)
-        <target-os>windows:<include>../OpenSSL/install/include/
-        <include>../fost-base/Cpp/include/
-        <include>../fost-internet/Cpp/include/
-        <include>../fost-orm/Cpp/include/
-        <include>Cpp/include/
-
-        <threading>multi
-        <runtime-link>shared
-
-        <target-os>windows:<exception-handling>on
-        <target-os>windows:<asynch-exceptions>on
-        <target-os>windows:<extern-c-nothrow>off
-        <target-os>windows:<debug-symbols>on
-        <target-os>windows:<debug-store>database
-
-        <target-os>windows:<define>WIN32
-        <target-os>windows:<define>_AFXDLL
-        <target-os>windows:<define>UNICODE
-        <target-os>windows:<define>_UNICODE
-    :
-        default-build debug
-    :
-        build-dir $(BUILD_DIRECTORY)
+        <include>../fost-internet/Cpp/include
+        <include>../fost-orm/Cpp/include
     ;
+
 
 # A little "rule" (function) to clean up the syntax of declaring tests
 # of these extension modules.
@@ -43,35 +26,32 @@ rule run-test ( test-name : sources + )
 # An install rule for the Python libs
 rule py-install ( pyd : location )
 {
-    install ../../../dist/lib :
-            $(pyd)
-        :
-            <target-os>linux:<install-type>LIB
-            <target-os>linux:<install-dependencies>on
-            <target-os>darwin:<install-type>LIB
-            <target-os>darwin:<install-dependencies>on
-            <target-os>windows:<install-type>XXX
-        ;
-
-    install ../../../dist/bin :
-            $(pyd)
-        :
-            <target-os>windows:<install-type>LIB
-            <target-os>windows:<install-dependencies>on
-        ;
-
     local loc = "../../../dist/lib/python/site-packages/" $(location) ;
     install $(loc:J) : $(pyd) ;
 }
 
-build-project Cpp/fost-python-test/ ;
+
+fost-install-loc .. : ../Boost//boost-python-dll ;
 build-project Cpp/fost-crypto-py/ ;
+build-project Cpp/fost-fpython/ ;
 build-project Cpp/fost-internet-py/ ;
 build-project Cpp/fost-json-py/ ;
+build-project Cpp/fost-pyhost/ ;
+build-project Cpp/fost-pyhost-test/ ;
+build-project Cpp/fost-python/ ;
+build-project Cpp/fost-python-test/ ;
 build-project Cpp/fost-schema-py/ ;
 build-project Cpp/fost-settings-py/ ;
-build-project Cpp/fost-fpython/ ;
+build-project Cpp/fost-wsgi/ ;
+build-project Cpp/fost-wsgi-test/ ;
 build-project Python/ ;
+
+alias examples
+    :
+        Examples/wsgi/
+    ;
+explicit examples ;
+
 
 import path ;
 install ../dist/lib/python/site-packages/Fost
