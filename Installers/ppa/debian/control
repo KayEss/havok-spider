@@ -1,0 +1,18 @@
+Source: fost-py
+Section: unknown
+Priority: extra
+Maintainer: Kirit Saelensminde <kirit@felspar.com>
+Build-Depends: debhelper (>= 7), libbz2-dev, libssl-dev, libzip-dev, python-dev, uuid-dev
+Standards-Version: 3.8.0
+Homepage: http://support.felspar.com/Project:/Fost/fost-py
+
+Package: fost-py
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Complete Fost 4 with Python bindings
+ <insert long description, indented with spaces>
+
+Package: fost-py-doc
+Architecture: all
+Description: documentation for fost-py
+ <insert long description, indented with spaces>
