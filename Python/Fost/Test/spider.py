@@ -4,8 +4,11 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
 
-import cookielib, glob, os, random, unittest, urllib, urllib2, urlparse
-from BeautifulSoup import BeautifulSoup
+import glob
+import os
+import random
+import unittest
+import urlparse
 from Fost.internet import x_www_form_urlencoded
 from Fost.internet.useragent import agent
 
@@ -18,41 +21,71 @@ def queue_links(spider, response):
     links = soup.findAll('a')
     random.shuffle(links)
     for link in links:
-        if link.has_key('href') and not link['href'].startswith('http') and not link['href'].startswith('/__'):
-            spider.spider_test(urlparse.urljoin(response.url, link['href']))
+        if link.has_key('href'):
+            href = link['href']
+            if not (
+                href.startswith('http') \
+                or href.startswith('/__')
+            ):
+                spider.spider_test(urlparse.urljoin(response.url, href))
     return soup
 def ignore_links(spider, response):
     return response.soup
 
-
 class Spider(object):
-    def __init__(self, urls = [], visited = {}, links = queue_links):
-        self.agent = agent()
+    """
+    Does two things:
+        Crawls through pages looking for forms and links.
+        Tests the pages by filling in the forms and loading links.
+    """
+    def __init__(
+            self,
+            urls = [],
+            visited = {},
+            links = queue_links, # what does this do?
+            stop_redirects = True, # passed onto agent
+            host = None, # defaults to the FOST setting
+        ):
+        self.agent = agent(stop_redirects = stop_redirects)
         self.suite = unittest.TestSuite()
-        self.pages = dict([(urlparse.urljoin(fostsettings["Spider", "host"], url), v) for url, v in visited.items()])
-        [self.spider_test(urlparse.urljoin(fostsettings["Spider", "host"], url)) for url in urls]
+        self.pages = dict()
+        if not host:
+            host = fostsettings["Spider", "host"]
+        self.host = host
+        from functools import partial
+        test_url = partial(urlparse.urljoin, host)
+        for url, v in visited.items():
+            self.pages[test_url(url)] = v
+        for url in urls:
+            self.spider_test(test_url(url))
         self.links = queue_links
+
+    def _check_page(self, url):
+        self.pages.setdefault(url, dict()).setdefault('remaining', 1)
 
     def url_data(self, url):
         if url.find('?') > 0:
             url = url[:url.find('?')]
-        if not self.pages.has_key(url):
-            self.pages[url] = dict()
-        if not self.pages[url].has_key('remaining'):
-            self.pages[url]['remaining'] = 1
+        self._check_page(url)
         return self.pages[url]
 
     def run_suite(self):
         unittest.TextTestRunner().run(self.suite)
 
-    def addTest(spider, url, data=None, ql = queue_links, url_data = None):
-        if not url_data: url_data = spider.url_data
+    def addTest(
+            spider,
+            url,
+            data = None,
+            ql = queue_links,
+            url_data = None
+        ):
+        if not url_data:
+            url_data = spider.url_data
         if url[0]=='/':
-            url = urlparse.urljoin(fostsettings["Spider", "host"], url)
-            if not spider.pages.has_key(url):
-                spider.pages[url] = dict()
-            if not spider.pages[url].has_key('remaining'):
-                spider.pages[url]['remaining'] = 1
+            url = urlparse.urljoin(spider.host, url)
+            spider._check_page(url)
+        else:
+            raise Exception("URLs must be absolute")
 
         def test_process(self, response):
             soup = self.links(spider, response)
@@ -61,13 +94,38 @@ class Spider(object):
                 for form in soup.findAll('form'):
                     spider_url_data = url_data(response.url)
                     form_id = form.get('id', form.get('name', None))
-                    if form_id and spider_url_data.has_key('forms') and spider_url_data['forms'].has_key(form_id):
+                    if form_id \
+                        and spider_url_data.has_key('forms') \
+                        and spider_url_data['forms'].has_key(form_id):
                         form_data = spider_url_data['forms'][form_id]
                     else:
                         form_data = spider_url_data
-                    spider.process_form(response, form, form_data, lambda s, r: r.soup)
+                    submit, query = build_form_query(self, form, response.url)
+                    if form_data.has_key('data'):
+                        for k, v in form_data['data'].items():
+                            query[k] = v
+                    if submit:
+                        if form.get('method', 'get').lower() == 'get':
+                            spider.spider_test(
+                                urlparse.urljoin(
+                                    response.url,
+                                    u'%s?%s' % (
+                                        form['action'],
+                                        x_www_form_urlencoded(query)
+                                    )
+                                )
+                            )
+                        else:
+                            self.links(spider, spider.agent.process(
+                                urlparse.urljoin(
+                                    response.url,
+                                    form['action']
+                                ),
+                                spider_url_data,
+                                x_www_form_urlencoded(query)
+                            ))
         def test_runTest(self):
-            self.process(spider.agent.process(url, spider.url_data(url), data))
+            self.process(spider.agent.process(url, url_data(url), data))
 
         testtype = type(str(url), (unittest.TestCase,), dict(
             process = test_process,
@@ -77,8 +135,8 @@ class Spider(object):
             super(testtype, self).__init__(*args, **kwargs)
             self.links = ql
         testtype.__init__ = test_constructor
-
-        spider.suite.addTest(testtype())
+        test = testtype()
+        spider.suite.addTest(test)
 
     def spider_test(spider, url, data=None):
         if spider.suite.countTestCases() < fostsettings["Spider", "Count"]:
@@ -143,7 +201,7 @@ def test_response(test, response):
     return response
 
 
-def build_form_query(test, form, base_url, form_data = {}):
+def build_form_query(spider, form, base_url, form_data = {}, submit_button = None):
     query, submits, radios = {}, [], {}
     assert form.has_key('action') and form['action'], u'Empty action in %s' % form
     for ta in form.findAll('textarea'):
@@ -151,16 +209,19 @@ def build_form_query(test, form, base_url, form_data = {}):
         assert len(ta.contents) <= 1, u"Content of a textarea should just be some text\n" % ta.contents
         if len(ta.contents) == 1:
             [query[ta['name']]] = ta.contents
+
     for inp in form.findAll('input'):
         input_type = inp.get('type', 'text')
         if input_type == "submit":
             submits.append(inp)
         elif input_type == "checkbox":
-            if inp.has_key('checked') and inp.get('disabled', 'false').lower() != 'true':
+            if inp.has_key('checked') \
+                and inp.get('disabled', 'false').lower() != 'true':
                 query[inp['name']] = inp.get('value', "")
         elif not input_type == "reset":
             assert inp.has_key('name'), u'%s in %s' % (inp, base_url)
             query[inp['name']] = inp.get('value', "")
+
     for select in form.findAll('select'):
         assert select.has_key('name'), u'Select in form at %s has no name\n%s' % (base_url, select)
         options = select.findAll('option')
@@ -181,7 +242,8 @@ def build_form_query(test, form, base_url, form_data = {}):
 
 def main(path=None, host=None, **kwargs):
     """
-        This spider will start off running queries that it finds in a JSON configuration file.
+        This spider will start off running queries that it finds in a JSON
+        configuration file.
     """
     print "Havok spider - Copyright (C) 2008-2009 Felspar Co Ltd."
     def run_blob(config_file):
@@ -210,7 +272,8 @@ def main(path=None, host=None, **kwargs):
         )
         if local.has_key(jroot/'fost_authentication'):
             spider.agent.fost_authenticate(
-                local[jroot/'fost_authentication'/'key'], local[jroot/'fost_authentication'/'secret'],
+                local[jroot/'fost_authentication'/'key'],
+                local[jroot/'fost_authentication'/'secret'],
                 local[jroot/'fost_authentication'/'headers']
             )
         spider.run_suite()
