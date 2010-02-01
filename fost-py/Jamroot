@@ -26,8 +26,7 @@ rule run-test ( test-name : sources + )
 # An install rule for the Python libs
 rule py-install ( pyd : location )
 {
-    local loc = "../../../dist/lib/python/site-packages/" $(location) ;
-    install $(loc:J) : $(pyd) ;
+    install $(location) : $(pyd) : <location>$(TOP)/../dist/lib/python/site-packages/$(location) ;
 }
 
 
@@ -61,11 +60,3 @@ alias examples
     ;
 explicit examples ;
 
-
-import path ;
-install ../dist/lib/python/site-packages/Fost
-    :
-        [ path.glob-tree Python/Fost : *.* : .svn *.py~ *.pyc *.so ]
-    :
-        <install-source-root>Python/Fost
-    ;
