@@ -1,0 +1,73 @@
+path-constant TOP : . ;
+include $(TOP)/../boost-version.jam ;
+include ../fost-base/fost.jam ;
+
+using python ;
+use-project Boost : ../Boost ;
+use-project fost-base : ../fost-base ;
+use-project fost-internet : ../fost-internet ;
+use-project fost-orm : ../fost-orm ;
+
+fost-project fost-py
+    :
+        <include>../fost-internet/Cpp/include
+        <include>../fost-orm/Cpp/include
+    ;
+
+
+# A little "rule" (function) to clean up the syntax of declaring tests
+# of these extension modules.
+rule run-test ( test-name : sources + )
+{
+    import testing ;
+    testing.make-test run-pyd : $(sources) : : $(test-name) ;
+}
+
+# An install rule for the Python libs
+rule py-install ( pyd : location )
+{
+    install $(location) : $(pyd) : <location>$(TOP)/../dist/lib/python/site-packages/$(location) ;
+}
+
+
+alias examples :
+        ../fost-base//examples
+        ../fost-internet//examples
+        ../fost-orm//examples
+        Examples/wsgi/
+    ;
+explicit examples ;
+
+alias fost :
+        ../fost-base//fost
+        ../fost-internet//fost
+        ../fost-orm//fost
+        Cpp
+        Cpp/fost-crypto-py
+        Cpp/fost-fpython
+        Cpp/fost-internet-py
+        Cpp/fost-json-py
+        Cpp/fost-pyhost
+        Cpp/fost-python
+        Cpp/fost-schema-py
+        Cpp/fost-settings-py
+        Cpp/fost-wsgi
+        Python
+    ;
+
+alias tests :
+        ../fost-base//tests
+        ../fost-internet//tests
+        ../fost-orm//tests
+        Cpp/fost-pyhost-test
+        Cpp/fost-python-test
+        Cpp/fost-wsgi-test
+    ;
+explicit tests ;
+
+alias all :
+        fost
+        tests
+        examples
+    ;
+explicit all ;

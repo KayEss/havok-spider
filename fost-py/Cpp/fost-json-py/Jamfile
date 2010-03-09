@@ -1,0 +1,22 @@
+
+python-extension _json_fost :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-python-dll
+        ../../../Boost//boost-thread-dll
+        ../../../fost-base/Cpp/fost-core/
+        ../../../fost-orm/Cpp/fost-jsondb/
+        ../../../fost-orm/Cpp/fost-schema/
+        ../fost-python/
+        connection.cpp
+        jcursor.cpp
+        jsonblob.cpp
+        json-py.cpp
+    :
+        <include>../include/
+    ;
+
+run-test basic-test : _json_fost basic-test.py ;
+run-test jcursor-test : _json_fost jcursor-test.py ;
+run-test jsondb-test : _json_fost jsondb-test.py ;
+
+py-install _json_fost : Fost/json/ ;
