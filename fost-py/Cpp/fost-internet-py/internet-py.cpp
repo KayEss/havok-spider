@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,6 +7,8 @@
 
 
 #include <fost/python>
+#include "agent.hpp"
+#include "mail.hpp"
 #include "url.hpp"
 
 
@@ -23,6 +25,13 @@ BOOST_PYTHON_MODULE( _internet ) {
 
     def( "x_www_form_urlencoded", x_www_form_urlencoded );
 
+    class_< host > (
+        "host", init< string, optional< int > >()
+    )
+        .add_property("name", &host::name)
+        .def("__unicode__", coerce< string, host >)
+    ;
+
     class_< url >(
         "url", init< optional< string > >()
     )
@@ -31,37 +40,56 @@ BOOST_PYTHON_MODULE( _internet ) {
     ;
 
     class_<
-        http::user_agent::request, std::auto_ptr< http::user_agent::request >, boost::noncopyable
+        http::user_agent::request,
+        std::auto_ptr< http::user_agent::request >,
+        boost::noncopyable
     >(
         "ua_request", init< string, url, optional< string > >()
     )
         .add_property("method",
-            accessors_getter< http::user_agent::request, string, &http::user_agent::request::method >
+            accessors_getter<
+                http::user_agent::request, string,
+                &http::user_agent::request::method >
         )
         .add_property("url",
-            accessors_getter< http::user_agent::request, url, &http::user_agent::request::address >
+            accessors_getter<
+                http::user_agent::request, url,
+                &http::user_agent::request::address >
         )
+        .add_property("data", ua_request_data)
     ;
 
     class_<
-        http::user_agent::response, std::auto_ptr< http::user_agent::response >, boost::noncopyable
+        http::user_agent::response,
+        std::auto_ptr< http::user_agent::response >,
+        boost::noncopyable
     >(
         "ua_response", no_init
     )
         .add_property("method",
-            accessors_getter< http::user_agent::response, const string, &http::user_agent::response::method >
+            accessors_getter<
+                http::user_agent::response, const string,
+                &http::user_agent::response::method >
         )
         .add_property("url",
-            accessors_getter< http::user_agent::response, const url, &http::user_agent::response::address >
+            accessors_getter<
+                http::user_agent::response, const url,
+                &http::user_agent::response::address >
         )
         .add_property("protocol",
-            accessors_getter< http::user_agent::response, const string, &http::user_agent::response::protocol >
+            accessors_getter<
+                http::user_agent::response, const string,
+                &http::user_agent::response::protocol >
         )
         .add_property("status",
-            accessors_getter< http::user_agent::response, const int, &http::user_agent::response::status >
+            accessors_getter<
+                http::user_agent::response, const int,
+                    &http::user_agent::response::status >
         )
         .add_property("message",
-            accessors_getter< http::user_agent::response, const string, &http::user_agent::response::message >
+            accessors_getter<
+                http::user_agent::response, const string,
+                &http::user_agent::response::message >
         )
         .add_property("body", ua_response_body)
     ;
@@ -78,4 +106,6 @@ BOOST_PYTHON_MODULE( _internet ) {
         .def("fost_authenticate", ua_fost_authenticate)
     ;
 
+    def("iterate_pop3_mailbox", iterate_pop3_mailbox_string_host);
+    def("iterate_pop3_mailbox", iterate_pop3_mailbox);
 }

@@ -9,7 +9,9 @@ python-extension _internet :
         ../../../fost-base/Cpp/fost-core/
         ../../../fost-internet/Cpp/fost-inet/
         ../fost-python/
+        agent.cpp
         internet-py.cpp
+        mail.cpp
         url.cpp
     :
         <include>../include/

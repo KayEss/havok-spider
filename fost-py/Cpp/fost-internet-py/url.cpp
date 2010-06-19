@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,7 +8,6 @@
 
 #include "url.hpp"
 #include <fost/http>
-#include <boost/lambda/bind.hpp>
 
 
 using namespace fostlib;
@@ -37,23 +36,9 @@ url url_join(const url &u, const string &r) {
     std::pair< string, nullable< string > > parts = partition(r, "?");
     url ret(u, coerce< url::filepath_string >(parts.first));
     if ( !parts.second.isnull() )
-        ret.query() = url::query_string(parts.second.value());;
+        ret.query() = url::query_string(coerce<ascii_printable_string>(
+            parts.second.value()
+        ));
     return ret;
 }
 
-
-void ua_fost_authenticate(http::user_agent &ua, const string &key, const string &secret) {
-    ua.authentication(boost::function< void ( fostlib::http::user_agent::request& ) >(boost::lambda::bind(
-        fostlib::http::fost_authentication, key, secret, std::set< fostlib::string >(), boost::lambda::_1
-    )));
-}
-
-string ua_response_body(const http::user_agent::response &response) {
-    const mime &body = response.body();
-    if ( dynamic_cast< const text_body * >( &body ) )
-        return coerce< string >(dynamic_cast< const text_body & >( body ).text());
-    else if ( dynamic_cast< const empty_mime * >( &body ) )
-        return string();
-    else
-        throw exceptions::not_implemented("ua_response_body(const http::user_agent::response &response) for non text responses");
-}
