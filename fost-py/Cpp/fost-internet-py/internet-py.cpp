@@ -61,7 +61,7 @@ BOOST_PYTHON_MODULE( _internet ) {
 
     class_<
         http::user_agent::response,
-        std::auto_ptr< http::user_agent::response >,
+        boost::shared_ptr< http::user_agent::response >,
         boost::noncopyable
     >(
         "ua_response", no_init
@@ -99,7 +99,7 @@ BOOST_PYTHON_MODULE( _internet ) {
     >(
         "user_agent", init< optional< url > >()
     )
-        .def("__call__", &http::user_agent::operator ())
+        .def("__call__", do_http)
         .add_property("base",
             accessors_getter< http::user_agent, url, &http::user_agent::base >
         )
