@@ -15,3 +15,6 @@ void ua_fost_authenticate(
 std::string ua_response_body(fostlib::http::user_agent::response &);
 
 fostlib::string ua_request_data(fostlib::http::user_agent::request &);
+
+boost::shared_ptr<fostlib::http::user_agent::response> do_http(
+    fostlib::http::user_agent &, fostlib::http::user_agent::request &);

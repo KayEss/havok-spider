@@ -37,3 +37,10 @@ fostlib::string ua_request_data(http::user_agent::request &request) {
         reinterpret_cast<const char *>((*request.data().begin()).second)
     );
 }
+
+boost::shared_ptr<fostlib::http::user_agent::response> do_http(
+    fostlib::http::user_agent &ua, fostlib::http::user_agent::request &r
+) {
+    return boost::shared_ptr<fostlib::http::user_agent::response>(
+        ua(r).release());
+}
