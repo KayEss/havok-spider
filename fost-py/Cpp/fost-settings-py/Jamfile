@@ -10,6 +10,6 @@ python-extension _settings :
         <include>../include/
     ;
 
-run-test pybind-test : _settings settings-test.py ;
+fost-run-py-test pybind-test : _settings settings-test.py ;
 
-py-install _settings : Fost/settings/ ;
+fost-pyd-install _settings : Fost/settings/ ;
