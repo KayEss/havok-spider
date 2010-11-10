@@ -1,3 +1,4 @@
+include ../../fost-py.jam ; # Not sure why this is needed
 
 python-extension _test :
         ../../../Boost//boost-python-dll
@@ -8,5 +9,5 @@ python-extension _test :
         <include>../include/
     ;
 
-run-test python-string-test : _test test-string.py ;
-run-test python-json-test : _test test-json.py ;
+fost-run-py-test python-string-test : _test test-string.py ;
+fost-run-py-test python-json-test : _test test-json.py ;
