@@ -147,6 +147,7 @@ class Spider(object):
     def test_form(spider, url, form_id, data = {}, check_fn = lambda s, r: r.soup):
         response = spider.agent.process(url)
         form = response.soup.find(id=form_id)
+        if not form: form = response.soup.find('form', form_id)
         spider.process_form(response, form, data, check_fn)
 
     def process_form(spider, page_response, form, data = {}, check_fn = lambda s, r: r.soup):
