@@ -1,6 +1,7 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 include ../fost-base/fost.jam ;
+include ../fost-py/fost-py.jam ;
 
 using python ;
 use-project Boost : ../Boost ;
@@ -13,21 +14,6 @@ fost-project fost-py
         <include>../fost-internet/Cpp/include
         <include>../fost-orm/Cpp/include
     ;
-
-
-# A little "rule" (function) to clean up the syntax of declaring tests
-# of these extension modules.
-rule run-test ( test-name : sources + )
-{
-    import testing ;
-    testing.make-test run-pyd : $(sources) : : $(test-name) ;
-}
-
-# An install rule for the Python libs
-rule py-install ( pyd : location )
-{
-    install $(location) : $(pyd) : <location>$(TOP)/../dist/lib/python/site-packages/$(location) ;
-}
 
 
 alias examples :

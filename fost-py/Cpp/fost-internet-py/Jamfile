@@ -20,6 +20,6 @@ python-extension _internet :
         <target-os>darwin:<source>../../../fost-base/External//openssl
     ;
 
-run-test basic-test : _internet basic-test.py ;
+fost-run-py-test basic-test : _internet basic-test.py ;
 
-py-install _internet : Fost/internet/ ;
+fost-pyd-install _internet : Fost/internet/ ;

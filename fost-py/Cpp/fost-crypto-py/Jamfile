@@ -11,6 +11,6 @@ python-extension _crypto :
         <include>../include/
     ;
 
-run-test crypto-test : _crypto crypto-test.py ;
+fost-run-py-test crypto-test : _crypto crypto-test.py ;
 
-py-install _crypto : Fost/crypto/ ;
+fost-pyd-install _crypto : Fost/crypto/ ;

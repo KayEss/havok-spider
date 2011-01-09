@@ -20,8 +20,8 @@ def fetch(*args, **kwargs):
 
 class agent(object):
     def __init__(
-            self, 
-            base = "http://localhost/", 
+            self,
+            base = "http://localhost/",
             stop_redirects = True
         ):
         self.url = base
@@ -29,7 +29,7 @@ class agent(object):
         self.fost = {}
         # Enable cookie jar
         self.cj = cookielib.LWPCookieJar()
-        
+
         chain_of_responsibility = []
         if stop_redirects:
             class RedirectStop(urllib2.HTTPRedirectHandler):
@@ -39,7 +39,7 @@ class agent(object):
         chain_of_responsibility.append(
             urllib2.HTTPCookieProcessor(self.cj)
         )
-        
+
         self.opener = urllib2.build_opener(
             *chain_of_responsibility
         )
@@ -93,9 +93,7 @@ class agent(object):
             response = self.fetch(url, data, configuration.get("headers", {}))
             response.mime_type = response.headers.get('Content-Type', ';').split(';')[0]
             response.body = response.read()
-            if configuration.get("parse_result", True) and (
-                response.mime_type  == 'text/html' or response.mime_type == 'text/xml'
-            ):
+            if configuration.get("parse_result", True) and response.mime_type.startswith('text'):
                 response.soup = BeautifulSoup(response.body)
             else:
                 response.soup = BeautifulSoup('')
@@ -105,6 +103,7 @@ class agent(object):
             if status in configuration.get('status', [200, 301, 302, 303]):
                 # This is OK -- the status matches what we're expecting
                 class response(object):
+                    status_code = status
                     soup = BeautifulSoup('')
                     body = ''
                     def __init__(self, u):

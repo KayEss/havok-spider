@@ -147,6 +147,8 @@ class Spider(object):
     def test_form(spider, url, form_id, data = {}, check_fn = lambda s, r: r.soup):
         response = spider.agent.process(url)
         form = response.soup.find(id=form_id)
+        if not form: 
+            form = response.soup.find('form', form_id)
         spider.process_form(response, form, data, check_fn)
 
     def process_form(spider, page_response, form, data = {}, check_fn = lambda s, r: r.soup):
@@ -232,6 +234,8 @@ def build_form_query(spider, form, base_url, form_data = {}, submit_button = Non
                 query[select['name']] = option['value']
         if not query.has_key(select['name']) and len(options):
             query[select['name']] = options[0]['value']
+    for button in form.findAll('button'):
+        submits.append(button)
     if len(submits):
         button = submits[random.randint(0, len(submits) - 1)]
         if button.has_key('name'):
