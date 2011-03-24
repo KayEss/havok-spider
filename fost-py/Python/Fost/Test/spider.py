@@ -84,8 +84,6 @@ class Spider(object):
         if url[0]=='/':
             url = urlparse.urljoin(spider.host, url)
             spider._check_page(url)
-        else:
-            raise Exception("URLs must be absolute")
 
         def test_process(self, response):
             soup = self.links(spider, response)
@@ -147,7 +145,7 @@ class Spider(object):
     def test_form(spider, url, form_id, data = {}, check_fn = lambda s, r: r.soup):
         response = spider.agent.process(url)
         form = response.soup.find(id=form_id)
-        if not form: 
+        if not form:
             form = response.soup.find('form', form_id)
         spider.process_form(response, form, data, check_fn)
 
