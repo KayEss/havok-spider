@@ -56,12 +56,12 @@ assert request.data == "some data", request.data # Make sure data is not consume
 
 print "Testing user_agent and ua_response - HEAD"
 ua = _internet.user_agent()
-response = ua(_internet.ua_request("HEAD", _internet.url("http://www.google.com/")))
-assert unicode(response.url) == "http://www.google.com/", unicode(response.url)
+response = ua(_internet.ua_request("HEAD", _internet.url("http://www.google.co.th/")))
+assert unicode(response.url) == "http://www.google.co.th/", unicode(response.url)
 assert response.method == "HEAD", response.method
 assert response.protocol.startswith("HTTP/"), response.protocol
-assert response.status == 302, response.status
-assert response.message in ["Found", "Moved Temporarily"], response.message
+assert response.status in [200, 302], response.status
+assert response.message in ["OK", "Found", "Moved Temporarily"], response.message
 assert not len(response.body), response.body
 
 print "Testing user_agent and ua_response - GET"
@@ -71,7 +71,7 @@ assert unicode(response.url) == "http://svn.felspar.com/public/", unicode(respon
 assert response.status == 200, response.status
 
 print "Testing pop3 mailbox iteration"
-check_throw(_internet.iterate_pop3_mailbox, 
+check_throw(_internet.iterate_pop3_mailbox,
     _internet.host("localhost"),
     lambda x: False,
     "nouser", "password"
