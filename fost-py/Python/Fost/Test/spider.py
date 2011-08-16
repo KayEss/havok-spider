@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+# Copyright 2008-2011, Felspar Co Ltd. http://support.felspar.com/
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
@@ -7,7 +7,10 @@
 import glob
 import os
 import random
-import unittest
+try:
+    import unittest2 as unittest
+except:
+    import unittest
 import urlparse
 from Fost.internet import x_www_form_urlencoded
 from Fost.internet.useragent import agent
@@ -84,8 +87,6 @@ class Spider(object):
         if url[0]=='/':
             url = urlparse.urljoin(spider.host, url)
             spider._check_page(url)
-        else:
-            raise Exception("URLs must be absolute")
 
         def test_process(self, response):
             soup = self.links(spider, response)
@@ -147,7 +148,7 @@ class Spider(object):
     def test_form(spider, url, form_id, data = {}, check_fn = lambda s, r: r.soup):
         response = spider.agent.process(url)
         form = response.soup.find(id=form_id)
-        if not form: 
+        if not form:
             form = response.soup.find('form', form_id)
         spider.process_form(response, form, data, check_fn)
 
