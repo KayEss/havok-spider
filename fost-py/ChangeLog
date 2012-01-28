@@ -1,3 +1,6 @@
+2012-01-28  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed up some build errors for the new null_ptr.
+
 2011-08-22  Kirit Saelensminde  <kirit@felspar.com>
  Made a couple of default arguments in the user agent (Python) safer.
 

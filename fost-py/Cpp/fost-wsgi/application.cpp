@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2012, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -75,7 +75,7 @@ namespace {
                     sent_first = true;
                     return from_python_str(first);
                 } else if ( current == end )
-                    return const_memory_block(NULL, NULL);
+                    return const_memory_block();
                 else
                     throw exceptions::not_implemented(
                         "wsgi_mime::const_iterator::operator () () -- subsequent parts"
