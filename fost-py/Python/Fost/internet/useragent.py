@@ -44,18 +44,20 @@ class agent(object):
             *chain_of_responsibility
         )
 
-    def fost_authenticate(self, key, secret, headers = {}):
+    def fost_authenticate(self, key, secret, headers = None):
         self.fost.update(
             key = key,
             secret = secret,
-            headers = headers
+            headers = headers or {}
         )
 
-    def fetch(self, url, data = None, headers = {}):
+    def fetch(self, url, data = None, headers = None):
         """
             Fetches a single URL using either GET or POST depending on whether
             a body (data) is present
         """
+        if not headers:
+            headers = {}
         self.url = urlparse.urljoin(self.url, url)
         if len(self.fost):
             signed, signed_headers = 'X-FOST-Headers', []
