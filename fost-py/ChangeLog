@@ -1,3 +1,6 @@
+2012-04-10  Kirit Saelensminde  <kirit@felspar.com>
+ Removed the Fost authentication middleware for Django as this is now a separate pypi package.
+
 2012-03-25  Kirit Saelensminde  <kirit@felspar.com>
  Silenced a clang warning.
 
