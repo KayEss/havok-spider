@@ -1,3 +1,6 @@
+2012-11-07  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed an order-of-destruction problem in the in-process Python host that showed up on Ubuntu Quantal/Python 2.7.
+
 2012-04-10  Kirit Saelensminde  <kirit@felspar.com>
  Removed the Fost authentication middleware for Django as this is now a separate pypi package.
 
