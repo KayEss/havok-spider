@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -17,9 +17,12 @@ namespace {
         static boost::mutex m;
         return m;
     }
-    struct host {
+    struct pyproc {
+        pyproc();
+        ~pyproc();
+    };
+    struct host : pyproc {
         host();
-        ~host();
         boost::python::object main_module;
         boost::python::dict main_namespace;
     };
@@ -27,33 +30,25 @@ namespace {
 }
 
 
-host::host() {
+pyproc::pyproc() {
     Py_Initialize();
     /*
         The followiing call allows us to use threads, but at the same time, it leaves us holding the GIL.
         This is really kind of ugly as we can't easily use a RAII pattern to manage the GIL.
     */
     PyEval_InitThreads();
-    try {
-        fostlib::python_string_registration();
-        fostlib::python_json_registration();
-
-        // We need these two to provide context for the scripts
-        main_module = boost::python::import( "__main__" );
-        main_namespace = boost::python::dict(main_module.attr( "__dict__" ));
-    } catch ( ... ) {
-        PyErr_Clear();
-        Py_Finalize();
-        throw;
-    }
 }
-host::~host() {
-    try {
-        PyErr_Clear();
-        Py_Finalize();
-    } catch ( ... ) {
-        fostlib::absorbException();
-    }
+pyproc::~pyproc() {
+    PyErr_Clear();
+    Py_Finalize();
+}
+host::host() {
+    fostlib::python_string_registration();
+    fostlib::python_json_registration();
+
+    // We need these two to provide context for the scripts
+    main_module = boost::python::import( "__main__" );
+    main_namespace = boost::python::dict(main_module.attr( "__dict__" ));
 }
 
 
