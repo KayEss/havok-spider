@@ -10,16 +10,16 @@ def test():
         This function will create only local settings which will disappear after it terminates
     """
     s = _settings.settings()
-    print s.get("Settings database tests", "Loaded base settings file")
-    assert s.has_key("Settings database tests", "Loaded base settings file")
-    assert s.get("Settings database tests", "Loaded base settings file") == True
+    print s.get("JSON", "Unparse tab width")
+    assert s.has_key("JSON", "Unparse tab width")
+    assert s.get("JSON", "Unparse tab width") == 4
 
-    s.set("Settings database tests", "Loaded base settings file", "HTML")
-    assert s.get("Settings database tests", "Loaded base settings file") == "HTML"
+    s.set("JSON", "Unparse tab width", "HTML")
+    assert s.get("JSON", "Unparse tab width") == "HTML"
 
 test()
 n = _settings.settings()
-assert n.get("Settings database tests", "Loaded base settings file") == True
+assert n.get("JSON", "Unparse tab width") == 4
 
 # Load an ini file and make sure we can read a value from it
 n.file("../fost-py/Cpp/fost-settings-py/test.ini")
