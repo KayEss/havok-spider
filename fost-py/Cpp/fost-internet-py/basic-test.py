@@ -56,8 +56,8 @@ assert request.data == "some data", request.data # Make sure data is not consume
 
 print "Testing user_agent and ua_response - HEAD"
 ua = _internet.user_agent()
-response = ua(_internet.ua_request("HEAD", _internet.url("http://www.google.co.th/")))
-assert unicode(response.url) == "http://www.google.co.th/", unicode(response.url)
+response = ua(_internet.ua_request("HEAD", _internet.url("http://www.kirit.com/")))
+assert unicode(response.url) == "http://www.kirit.com/", unicode(response.url)
 assert response.method == "HEAD", response.method
 assert response.protocol.startswith("HTTP/"), response.protocol
 assert response.status in [200, 302], response.status
