@@ -21,16 +21,16 @@ fostsettings = Fost.settings.database()
 def queue_links(spider, response):
     soup = response.soup
     # Check links in a random order
-    links = soup.findAll('a')
-    random.shuffle(links)
-    for link in links:
-        if link.has_key('href'):
-            href = link['href']
-            if not (
-                href.startswith('http') \
-                or href.startswith('/__')
-            ):
-                spider.spider_test(urlparse.urljoin(response.url, href))
+    chase = []
+    for element, attribute in [('a', 'href'), ('img', 'src'), ('script', 'src')]:
+        for link in soup.findAll(element):
+            if link.has_key(attribute):
+                href = link[attribute]
+                if not (href.startswith('http') or href.startswith('/__')):
+                    chase.append(href)
+    random.shuffle(chase)
+    for url in chase:
+        spider.spider_test(urlparse.urljoin(response.url, url))
     return soup
 def ignore_links(spider, response):
     return response.soup
