@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2008-2011, Felspar Co Ltd. http://support.felspar.com/
+# Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
@@ -26,7 +26,8 @@ def queue_links(spider, response):
         for link in soup.findAll(element):
             if link.has_key(attribute):
                 href = link[attribute]
-                if not (href.startswith('http') or href.startswith('/__')):
+                if not (href.startswith('http') or href.startswith('/__')
+                        or href.startswith('data:') or href.startswith('mailto:')):
                     chase.append(href)
     random.shuffle(chase)
     for url in chase:

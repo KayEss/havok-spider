@@ -1,5 +1,6 @@
 2014-05-29  Kirit Saelensminde  <kirit@felspar.com>
  The user agent now strips any doctype it finds before giving the result to BeautifulSoup to try to clean up.
+ Ignore data and mailto URLs when spidering.
 
 2013-10-20  Kirit Saelensminde  <kirit@felspar.com>
  The spider now tries more types of link including script and img elements.
