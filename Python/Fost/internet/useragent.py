@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+# Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
@@ -96,7 +96,11 @@ class agent(object):
             response.mime_type = response.headers.get('Content-Type', ';').split(';')[0]
             response.body = response.read()
             if configuration.get("parse_result", True) and response.mime_type.startswith('text'):
-                response.soup = BeautifulSoup(response.body)
+                if response.body.startswith("<!DOC"):
+                    response.soup = BeautifulSoup(
+                        response.body[response.body.find(">")+1:])
+                else:
+                    response.soup = BeautifulSoup(response.body)
             else:
                 response.soup = BeautifulSoup('')
             return response
