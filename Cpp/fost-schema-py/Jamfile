@@ -9,6 +9,10 @@ python-extension _schema :
         schema-py.cpp
     ;
 
-fost-run-py-test metainstance-test : _schema metainstance-test.py ;
+fost-run-py-test metainstance-test :
+        ../fost-settings-py/
+        _schema
+        metainstance-test.py
+    ;
 
 fost-pyd-install _schema : Fost/schema/ ;
