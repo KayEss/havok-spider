@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 import _schema
+import _settings
+import tempfile
+
+
+settings = _settings.settings()
+settings.set("JSON DB", "Default file location", tempfile.mkdtemp())
+
 
 """
     Check constructors
