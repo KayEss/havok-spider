@@ -1,3 +1,4 @@
+include $(TOP)/../fost-base/fost.jam ;
 
 python-extension _settings :
         ../../../Boost//boost-python-dll
@@ -8,6 +9,7 @@ python-extension _settings :
         settings.cpp
     :
         <include>../include/
+        $(TARGET_REQUIREMENTS)
     ;
 
 fost-run-py-test pybind-test : _settings settings-test.py ;
