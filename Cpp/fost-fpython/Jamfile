@@ -12,7 +12,7 @@ fost-exe fpython
 
 run fpython
     :
-        Cpp/fost-fpython/test01.py
+        ../fost-py/Cpp/fost-fpython/test01.py
     :
     :
     :
@@ -20,7 +20,7 @@ run fpython
     ;
 run fpython
     :
-        Cpp/fost-fpython/test02.py
+        ../fost-py/Cpp/fost-fpython/test02.py
     :
     :
     :
@@ -28,7 +28,7 @@ run fpython
     ;
 run-fail fpython
     :
-        Cpp/fost-fpython/test03.py
+        ../fost-py/Cpp/fost-fpython/test03.py
     :
     :
     :
