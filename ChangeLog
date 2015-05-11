@@ -1,5 +1,7 @@
 2015-05-11  Kirit Saelensminde  <kirit@felspar.com>
  Strip out auto_ptr.
+ Add a new test so we can check the version of Python we're using.
+ Alter the fpython tests so they don't rebuild the host for each one.
 
 2015-05-10  Kirit Saelensminde  <kirit@felspar.com>
  Updated to C++14.

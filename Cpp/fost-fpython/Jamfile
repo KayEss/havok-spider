@@ -10,38 +10,27 @@ fost-exe fpython
     ;
 
 
-rule run-fpython-execute ( runrule : testname ) {
-    $(runrule) # We need to explicitly have all of this for Boost 1.41.0 on Windows
-            ../../../Boost//boost-date_time-dll
-            ../../../Boost//boost-filesystem-dll
-            ../../../Boost//boost-regex-dll
-            ../../../Boost//boost-system-dll
-            ../../../Boost//boost-thread-dll
-            ../../../fost-base/Cpp/fost-core/
-            ../../../fost-base/Cpp/fost-cli/
-            ../../../Boost//boost-python-dll
-            /python//python
-            ../fost-python
-            ../fost-pyhost
-            fpython.cpp
-        :
-        :
-            $(testname).py
-        :
-            <target-os>windows:<source>../../../fost-base/External//ole
-        :
-            fpython-$(runrule)-$(testname)
+run fpython
+    :
+        Cpp/fost-fpython/test01.py
+    :
+    :
+    :
+        fpython-test01
     ;
-}
-
-rule run-fpython-fail ( testname ) {
-    run-fpython-execute run-fail : $(testname) ;
-}
-
-rule run-fpython ( testname ) {
-    run-fpython-execute  run : $(testname) ;
-}
-
-run-fpython test01 ;
-run-fpython test02 ;
-run-fpython-fail test03 ;
+run fpython
+    :
+        Cpp/fost-fpython/test02.py
+    :
+    :
+    :
+        fpython-test02
+    ;
+run-fail fpython
+    :
+        Cpp/fost-fpython/test03.py
+    :
+    :
+    :
+        fpython-test03
+    ;
