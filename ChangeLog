@@ -1,3 +1,6 @@
+2015-05-11  Kirit Saelensminde  <kirit@felspar.com>
+ Strip out auto_ptr.
+
 2015-05-10  Kirit Saelensminde  <kirit@felspar.com>
  Updated to C++14.
 
