@@ -11,11 +11,11 @@
 
 
 #include <fost/core>
+#include <boost/version.hpp>
 
 
 #ifdef __clang__
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warray-bounds"
+
     #if BOOST_VERSION < 105700
     namespace boost {
         template<typename T>
@@ -24,12 +24,19 @@
         }
     }
     #endif
+
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Warray-bounds"
 #endif
+
+
 #include <boost/python.hpp>
+
 
 #ifdef __clang__
     #pragma clang diagnostic pop
 #endif
+
 
 #include <fost/exception/out_of_range.hpp>
 
