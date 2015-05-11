@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -10,20 +10,28 @@
 #define FOST_PYBIND_HPP
 
 
+#include <fost/core>
+
+
 #ifdef __clang__
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warray-bounds"
+    #if BOOST_VERSION < 105700
+    namespace boost {
+        template<typename T>
+        T *get_pointer(const std::shared_ptr<T> &p) {
+            return p.get();
+        }
+    }
+    #endif
 #endif
-
 #include <boost/python.hpp>
 
 #ifdef __clang__
     #pragma clang diagnostic pop
 #endif
 
-#include <fost/core>
 #include <fost/exception/out_of_range.hpp>
-
 
 namespace fostlib {
 
