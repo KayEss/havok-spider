@@ -1,3 +1,5 @@
+include $(TOP)/../fost-base/fost.jam ;
+
 python-extension _test :
         ../../../Boost//boost-python-dll
         ../../../fost-base/Cpp/fost-core/
@@ -5,6 +7,7 @@ python-extension _test :
         python.cpp
     :
         <include>../include/
+        $(TARGET_REQUIREMENTS)
     ;
 
 fost-run-py-test python-string-test : _test test-string.py ;

@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2012, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -82,21 +82,18 @@ namespace {
                     );
             }
         };
-        std::auto_ptr<iterator_implementation> iterator() const {
-            return std::auto_ptr<iterator_implementation>(new iterator_wrapper(
-                first_block, current, end
-            ));
+        std::unique_ptr<iterator_implementation> iterator() const {
+            return std::make_unique<iterator_wrapper>(
+                first_block, current, end);
         }
 
         bool boundary_is_ok( const string &boundary ) const {
             throw exceptions::not_implemented(
-                "wsgi_mime::boundary_is_ok( const string &boundary ) const"
-            );
+                "wsgi_mime::boundary_is_ok( const string &boundary ) const");
         }
         std::ostream &print_on( std::ostream & ) const {
             throw exceptions::not_implemented(
-                "wsgi_mime::print_on( std::ostream & ) const"
-            );
+                "wsgi_mime::print_on( std::ostream & ) const");
         }
     };
     /*
@@ -120,7 +117,7 @@ namespace {
         started to send data to the client.
     */
     struct wsgi_response : boost::noncopyable {
-        std::auto_ptr< wsgi_mime > response;
+        std::unique_ptr<wsgi_mime> response;
 
         boost::python::object start_response(
             boost::python::object status, boost::python::list headers
@@ -139,9 +136,7 @@ namespace {
                 boost::python::extract<string>((*i)[0])(),
                 boost::python::extract<string>((*i)[1])()
             );
-            response = std::auto_ptr< wsgi_mime >( new wsgi_mime(
-                response_headers
-            ) );
+            response = std::make_unique< wsgi_mime >(response_headers);
             return boost::python::object(&write);
         }
     };
@@ -171,7 +166,7 @@ fostlib::python::wsgi::application::application( const string &appname ) {
     ;
 }
 
-std::auto_ptr< mime > fostlib::python::wsgi::application::operator () (
+std::unique_ptr<mime> fostlib::python::wsgi::application::operator () (
     http::server::request &req
 ) const {
     fostlib::python::inproc_host::gil gil;
@@ -188,11 +183,8 @@ std::auto_ptr< mime > fostlib::python::wsgi::application::operator () (
     environ["SERVER_NAME"] = boost::python::str("localhost");
     environ["SERVER_PORT"] = boost::python::str(coerce< string >( 8001 ));
 
-    for (
-        mime::mime_headers::const_iterator header( req.data()->headers().begin() );
-        header != req.data()->headers().end();
-        ++header
-    ) {
+    for ( auto header(req.data()->headers().begin());
+            header != req.data()->headers().end(); ++header ) {
         boost::python::str name =
             boost::python::str(header->first).replace("-", "_").upper();
         environ["HTTP_" + name] = header->second.value();
@@ -217,5 +209,5 @@ std::auto_ptr< mime > fostlib::python::wsgi::application::operator () (
     response->response->current = current;
     response->response->end = end;
     response->response->optimize();
-    return std::auto_ptr< mime >( response->response.release() );
+    return std::move(response->response);
 }

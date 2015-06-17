@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -41,7 +41,7 @@ BOOST_PYTHON_MODULE( _internet ) {
 
     class_<
         http::user_agent::request,
-        std::auto_ptr< http::user_agent::request >,
+        std::shared_ptr< http::user_agent::request >,
         boost::noncopyable
     >(
         "ua_request", init< string, url, optional< string > >()
@@ -95,7 +95,7 @@ BOOST_PYTHON_MODULE( _internet ) {
     ;
 
     class_<
-        http::user_agent, std::auto_ptr< http::user_agent >, boost::noncopyable
+        http::user_agent, std::shared_ptr< http::user_agent >, boost::noncopyable
     >(
         "user_agent", init< optional< url > >()
     )
