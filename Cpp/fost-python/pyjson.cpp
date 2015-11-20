@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,6 +8,8 @@
 
 #include "fost-python.hpp"
 #include <fost/pybind.hpp>
+
+#include <fost/insert>
 
 
 using namespace fostlib;
@@ -93,12 +95,13 @@ json from_python::to_json( bp::object o ) {
                 ) );
             }
             return object;
-        } else if ( bp::extract< string >( o ).check() )
+        } else if ( bp::extract< string >( o ).check() ) {
             return json( bp::extract< string >( o )() );
-        else
-            throw exceptions::not_implemented( L"from_python::to_json( boost::python::object )" );
+        } else {
+            throw exceptions::not_implemented(__FUNCTION__);
+        }
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info() << L"Whilst converting a Python object to a fostlib::json" << std::endl;
+        insert(e.data(), "whilst", "converting a Python object to a fostlib::json");
         throw;
     }
 }
@@ -137,9 +140,8 @@ bp::object to_python::from_json( const json &j ) {
         } else
             throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info()
-            << L"Whilst converting a fostlib::json to its equivalent Python type\n"
-            << json::unparse( j, true );
+        insert(e.data(), "whilst", "converting a fostlib::json to its equivalent Python type");
+        insert(e.data(), "json", j);
         throw;
     }
 }
