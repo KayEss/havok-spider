@@ -6,9 +6,10 @@
 */
 
 
+#include <fost/insert>
 #include <fost/pyhost>
-#include <fost/wsgi>
 #include <fost/test>
+#include <fost/wsgi>
 
 
 using namespace fostlib;
@@ -38,7 +39,7 @@ namespace {
             FSL_CHECK(++iterator == response->end());
 
         } catch ( exceptions::exception &e ) {
-            e.info() << L"WSGI application: " << appname << std::endl;
+            insert(e.data(), "wsgi", "application", appname);
             throw;
         }
     }
