@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -32,6 +32,6 @@ BOOST_PYTHON_MODULE( _test ) {
     def( "getnull", getnull );
     def( "isnone", isnone );
 
-    def( "tojson", json::unparse );
-    def( "fromjson", (json (*)( const string & ))json::parse );
+    def("tojson", (string (*)(const json &, bool))json::unparse);
+    def("fromjson", (json (*)(const string &))json::parse);
 }
