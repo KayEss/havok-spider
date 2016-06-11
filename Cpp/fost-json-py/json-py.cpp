@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,8 +20,8 @@ BOOST_PYTHON_MODULE( _json_fost ) {
     python_string_registration();
     python_json_registration();
 
-    def("parse", (json (*)( const string & ))json::parse),
-    def("unparse", json::unparse),
+    def("parse", (json (*)(const string &))json::parse),
+    def("unparse", (string (*)(const json &, bool))json::unparse),
 
     class_<
         jcursor

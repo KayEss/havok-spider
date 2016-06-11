@@ -1,3 +1,6 @@
+2016-03-26  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed which JSON unparse gets used by Python.
+
 2015-11-20  Kirit Saelensminde  <kirit@felspar.com>
  Removed use of deprecated Fost APIs.
 
