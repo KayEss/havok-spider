@@ -23,7 +23,8 @@ assert n.get("JSON", "Unparse tab width") == 4
 
 # Load an ini file and make sure we can read a value from it
 n.file("../fost-py/Cpp/fost-settings-py/test.ini")
-assert n.get("Test ini", "A value") == True
+value = n.get("Test ini", "A value")
+assert value == True, (value, type(value))
 
 
 # Make sure grabbing non-existant value throws
