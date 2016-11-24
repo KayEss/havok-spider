@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -97,8 +97,7 @@ void from_pystr::construct( PyObject *object, boost::python::converter::rvalue_f
 
 
 PyObject *to_nullable_pystr::convert( const nullable< string > &s ) {
-    if ( s.isnull() )
-        Py_RETURN_NONE;
+    if ( not s ) Py_RETURN_NONE;
     else {
         std::wstring u( coerce< std::wstring >( s.value() ) );
         return PyUnicode_FromWideChar( u.c_str(), u.length() );
