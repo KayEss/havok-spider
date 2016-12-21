@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,7 +25,7 @@ std::string x_www_form_urlencoded( const json &j ) {
     url::query_string qs;
     for ( json::const_iterator i = j.begin(); i != j.end(); ++i )
         qs.append( coerce< string >( i.key() ), coerce< string >( *i ) );
-    return qs.as_string().value( ascii_printable_string() ).underlying();
+    return qs.as_string().value_or(ascii_printable_string()).underlying();
 }
 
 
@@ -35,8 +35,7 @@ string url_to_fostlib_string(const url &u) {
 url url_join(const url &u, const string &r) {
     std::pair< string, nullable< string > > parts = partition(r, "?");
     url ret(u, coerce< url::filepath_string >(parts.first));
-    if ( !parts.second.isnull() )
-        ret.query() = coerce<url::query_string>(parts.second.value());
+    if ( parts.second ) ret.query() = coerce<url::query_string>(parts.second.value());
     return ret;
 }
 

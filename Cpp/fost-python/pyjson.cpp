@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -118,13 +118,13 @@ bp::object to_python::from_json( const json &j ) {
     try {
         if ( j.isnull() )
             return bp::object();
-        else if ( !j.get< bool >().isnull() )
+        else if ( j.get< bool >() )
             return bp::object( j.get< bool >().value() );
-        else if ( !j.get< int64_t >().isnull() )
+        else if ( j.get< int64_t >() )
             return bp::object( j.get< int64_t >().value() );
-        else if ( !j.get< double >().isnull() )
+        else if ( j.get< double >() )
             return bp::object( j.get< double >().value() );
-        else if ( !j.get< string >().isnull() )
+        else if ( j.get< string >() )
             return bp::object( j.get< string >().value() );
         else if ( j.isarray() ) {
             bp::list list;
@@ -137,8 +137,7 @@ bp::object to_python::from_json( const json &j ) {
             for ( json::object_t::const_iterator it( inside.begin() ); it != inside.end(); ++it )
                 object[ it->first ] = from_json( *it->second );
             return object;
-        } else
-            throw exceptions::not_implemented( L"to_python::from_json( const json &j )" );
+        } else throw exceptions::not_implemented(__func__, "Can't find type in JSON instance");
     } catch ( fostlib::exceptions::exception &e ) {
         insert(e.data(), "whilst", "converting a fostlib::json to its equivalent Python type");
         insert(e.data(), "json", j);

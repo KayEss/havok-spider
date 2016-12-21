@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010 Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016 Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -35,7 +35,7 @@ FSL_MAIN(
     L"Simple HTTP WSGI server\nCopyright (c) 2008-2009, Felspar Co. Ltd."
 )( fostlib::ostream &o, fostlib::arguments &args ) {
     // Work out the IP and port bindings
-    http::server server( host( args[1].value(c_host.value()) ), c_port.value() );
+    http::server server(host(args[1].value_or(c_host.value())), c_port.value());
     o << L"Answering requests on http://" << server.binding() << L":" << server.port() << L"/" << std::endl;
     // Create the Python host
     fostlib::python::inproc_host host;

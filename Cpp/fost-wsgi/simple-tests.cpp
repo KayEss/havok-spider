@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,7 +31,7 @@ namespace {
             auto response = app(req);
 
             FSL_CHECK_EQ(response->headers()["Content-Type"].value(), L"text/plain");
-            FSL_CHECK(response->headers()["Content-Type"].subvalue(L"charset").isnull());
+            FSL_CHECK(not response->headers()["Content-Type"].subvalue(L"charset"));
 
             mime::const_iterator iterator = response->begin();
             const_memory_block block = *iterator;
