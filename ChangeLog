@@ -1,3 +1,6 @@
+2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ Update for new internal structure of `fostlib::json`.
+
 2016-03-26  Kirit Saelensminde  <kirit@felspar.com>
  Fixed which JSON unparse gets used by Python.
 
