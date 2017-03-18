@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -82,17 +82,16 @@ json from_python::to_json( bp::object o ) {
             json::array_t array;
             array.reserve(len);
             for ( std::size_t p = 0; p != len; ++p )
-                array.push_back( boost::shared_ptr< json >( new json( to_json( o[ p ] ) ) ) );
+                array.push_back(to_json(o[ p ]));
             return array;
         } else if ( bp::extract< bp::dict >( o ).check() ) {
             json::object_t object;
             bp::object keys = o.attr("keys")();
             for ( std::size_t len = bp::len( keys ); len > 0; --len ) {
                 bp::object key = keys[ len - 1 ];
-                object.insert( std::make_pair(
-                    bp::extract< string >( key )(),
-                    boost::shared_ptr< json >( new json( bp::extract< json >( o[ key ] )() ) )
-                ) );
+                object.insert(std::make_pair(
+                    bp::extract<string>(key)(),
+                    bp::extract<json>(o[key])()));
             }
             return object;
         } else if ( bp::extract< string >( o ).check() ) {
@@ -135,7 +134,7 @@ bp::object to_python::from_json( const json &j ) {
             bp::dict object;
             json::object_t inside( j.get< json::object_t >().value() );
             for ( json::object_t::const_iterator it( inside.begin() ); it != inside.end(); ++it )
-                object[ it->first ] = from_json( *it->second );
+                object[it->first] = from_json(it->second);
             return object;
         } else throw exceptions::not_implemented(__func__, "Can't find type in JSON instance");
     } catch ( fostlib::exceptions::exception &e ) {
