@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
+# Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at
 #     http://www.boost.org/LICENSE_1_0.txt
@@ -18,6 +18,10 @@ from Fost.internet.useragent import agent
 import Fost.settings
 fostsettings = Fost.settings.database()
 
+
+RESULTS = {}
+
+
 def queue_links(spider, response):
     soup = response.soup
     # Check links in a random order
@@ -33,8 +37,10 @@ def queue_links(spider, response):
     for url in chase:
         spider.spider_test(urlparse.urljoin(response.url, url))
     return soup
+
 def ignore_links(spider, response):
     return response.soup
+
 
 class Spider(object):
     """
@@ -76,13 +82,10 @@ class Spider(object):
     def run_suite(self):
         unittest.TextTestRunner().run(self.suite)
 
-    def addTest(
-            spider,
-            url,
+    def addTest(spider, url,
             data = None,
             ql = queue_links,
-            url_data = None
-        ):
+            url_data = None):
         if not url_data:
             url_data = spider.url_data
         if url[0]=='/':
@@ -113,21 +116,27 @@ class Spider(object):
                                     response.url,
                                     u'%s?%s' % (
                                         form['action'],
-                                        x_www_form_urlencoded(query)
-                                    )
-                                )
-                            )
+                                        x_www_form_urlencoded(query))))
                         else:
                             self.links(spider, spider.agent.process(
                                 urlparse.urljoin(
                                     response.url,
-                                    form['action']
-                                ),
+                                    form['action']),
                                 spider_url_data,
-                                x_www_form_urlencoded(query)
-                            ))
+                                x_www_form_urlencoded(query)))
         def test_runTest(self):
-            self.process(spider.agent.process(url, url_data(url), data))
+            if not spider.host in RESULTS:
+                RESULTS[spider.host] = {}
+            if url.startswith(spider.host):
+                recorded_url = url[len(spider.host) - 1:]
+            else:
+                recorded_url = url
+            try:
+                self.process(spider.agent.process(url, url_data(url), data))
+                RESULTS[spider.host][recorded_url] = "OK "
+            except Exception as e:
+                RESULTS[spider.host][recorded_url] = "ERR"
+                raise
 
         testtype = type(str(url), (unittest.TestCase,), dict(
             process = test_process,
@@ -274,17 +283,25 @@ def main(path=None, host=None, **kwargs):
         # Make spider and run
         spider = Spider(
             local[jroot / "urls"] if local.has_key(jroot/"urls") else ['/'],
-            local[jroot / "pages"] if local.has_key(jroot/"pages") else {}
-        )
+            local[jroot / "pages"] if local.has_key(jroot/"pages") else {})
         if local.has_key(jroot/'fost_authentication'):
             spider.agent.fost_authenticate(
                 local[jroot/'fost_authentication'/'key'],
                 local[jroot/'fost_authentication'/'secret'],
-                local[jroot/'fost_authentication'/'headers']
-            )
+                local[jroot/'fost_authentication'/'headers'])
         spider.run_suite()
     if os.path.isdir(path):
         for infile in glob.glob(os.path.join(path, '*.json')):
             run_blob(infile)
     else:
         run_blob(path)
+    with open("test.txt", "w") as res:
+        hosts = RESULTS.keys()
+        hosts.sort()
+        for host in hosts:
+            res.write("    %s\n" % host)
+            results = RESULTS[host].items()
+            results.sort()
+            for u, e in results:
+                res.write("%s %s\n" % (e, u))
+
