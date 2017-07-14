@@ -31,10 +31,13 @@ def queue_links(spider, response):
             if link.has_key(attribute):
                 href = link[attribute]
                 if not (href.startswith('http') or href.startswith('/__')
-                        or href.startswith('data:') or href.startswith('mailto:')):
+                        or href.startswith('data:') or href.startswith('mailto:')
+                        or href.startswith('market:')):
                     chase.append(href)
     random.shuffle(chase)
     for url in chase:
+        if url.find('#') > 0:
+            url = url[:url.find('#')]
         spider.spider_test(urlparse.urljoin(response.url, url))
     return soup
 
@@ -74,8 +77,6 @@ class Spider(object):
         self.pages.setdefault(url, dict()).setdefault('remaining', 1)
 
     def url_data(self, url):
-        if url.find('?') > 0:
-            url = url[:url.find('?')]
         self._check_page(url)
         return self.pages[url]
 
