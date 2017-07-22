@@ -1,3 +1,6 @@
+2017-07-12  Kirit Saelensminde  <kirit@felspar.com>
+ The spider always outputs a `test.txt` file with all results in it.
+
 2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
  Update for new internal structure of `fostlib::json`.
 
