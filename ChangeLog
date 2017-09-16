@@ -1,3 +1,6 @@
+2017-09-16  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a problem with Boost 1.65
+
 2017-07-12  Kirit Saelensminde  <kirit@felspar.com>
  The spider always outputs a `test.txt` file with all results in it.
 
