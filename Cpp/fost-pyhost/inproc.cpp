@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -13,8 +13,8 @@
 
 
 namespace {
-    boost::mutex &g_mutex() {
-        static boost::mutex m;
+    std::mutex &g_mutex() {
+        static std::mutex m;
         return m;
     }
     struct pyproc {
@@ -53,7 +53,7 @@ host::host() {
 
 
 fostlib::python::inproc_host::inproc_host() {
-    boost::mutex::scoped_lock lock(g_mutex());
+    std::lock_guard<std::mutex> lock(g_mutex());
     if ( g_host.get() )
         throw exceptions::not_implemented("Error handling for creating more than one inproc_host");
     g_host.reset( new host );
