@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -13,8 +13,8 @@
 
 
 namespace {
-    boost::mutex &g_mutex() {
-        static boost::mutex m;
+    std::mutex &g_mutex() {
+        static std::mutex m;
         return m;
     }
     struct pyproc {
@@ -53,7 +53,7 @@ host::host() {
 
 
 fostlib::python::inproc_host::inproc_host() {
-    boost::mutex::scoped_lock lock(g_mutex());
+    std::lock_guard<std::mutex> lock(g_mutex());
     if ( g_host.get() )
         throw exceptions::not_implemented("Error handling for creating more than one inproc_host");
     g_host.reset( new host );
@@ -64,20 +64,20 @@ fostlib::python::inproc_host::~inproc_host() {
 }
 
 
-boost::python::object fostlib::python::inproc_host::p_eval_impl( const string &code ) {
+boost::python::object fostlib::python::inproc_host::p_eval_impl(const string &code) {
     fostlib::python::inproc_host::gil gil;
     try {
-        return boost::python::eval(boost::python::str(code), g_host->main_namespace, g_host->main_namespace);
+        return boost::python::eval(code.c_str(), g_host->main_namespace, g_host->main_namespace);
     } catch ( boost::python::error_already_set& ) {
         PyErr_Print();
         throw exceptions::not_implemented("Boost.Python error handling for eval");
     }
 }
 
-void fostlib::python::inproc_host::operator () ( const string &code ) {
+void fostlib::python::inproc_host::operator () (const string &code) {
     fostlib::python::inproc_host::gil gil;
     try {
-        boost::python::exec( boost::python::str(code), g_host->main_namespace, g_host->main_namespace );
+        boost::python::exec(code.c_str(), g_host->main_namespace, g_host->main_namespace);
     } catch ( boost::python::error_already_set& ) {
         PyErr_Print();
         throw exceptions::not_implemented("Boost.Python error handling for exec");
@@ -89,7 +89,7 @@ void fostlib::python::inproc_host::operator () (
     boost::python::list args, boost::python::dict kwargs
 ) {
     try {
-        boost::python::str filename( fostlib::coerce< fostlib::string >( f ) );
+        boost::python::str filename(fostlib::coerce< fostlib::string >(f));
         boost::python::exec_file(filename, g_host->main_namespace, g_host->main_namespace);
 
         // Find main and call it through a lambda to handle the arguments for us
@@ -112,8 +112,9 @@ void fostlib::python::inproc_host::operator () (
 
 
 fostlib::python::inproc_host::gil::gil()
-: gstate( PyGILState_Ensure() ) {
+: gstate(PyGILState_Ensure()) {
 }
 fostlib::python::inproc_host::gil::~gil() {
     PyGILState_Release(gstate);
 }
+
