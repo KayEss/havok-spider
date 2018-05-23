@@ -1,4 +1,0 @@
-Description: Fost Python bindings
- Python bindings to core Fost functionality. This includes:
- * A JSON based settings database.
- * SHA1 hashing from OpenSSL.
