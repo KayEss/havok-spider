@@ -1,22 +1,10 @@
-# -*- coding: utf-8 -*-
-# Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
-# Distributed under the Boost Software License, Version 1.0.
-# See accompanying file LICENSE_1_0.txt or copy at
-#     http://www.boost.org/LICENSE_1_0.txt
-
+#!/usr/bin/env python3
 import glob
 import os
 import random
-try:
-    import unittest2 as unittest
-except:
-    import unittest
-import urlparse
-from Fost.internet import x_www_form_urlencoded
-from Fost.internet.useragent import agent
-
-import Fost.settings
-fostsettings = Fost.settings.database()
+import unittest
+import urllib.parse
+from havok.useragent import agent
 
 
 RESULTS = {}
@@ -28,7 +16,7 @@ def queue_links(spider, response):
     chase = []
     for element, attribute in [('a', 'href'), ('img', 'src'), ('script', 'src')]:
         for link in soup.findAll(element):
-            if link.has_key(attribute):
+            if attribute in link:
                 href = link[attribute]
                 if not (href.startswith('http') or href.startswith('/__')
                         or href.startswith('data:') or href.startswith('mailto:')
@@ -38,7 +26,7 @@ def queue_links(spider, response):
     for url in chase:
         if url.find('#') > 0:
             url = url[:url.find('#')]
-        spider.spider_test(urlparse.urljoin(response.url, url))
+        spider.spider_test(urllib.parse.urljoin(response.url, url))
     return soup
 
 def ignore_links(spider, response):
@@ -63,11 +51,11 @@ class Spider(object):
         self.suite = unittest.TestSuite()
         self.pages = dict()
         if not host:
-            host = fostsettings["Spider", "host"]
+            host = 'http://localhost:8001/'
         self.host = host
         from functools import partial
-        test_url = partial(urlparse.urljoin, host)
-        for url, v in visited.items():
+        test_url = partial(urllib.parse.urljoin, host)
+        for url, v in list(visited.items()):
             self.pages[test_url(url)] = v
         for url in urls:
             self.spider_test(test_url(url))
@@ -90,7 +78,7 @@ class Spider(object):
         if not url_data:
             url_data = spider.url_data
         if url[0]=='/':
-            url = urlparse.urljoin(spider.host, url)
+            url = urllib.parse.urljoin(spider.host, url)
             spider._check_page(url)
 
         def test_process(self, response):
@@ -101,26 +89,26 @@ class Spider(object):
                     spider_url_data = url_data(response.url)
                     form_id = form.get('id', form.get('name', None))
                     if form_id \
-                        and spider_url_data.has_key('forms') \
-                        and spider_url_data['forms'].has_key(form_id):
+                        and 'forms' in spider_url_data \
+                        and form_id in spider_url_data['forms']:
                         form_data = spider_url_data['forms'][form_id]
                     else:
                         form_data = spider_url_data
                     submit, query = build_form_query(self, form, response.url)
-                    if form_data.has_key('data'):
-                        for k, v in form_data['data'].items():
+                    if 'data' in form_data:
+                        for k, v in list(form_data['data'].items()):
                             query[k] = v
                     if submit:
                         if form.get('method', 'get').lower() == 'get':
                             spider.spider_test(
-                                urlparse.urljoin(
+                                urllib.parse.urljoin(
                                     response.url,
-                                    u'%s?%s' % (
+                                    '%s?%s' % (
                                         form['action'],
                                         x_www_form_urlencoded(query))))
                         else:
                             self.links(spider, spider.agent.process(
-                                urlparse.urljoin(
+                                urllib.parse.urljoin(
                                     response.url,
                                     form['action']),
                                 spider_url_data,
@@ -166,18 +154,18 @@ class Spider(object):
     def process_form(spider, page_response, form, data = {}, check_fn = lambda s, r: r.soup):
         assert form, page_response.soup
         submit, query = build_form_query(spider, form, page_response.url)
-        for k, v in data.items():
+        for k, v in list(data.items()):
             if v is None:
-                if query.has_key(k): query.pop(k)
+                if k in query: query.pop(k)
             else:
                 query[k] = v
         if form.get('method', 'get').lower() == 'get':
             response = spider.agent.process(
-                urlparse.urljoin(page_response.url, u'%s?%s' % (form['action'], x_www_form_urlencoded(query)))
+                urllib.parse.urljoin(page_response.url, '%s?%s' % (form['action'], x_www_form_urlencoded(query)))
             )
         elif submit:
             response = spider.agent.process(
-                urlparse.urljoin(page_response.url, form['action']),
+                urllib.parse.urljoin(page_response.url, form['action']),
                 {},
                 x_www_form_urlencoded(query)
             )
@@ -203,24 +191,24 @@ def test_response(test, response):
                 if qpart:
                     key, value = qpart.split('=')
                     query[key] = value
-            print '->', location, query
+            print('->', location, query)
             test_response(test, test.client.get(location, query))
         else:
-            print '->', response_location
+            print('->', response_location)
             test_response(test, test.client.get(response_location))
-            print '-> POST', response_location
+            print('-> POST', response_location)
             test_response(test, test.client.post(response_location))
     else:
-        test.assert_(response.status_code in [200], "Incorrect response status of %s" % response.status_code)
+        test.assertTrue(response.status_code in [200], "Incorrect response status of %s" % response.status_code)
     return response
 
 
 def build_form_query(spider, form, base_url, form_data = {}, submit_button = None):
     query, submits, radios = {}, [], {}
-    assert form.has_key('action') and form['action'], u'Empty action in %s' % form
+    assert 'action' in form and form['action'], 'Empty action in %s' % form
     for ta in form.findAll('textarea'):
-        assert ta.has_key('name'), u'%s in %s' % (ta, base_url)
-        assert len(ta.contents) <= 1, u"Content of a textarea should just be some text\n" % ta.contents
+        assert 'name' in ta, '%s in %s' % (ta, base_url)
+        assert len(ta.contents) <= 1, "Content of a textarea should just be some text\n" % ta.contents
         if len(ta.contents) == 1:
             [query[ta['name']]] = ta.contents
 
@@ -229,28 +217,28 @@ def build_form_query(spider, form, base_url, form_data = {}, submit_button = Non
         if input_type == "submit":
             submits.append(inp)
         elif input_type == "checkbox":
-            if inp.has_key('checked') \
+            if 'checked' in inp \
                 and inp.get('disabled', 'false').lower() != 'true':
                 query[inp['name']] = inp.get('value', "")
         elif not input_type == "reset":
-            assert inp.has_key('name'), u'%s in %s' % (inp, base_url)
+            assert 'name' in inp, '%s in %s' % (inp, base_url)
             query[inp['name']] = inp.get('value', "")
 
     for select in form.findAll('select'):
-        assert select.has_key('name'), u'Select in form at %s has no name\n%s' % (base_url, select)
+        assert 'name' in select, 'Select in form at %s has no name\n%s' % (base_url, select)
         options = select.findAll('option')
-        assert len(options), u"No options found in select at %s" % base_url
+        assert len(options), "No options found in select at %s" % base_url
         for option in options:
-            assert option.has_key('value'), u'No value found for option %s in select at %s' % (option, base_url)
+            assert 'value' in option, 'No value found for option %s in select at %s' % (option, base_url)
             if option.get('selected', None):
                 query[select['name']] = option['value']
-        if not query.has_key(select['name']) and len(options):
+        if select['name'] not in query and len(options):
             query[select['name']] = options[0]['value']
     for button in form.findAll('button'):
         submits.append(button)
     if len(submits):
         button = submits[random.randint(0, len(submits) - 1)]
-        if button.has_key('name'):
+        if 'name' in button:
             query[button['name']] = button['value']
         return True, query
     return False, query
@@ -261,7 +249,7 @@ def main(path=None, host=None, **kwargs):
         This spider will start off running queries that it finds in a JSON
         configuration file.
     """
-    print "Havok spider - Copyright (C) 2008-2009 Felspar Co Ltd."
+    print("Havok spider - Copyright (C) 2008-2009 Felspar Co Ltd.")
     def run_blob(config_file):
         local_settings = Fost.settings.database()
         # Load configuration
@@ -272,20 +260,20 @@ def main(path=None, host=None, **kwargs):
             configuration = jsonblob()
         local = configuration.local
         # Base URL configuration
-        if local.has_key(jroot/"url"):
+        if jroot/"url" in local:
             local_settings["Spider", "host"] = local[jroot/"url"]
         if host:
             local_settings["Spider", "host"] = host
         # Number of tests configuration
-        if local.has_key(jroot/"count"):
+        if jroot/"count" in local:
             local_settings["Spider", "Count"] = local[jroot/"count"]
-        if kwargs.has_key('t'):
+        if 't' in kwargs:
             local_settings["Spider", "Count"] = int(kwargs['t'])
         # Make spider and run
         spider = Spider(
-            local[jroot / "urls"] if local.has_key(jroot/"urls") else ['/'],
-            local[jroot / "pages"] if local.has_key(jroot/"pages") else {})
-        if local.has_key(jroot/'fost_authentication'):
+            local[jroot / "urls"] if jroot/"urls" in local else ['/'],
+            local[jroot / "pages"] if jroot/"pages" in local else {})
+        if jroot/'fost_authentication' in local:
             spider.agent.fost_authenticate(
                 local[jroot/'fost_authentication'/'key'],
                 local[jroot/'fost_authentication'/'secret'],
@@ -297,11 +285,11 @@ def main(path=None, host=None, **kwargs):
     else:
         run_blob(path)
     with open("test.txt", "w") as res:
-        hosts = RESULTS.keys()
+        hosts = list(RESULTS.keys())
         hosts.sort()
         for host in hosts:
             res.write("    %s\n" % host)
-            results = RESULTS[host].items()
+            results = list(RESULTS[host].items())
             results.sort()
             for u, e in results:
                 res.write("%s %s\n" % (e, u))

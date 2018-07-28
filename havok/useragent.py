@@ -1,17 +1,20 @@
-# -*- coding: utf-8 -*-
-# Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
-# Distributed under the Boost Software License, Version 1.0.
-# See accompanying file LICENSE_1_0.txt or copy at
-#     http://www.boost.org/LICENSE_1_0.txt
-
-import cookielib
+#!/usr/bin/env python
+import base64
+import http.cookiejar
 import datetime
-import urllib2
-import urlparse
+import hashlib
+import hmac
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 
-from Fost.crypto import sha1_hmac
-from Fost.settings import database
-from _internet import url_filespec_encode, url_filespec_assert_valid
+
+def sha1_hmac(secret, document):
+    k = bytes(secret, "utf-8")
+    m = bytes(secret, "utf-8")
+    d = hmac.new(k, m, hashlib.sha1)
+    s = d.digest()
+    b64 = base64.b64encode(s)
+    return str(b64, "utf-8")
 
 
 def fetch(*args, **kwargs):
@@ -19,28 +22,24 @@ def fetch(*args, **kwargs):
 
 
 class agent(object):
-    def __init__(
-            self,
-            base = "http://localhost/",
-            stop_redirects = True
-        ):
+    def __init__(self, base="http://localhost/", stop_redirects=True):
         self.url = base
         # Fost settings for authentication
         self.fost = {}
         # Enable cookie jar
-        self.cj = cookielib.LWPCookieJar()
+        self.cj = http.cookiejar.LWPCookieJar()
 
         chain_of_responsibility = []
         if stop_redirects:
-            class RedirectStop(urllib2.HTTPRedirectHandler):
+            class RedirectStop(urllib.request.HTTPRedirectHandler):
                 def redirect_request(self, req, fp, code, msg, hdrs, newurl):
                     return None
             chain_of_responsibility.append(RedirectStop())
         chain_of_responsibility.append(
-            urllib2.HTTPCookieProcessor(self.cj)
+            urllib.request.HTTPCookieProcessor(self.cj)
         )
 
-        self.opener = urllib2.build_opener(
+        self.opener = urllib.request.build_opener(
             *chain_of_responsibility
         )
 
@@ -58,21 +57,20 @@ class agent(object):
         """
         if not headers:
             headers = {}
-        self.url = urlparse.urljoin(self.url, url)
+        self.url = urllib.parse.urljoin(self.url, url)
         if len(self.fost):
             signed, signed_headers = 'X-FOST-Headers', []
-            for header, value in self.fost['headers'].items():
+            for header, value in list(self.fost['headers'].items()):
                 signed += ' ' + header
                 signed_headers.append(value)
                 headers[ header ] = value
-            utcnow = unicode(datetime.datetime.utcnow())
-            path = urlparse.urlsplit(self.url).path
-            url_filespec_assert_valid(path)
+            utcnow = str(datetime.datetime.utcnow())
+            path = urllib.parse.urlsplit(self.url).path
             document = '%s %s\n%s\n%s\n%s' % (
                 "POST" if data else "GET", path,
                 utcnow,
                 '\n'.join([signed] + signed_headers),
-                data or urlparse.urlsplit(self.url).query
+                data or urllib.parse.urlsplit(self.url).query
             )
             headers['X-FOST-Timestamp'] = utcnow
             headers['X-FOST-Headers'] = signed
@@ -81,7 +79,7 @@ class agent(object):
                 sha1_hmac(self.fost['secret'], document)
             )
             #print document
-        return self.opener.open(urllib2.Request(self.url, data, headers))
+        return self.opener.open(urllib.request.Request(self.url, data, headers))
 
     def process(self, url, configuration = {}, data = None):
         """
@@ -104,7 +102,7 @@ class agent(object):
             else:
                 response.soup = BeautifulSoup('')
             return response
-        except urllib2.HTTPError, e:
+        except urllib.error.HTTPError as e:
             status = int(str(e).split()[2][0:3])
             if status in configuration.get('status', [200, 301, 302, 303]):
                 # This is OK -- the status matches what we're expecting
