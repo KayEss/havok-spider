@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import base64
+from bs4 import BeautifulSoup
 import http.cookiejar
 import datetime
 import hashlib
@@ -89,18 +90,17 @@ class agent(object):
         try:
             #print "Configuration", configuration
             #print "Data", data
-            from BeautifulSoup import BeautifulSoup
             response = self.fetch(url, data, configuration.get("headers", {}))
             response.mime_type = response.headers.get('Content-Type', ';').split(';')[0]
             response.body = response.read()
             if configuration.get("parse_result", True) and response.mime_type.startswith('text'):
-                if response.body.startswith("<!DOC"):
+                if response.body.startswith(b"<!DOC"):
                     response.soup = BeautifulSoup(
-                        response.body[response.body.find(">")+1:])
+                        response.body[response.body.find(b">")+1:], "html.parser")
                 else:
-                    response.soup = BeautifulSoup(response.body)
+                    response.soup = BeautifulSoup(response.body, "html.parser")
             else:
-                response.soup = BeautifulSoup('')
+                response.soup = BeautifulSoup('', "html.parser")
             return response
         except urllib.error.HTTPError as e:
             status = int(str(e).split()[2][0:3])
@@ -108,7 +108,7 @@ class agent(object):
                 # This is OK -- the status matches what we're expecting
                 class response(object):
                     status_code = status
-                    soup = BeautifulSoup('')
+                    soup = BeautifulSoup('', "html.parser")
                     body = ''
                     def __init__(self, u):
                         self.url = u
