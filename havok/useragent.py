@@ -44,12 +44,8 @@ class agent(object):
             *chain_of_responsibility
         )
 
-    def fost_authenticate(self, key, secret, headers = None):
-        self.fost.update(
-            key = key,
-            secret = secret,
-            headers = headers or {}
-        )
+    def fost_authenticate(self, key, secret, headers=None):
+        self.fost.update(key=key, secret=secret, headers=headers or {})
 
     def fetch(self, url, data = None, headers = None):
         """
@@ -79,22 +75,19 @@ class agent(object):
                 self.fost['key'],
                 sha1_hmac(self.fost['secret'], document)
             )
-            #print document
         return self.opener.open(urllib.request.Request(self.url, data, headers))
 
-    def process(self, url, configuration = {}, data = None):
+    def process(self, url, configuration={}, data=None):
         """
             Processes a JSON request configuration starting at the specified
             URL with the specified body
         """
         try:
-            #print "Configuration", configuration
-            #print "Data", data
             response = self.fetch(url, data, configuration.get("headers", {}))
             response.mime_type = response.headers.get('Content-Type', ';').split(';')[0]
             response.body = response.read()
             if configuration.get("parse_result", True) and response.mime_type.startswith('text'):
-                if response.body.startswith(b"<!DOC"):
+                if response.body.startswith(b"<!DOC") or response.body.startswith(b"<!doc"):
                     response.soup = BeautifulSoup(
                         response.body[response.body.find(b">")+1:], "html.parser")
                 else:

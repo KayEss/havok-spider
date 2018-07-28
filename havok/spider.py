@@ -1,3 +1,4 @@
+from functools import partial
 import glob
 import os
 import random
@@ -8,7 +9,7 @@ from havok.useragent import agent
 
 
 RESULTS = {}
-URL_COUNT = 25
+URL_COUNT = 1000
 
 
 def queue_links(spider, response):
@@ -16,8 +17,8 @@ def queue_links(spider, response):
     # Check links in a random order
     chase = []
     for element, attribute in [('a', 'href'), ('img', 'src'), ('script', 'src')]:
-        for link in soup.findAll(element):
-            if attribute in link:
+        for link in soup.find_all(element):
+            if link.has_attr(attribute):
                 href = link[attribute]
                 if not (href.startswith('http') or href.startswith('/__')
                         or href.startswith('data:') or href.startswith('mailto:')
@@ -47,13 +48,12 @@ class Spider(object):
             stop_redirects=True, # passed onto agent
             host=None, # defaults to the FOST setting
         ):
-        self.agent = agent(stop_redirects = stop_redirects)
+        self.agent = agent(stop_redirects=stop_redirects)
         self.suite = unittest.TestSuite()
         self.pages = dict()
         if not host:
             host = 'http://localhost:8001/'
         self.host = host
-        from functools import partial
         test_url = partial(urllib.parse.urljoin, host)
         for url, v in list(visited.items()):
             self.pages[test_url(url)] = v
