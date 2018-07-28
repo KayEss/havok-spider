@@ -1,3 +1,0 @@
-import path ;
-
-fost-py-install Fost-python : Python/Fost : Fost ;
