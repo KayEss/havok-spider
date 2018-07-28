@@ -1,8 +1,0 @@
-
-fost-lib fost-pyhost
-    :
-        ../../../Boost//boost-python-dll
-        /python//python
-        ../fost-python/
-        inproc.cpp
-    ;
