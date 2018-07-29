@@ -9,7 +9,7 @@ from havok.useragent import agent
 
 
 RESULTS = {}
-URL_COUNT = 1000
+URL_COUNT = 10000
 
 
 def queue_links(spider, response):
